@@ -57,5 +57,48 @@ class States:
         weight = np.prod(self.pattern*weightmatrix)
         return weight
     
-    def 
+    def splitspin(self,pos):
+        a = np.zeros(6)
+        a[0]=1
+        b = np.zeros(6)
+        b[0]=1
+        c = np.zeros(6)
+        c[0]=1
+        d = np.zeros(6)
+        d[0]=1
+        e = np.zeros(6)
+        e[0]=1
+        f = np.zeros(6)
+        f[0]=1
+        conf = np.argmax(self.pattern[pos[0],pos[1],:])
+        if(conf==1):
+            self.pattern[pos[0],pos[1],:] = f
+            return [pos[0]+1,pos[1]-1]
+        if(conf==2):
+            self.pattern[pos[0],pos[1],:] = e
+            return [pos[0]+1,pos[1]-1]
+        if(conf==3):
+            self.pattern[pos[0],pos[1],:] = a
+            return [pos[0]+1,pos[1]+1]
+        if(conf==4):
+            self.pattern[pos[0],pos[1],:] = b
+            return [pos[0]+1,pos[1]+1]
+        if(conf==5):
+            self.pattern[pos[0],pos[1],:] = b
+            return [pos[0]+1,pos[1]-1]
+        if(conf==6):
+            self.pattern[pos[0],pos[1],:] = a
+            return [pos[0]+1,pos[1]-1]        
+        
+        
+    
+    def splitline(self):
+        n  = rnd.randint(0,self.n_spins)
+        p = [0,n]
+        for i in range(2*self.m_trotter):
+            p = self.splitspin(p)
+        return
+            
+        
+        
         
