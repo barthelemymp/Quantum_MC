@@ -23,8 +23,8 @@ class States:
         #self.spins_up = rnd.randint(0, n_spins+1)
         self.pattern = np.zeros((2*m_trotter,n_spins,6))
         for i in range (2*m_trotter):
-            for j in range(n_spins-1):
-                self.pattern[i,j,0] = 1
+            for j in range(n_spins):
+                self.pattern[i,j,0] = (i+j)%2
         
         self.spins_up = 0
     
@@ -44,9 +44,10 @@ class States:
         
         a = self.Jz/4
         th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
-        coth = self.Jx/2*np.cotanh(self.dtau*self.Jx/2)
+        coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
         energymatrix = np.array([-a, -a, a+coth, a+coth, a+th, a+th])
         energy = np.sum(self.pattern*energymatrix)
+        print("en",energy)
         return energy
     
     def weight(self):
@@ -57,7 +58,8 @@ class States:
         weight = np.prod(self.pattern*weightmatrix)
         return weight
     
-    def splitspin(self,pos):
+    def splitspin(self,pos): #probleme d'origine du dernier mouvement a regler 
+        print("pos",pos)
         a = np.zeros(6)
         a[0]=1
         b = np.zeros(6)
@@ -70,33 +72,56 @@ class States:
         e[0]=1
         f = np.zeros(6)
         f[0]=1
-        conf = np.argmax(self.pattern[pos[0],pos[1],:])
-        if(conf==1):
-            self.pattern[pos[0],pos[1],:] = f
-            return [pos[0]+1,pos[1]-1]
-        if(conf==2):
-            self.pattern[pos[0],pos[1],:] = e
-            return [pos[0]+1,pos[1]-1]
-        if(conf==3):
-            self.pattern[pos[0],pos[1],:] = a
-            return [pos[0]+1,pos[1]+1]
-        if(conf==4):
-            self.pattern[pos[0],pos[1],:] = b
-            return [pos[0]+1,pos[1]+1]
-        if(conf==5):
-            self.pattern[pos[0],pos[1],:] = b
-            return [pos[0]+1,pos[1]-1]
-        if(conf==6):
-            self.pattern[pos[0],pos[1],:] = a
-            return [pos[0]+1,pos[1]-1]        
+        conf = np.argmax(np.array(self.pattern[pos[0],pos[1],:])) + 1
+        print("conf",conf)
+        if(pos[0]%2==0):
+            if(conf==1):
+                self.pattern[pos[0],pos[1],:] = f
+                return np.array([pos[0]+1,pos[1]-1])
+            if(conf==2):
+                self.pattern[pos[0],pos[1],:] = e
+                return np.array([pos[0]+1,pos[1]-1])
+            if(conf==3):
+                self.pattern[pos[0],pos[1],:] = a
+                return np.array([pos[0]+1,pos[1]+1])
+            if(conf==4):
+                self.pattern[pos[0],pos[1],:] = b
+                return np.array([pos[0]+1,pos[1]+1])
+            if(conf==5):
+                self.pattern[pos[0],pos[1],:] = b
+                return np.array([pos[0]+1,pos[1]-1])
+            if(conf==6):
+                self.pattern[pos[0],pos[1],:] = a
+                return np.array([pos[0]+1,pos[1]-1])     
+        else :
+            if(conf==1):
+                self.pattern[pos[0],pos[1],:] = e
+                return np.array([pos[0]+1,pos[1]-1])
+            if(conf==2):
+                self.pattern[pos[0],pos[1],:] = f
+                return np.array([pos[0]+1,pos[1]-1])
+            if(conf==3):
+                self.pattern[pos[0],pos[1],:] = a
+                return np.array([pos[0]+1,pos[1]+1])
+            if(conf==4):
+                self.pattern[pos[0],pos[1],:] = b
+                return np.array([pos[0]+1,pos[1]+1])
+            if(conf==5):
+                self.pattern[pos[0],pos[1],:] = b
+                return np.array([pos[0]+1,pos[1]-1])
+            if(conf==6):
+                self.pattern[pos[0],pos[1],:] = a
+                return np.array([pos[0]+1,pos[1]-1]) 
         
         
     
     def splitline(self):
-        n  = rnd.randint(0,self.n_spins)
+        n  = int(rnd.randint(0,self.n_spins)/2)*2#attention derniere ligne a checker
+        print("randspin", n)
         p = [0,n]
         for i in range(2*self.m_trotter):
             p = self.splitspin(p)
+            print("p", p)
         return
             
         
