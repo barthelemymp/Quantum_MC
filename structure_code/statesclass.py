@@ -59,6 +59,11 @@ class States:
         return weight
     
     def splitspin(self,pos): #probleme d'origine du dernier mouvement a regler 
+        ae = self.Jz/4
+        th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
+        coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
+        energymatrix = np.array([-ae, -ae, ae+coth, ae+coth, ae+th, ae+th])
+        
         print("pos",pos)
         a = np.zeros(6)
         a[0]=1
@@ -77,52 +82,57 @@ class States:
         if(pos[2]==0):
             if(conf==1):
                 self.pattern[pos[0],pos[1],:] = f
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,pos[1]-1,1,energymatrix[5]-energymatrix[0]])
             if(conf==2):
-                self.pattern[pos[0],pos[1],:] = e
-                return np.array([pos[0]+1,pos[1]-1,1])
+                self.pattern[pos[0],pos[1],:,] = e
+                return np.array([pos[0]+1,pos[1]-1,1,energymatrix[4]-energymatrix[1]])
             if(conf==3):
                 self.pattern[pos[0],pos[1],:] = a
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,pos[1]+1,0,energymatrix[0]-energymatrix[2]])
             if(conf==4):
                 self.pattern[pos[0],pos[1],:] = b
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,pos[1]+1,0,energymatrix[1]-energymatrix[3]])
             if(conf==5):
                 self.pattern[pos[0],pos[1],:] = b
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,pos[1]-1,1,energymatrix[1]-energymatrix[4]])
             if(conf==6):
                 self.pattern[pos[0],pos[1],:] = a
-                return np.array([pos[0]+1,pos[1]-1,1])     
+                return np.array([pos[0]+1,pos[1]-1,1,energymatrix[0]-energymatrix[5]])     
         elif(pos[2]==1) :
             if(conf==1):
                 self.pattern[pos[0],pos[1],:] = e
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,pos[1]+1,0,energymatrix[4]-energymatrix[0]])
             if(conf==2):
                 self.pattern[pos[0],pos[1],:] = f
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,pos[1]+1,0,energymatrix[5]-energymatrix[1]])
             if(conf==3):
                 self.pattern[pos[0],pos[1],:] = b
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,pos[1]-1,1,energymatrix[1]-energymatrix[2]])
             if(conf==4):
                 self.pattern[pos[0],pos[1],:] = a
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,pos[1]-1,1,energymatrix[0]-energymatrix[3]])
             if(conf==5):
                 self.pattern[pos[0],pos[1],:] = a
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,pos[1]+1,0,energymatrix[0]-energymatrix[4]])
             if(conf==6):
                 self.pattern[pos[0],pos[1],:] = b
-                return np.array([pos[0]+1,pos[1]+1,0]) 
+                return np.array([pos[0]+1,pos[1]+1,0,energymatrix[1]-energymatrix[5]]) 
         
         
     
     def splitline(self):
+        dE = 0
         n  = int(rnd.randint(0,self.n_spins)/2)*2#attention derniere ligne a checker
         print("randspin", n)
         p = [0,n,0]
         for i in range(2*self.m_trotter):
             p = self.splitspin(p)
+            dE += p[3]
             print("p", p)
-        return
+        return dE
+    
+    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 10000,length_cycle = 100):
+        
             
         
         
