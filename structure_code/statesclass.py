@@ -132,8 +132,20 @@ class States:
         return dE
     
     def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 10000,length_cycle = 100):
-        
-            
-        
-        
-        
+        energ = np.zeros(n_cycles)
+        # Monte Carlo simulation
+        for n in range(n_warmup+n_cycles):
+            # Monte Carlo moves
+            for l in range(length_cycle):
+                self.splitline
+                #self.autremodif
+            # measures
+            if n >= n_warmup:
+                energ[n-n_warmup] = self.total_energy()
+        return energ
+    
+                
+                    
+                
+                
+                
