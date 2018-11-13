@@ -214,7 +214,8 @@ class States:
         conf_right = np.nanargmax(self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                                 ( pos[1] + 1 )%self.n_spins,\
                                                 :]) + 1
-        
+        print(conf_left, conf_right)    
+    
         #we can eliminate the cases in which the first spins are up-up or down-down
         if conf_down < 3: 
             print('conf_down est plus petit que 3')
@@ -237,13 +238,13 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf6
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] - 1 )%self.n_spins,\
                              :] = (conf_left==1)*conf5 + (conf_left==6)*conf2
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] + 1 )%self.n_spins,\
                              :] = (conf_right==2)*conf5 + (conf_right==6)*conf1
-                return 'changement d energie'
+                return 'changement d energie 3'
         #case in which the bottom square is down-up==>up-down
         elif conf_down == 4:
             if conf_up != 3:
@@ -257,13 +258,13 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf5
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] - 1 )%self.n_spins,\
                              :] = (conf_left==2)*conf6 + (conf_left==5)*conf1
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] + 1 )%self.n_spins,\
                              :] = (conf_right==1)*conf6 + (conf_right==5)*conf2
-                return 'changement d energie'
+                return 'changement d energie 4'
         #case in which the bottom square is down-up==>down-up
         elif conf_down == 5:
             if conf_up != 5:
@@ -277,13 +278,13 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf3
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] - 1 )%self.n_spins,\
                              :] = (conf_left==1)*conf5 + (conf_left==6)*conf2
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] + 1 )%self.n_spins,\
                              :] = (conf_right==2)*conf5 + (conf_right==6)*conf1
-                return 'changement d energie'
+                return 'changement d energie 5'
         #case in which the bottom square is updown==>up-down
         else:
             if conf_up != 6:
@@ -297,13 +298,15 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf3
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] - 1 )%self.n_spins,\
                              :] = (conf_left==2)*conf6 + (conf_left==5)*conf1
-                self.pattern[pos[0],\
+                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                              ( pos[1] + 1 )%self.n_spins,\
                              :] = (conf_right==1)*conf6 + (conf_right==5)*conf2
-                return 'changement d energie'
+                return 'changement d energie 6'
+
+        #il faut modifier la somme pour hanger conf left et conf right. 
 
         return 0
         
@@ -322,8 +325,5 @@ class States:
             if n >= n_warmup:
                 energ[n-n_warmup] = self.total_energy()
         return energ
-    
-                
-    
 
                     
