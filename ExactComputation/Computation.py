@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Nov  7 15:18:03 2018
+
+@author: etiennecamphuis
+"""
+
+
+
 import numpy as np
 
 
