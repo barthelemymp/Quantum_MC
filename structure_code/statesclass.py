@@ -131,6 +131,42 @@ class States:
             print("p", p)
         return dE
     
+    def local_update_pos(self, pos):
+        ae = self.Jz/4
+        th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
+        coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
+        energymatrix = np.array([-ae, -ae, ae+coth, ae+coth, ae+th, ae+th])
+        
+        a = np.zeros(6)
+        a[:]=np.nan
+        a[0]=1
+        b = np.zeros(6)
+        b[:]=np.nan
+        b[1]=1
+        c = np.zeros(6)
+        b[:]=np.nan
+        c[2]=1
+        d = np.zeros(6)
+        d[:]=np.nan
+        d[3]=1
+        e = np.zeros(6)
+        e[:]=np.nan
+        e[4]=1
+        f = np.zeros(6)
+        f[:]=np.nan
+        f[5]=1
+        conf = np.nanargmax(np.array(self.pattern[pos[0],pos[1],:])) + 1
+        
+        
+        if (pos[2]) == 0:
+            
+        
+        
+        
+        
+        
+        
+    
     def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 10000,length_cycle = 100):
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
