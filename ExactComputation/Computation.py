@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Nov  7 15:18:03 2018
+
+@author: etiennecamphuis
+"""
+
 import numpy as np
 
 
@@ -123,7 +130,7 @@ class Chain:
 
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
     with open(s, 'w') as fichier:
-        fichier.write("The fundamental's energy for a " + periodic*"periodic"+ " chain of length " 
+        fichier.write("The fundamental's energy for a " + periodic*"periodic "+ "chain of length " 
                       + str(L) + " with Jx,Jz = " + str((Jx,Jz)) + " is " + 
                       str(Chain(L, Jx, Jz, periodic).get_fundamental()))
     
