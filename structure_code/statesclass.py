@@ -7,6 +7,7 @@ Created on Wed Nov  7 15:18:03 2018
 
 import numpy as np
 import numpy.random as rnd
+import cv2
 
 class States:
     """A Feynman path in position/imaginary time space"""
@@ -324,6 +325,47 @@ class States:
         return energ
     
                 
+    
+    
+    def createimage(self, casesize=20):
+        greycase = np.ones((20,20),dtype=np.uint8) * 70
+        case1 = np.ones((20,20))*255
+        case2 = np.ones((20,20))*255
+        case3 = np.ones((20,20),dtype=np.uint8)*255
+        case4 = np.ones((20,20))*255
+        case5 = np.ones((20,20))*255
+        case6 = np.ones((20,20))*255
+        
+        case2[:,:2]=0
+        case2[:,18:]=0
+        
+        for i in range(19):
+            case3[i,19-i]=0
+            case3[i,18-i]=0
+            case4[i,i]=0
+            case4[i,i+1]=0
+            
+        case6[:,:2]=0
+        
+        case5[:,18:]=0
+        cases = [case1,case2,case3,case4,case5,case6,greycase]
+        
+        image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
+        for i in range(self.m_trotter*2):
+            for j in range(self.n_spins):
+                if((i+j+1)%2):
+                    conf = np.nanargmax(np.array(self.pattern[i,j,:]))
+                    image[20*i:20*(i+1),20*j:20*(j+1)]=cases[conf]
+                else:
+                    image[20*i:20*(i+1),20*j:20*(j+1)]=130
+                    
+                
+        image = np.array(image,dtype=np.uint8)
+        cv2.imshow('image', image)
+
+        cv2.waitKey()
+
+        
     
 
                     
