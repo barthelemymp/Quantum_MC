@@ -77,8 +77,8 @@ class Chain:
 
     def compute_element_matrix(self, i, j):
         """
-        We compute the matrix even element between state i and j using
-        self.compute_hamiltonian_on_pair
+        This method compute the matrix even element between state i and j using
+        self.compute_hamiltonian_on_pair()
         """
         #let get i and j
         state_i = self.states[i]
