@@ -61,97 +61,116 @@ class States:
         weight = np.nanprod(self.pattern*weightmatrix)
         return weight
     
-    def splitspin(self,pos,dE): #probleme d'origine du dernier mouvement a regler 
+    def splitspin(self,pos,dE,dw): #probleme d'origine du dernier mouvement a regler 
+        
         ae = self.Jz/4
         th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
         coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
         energymatrix = np.array([-ae, -ae, ae+coth, ae+coth, ae+th, ae+th])
         
+        aw = np.exp(self.dtau*self.Jz/4)
+        cosh = np.cosh(self.dtau*self.Jx/2)
+        sinh = np.sinh(self.dtau*self.Jx/2)
+        weightmatrix = np.array([1/aw, 1/aw, -aw*sinh, -aw*sinh, aw*cosh, aw*cosh])
         print("pos",pos)
-        a = np.zeros(6)
-        a[:]=np.nan
-        a[0]=1
-        b = np.zeros(6)
-        b[:]=np.nan
-        b[1]=1
-        c = np.zeros(6)
-        c[:]=np.nan
-        c[2]=1
-        d = np.zeros(6)
-        d[:]=np.nan
-        d[3]=1
-        e = np.zeros(6)
-        e[:]=np.nan
-        e[4]=1
-        f = np.zeros(6)
-        f[:]=np.nan
-        f[5]=1
+        conf1 = np.zeros(6)
+        conf1[:]=np.nan
+        conf1[0]=1
+        conf2 = np.zeros(6)
+        conf2[:]=np.nan
+        conf2[1]=1
+        conf3 = np.zeros(6)
+        conf3[:]=np.nan
+        conf3[2]=1
+        conf4 = np.zeros(6)
+        conf4[:]=np.nan
+        conf4[3]=1
+        conf5 = np.zeros(6)
+        conf5[:]=np.nan
+        conf5[4]=1
+        conf6 = np.zeros(6)
+        conf6[:]=np.nan
+        conf6[5]=1
         conf = np.nanargmax(np.array(self.pattern[pos[0],pos[1],:])) + 1
         print("conf",conf)
         if(pos[2]==0):
             if(conf==1):
-                self.pattern[pos[0],pos[1],:] = f
+                self.pattern[pos[0],pos[1],:] = conf6
                 dE += energymatrix[5]-energymatrix[0]
-                return np.array([pos[0]+1,pos[1]-1,1])
+                dw *= weightmatrix[5]/weightmatrix[0]
+                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
             
             if(conf==2):
-                self.pattern[pos[0],pos[1],:,] = e
+                self.pattern[pos[0],pos[1],:,] = conf5
+                dw *= weightmatrix[4]/weightmatrix[1]
                 dE +=energymatrix[4]-energymatrix[1]
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
             if(conf==3):
-                self.pattern[pos[0],pos[1],:] = a
+                self.pattern[pos[0],pos[1],:] = conf1
+                dw *= weightmatrix[0]/weightmatrix[2]
                 dE += energymatrix[0]-energymatrix[2]
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
             if(conf==4):
-                self.pattern[pos[0],pos[1],:] = b
+                self.pattern[pos[0],pos[1],:] = conf2
+                dw *= weightmatrix[1]/weightmatrix[3]
                 dE += energymatrix[1]-energymatrix[3]
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
             if(conf==5):
-                self.pattern[pos[0],pos[1],:] = b
+                self.pattern[pos[0],pos[1],:] = conf2
+                dw *= weightmatrix[1]/weightmatrix[4]
                 dE +=energymatrix[1]-energymatrix[4]
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
             if(conf==6):
-                self.pattern[pos[0],pos[1],:] = a
+                self.pattern[pos[0],pos[1],:] = conf1
+                dw *= weightmatrix[0]/weightmatrix[5]
                 dE += energymatrix[0]-energymatrix[5]
-                return np.array([pos[0]+1,pos[1]-1,1])     
+                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw     
         elif(pos[2]==1) :
             if(conf==1):
-                self.pattern[pos[0],pos[1],:] = e
+                self.pattern[pos[0],pos[1],:] = conf5
+                dw *= weightmatrix[4]/weightmatrix[0]
                 dE +=energymatrix[4]-energymatrix[0]
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
             if(conf==2):
-                self.pattern[pos[0],pos[1],:] = f
+                self.pattern[pos[0],pos[1],:] = conf6
+                dw *= weightmatrix[5]/weightmatrix[1]
                 dE +=energymatrix[5]-energymatrix[1]
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
             if(conf==3):
-                self.pattern[pos[0],pos[1],:] = b
+                self.pattern[pos[0],pos[1],:] = conf2
+                dw *= weightmatrix[1]/weightmatrix[2]
                 dE +=energymatrix[1]-energymatrix[2]
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
             if(conf==4):
-                self.pattern[pos[0],pos[1],:] = a
+                self.pattern[pos[0],pos[1],:] = conf1
+                dw *= weightmatrix[0]/weightmatrix[3]
                 dE +=energymatrix[0]-energymatrix[3]
-                return np.array([pos[0]+1,pos[1]-1,1])
+                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
             if(conf==5):
-                self.pattern[pos[0],pos[1],:] = a
+                self.pattern[pos[0],pos[1],:] = conf1
+                dw *= weightmatrix[0]/weightmatrix[4]
                 dE +=energymatrix[0]-energymatrix[4]
-                return np.array([pos[0]+1,pos[1]+1,0])
+                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
             if(conf==6):
-                self.pattern[pos[0],pos[1],:] = b
+                self.pattern[pos[0],pos[1],:] = conf2
+                dw *= weightmatrix[1]/weightmatrix[5]
                 dE +=energymatrix[1]-energymatrix[5]
-                return np.array([pos[0]+1,pos[1]+1,0]) 
+                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw 
         
         
     
     def splitline(self):
         dE = 0
+        dw = 1
         n  = int(rnd.randint(0,self.n_spins)/2)*2#attention derniere ligne a checker
+        gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
         print("randspin", n)
-        p = [0,n,0]
+        p = [0,n,gd] #[line, column, left or right]
         for i in range(2*self.m_trotter):
-            p = self.splitspin(p,dE)
+            p, dE, dw = self.splitspin(p,dE,dw)
             
             print("p", p)
-        return dE
+        return dE, dw
     
     def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 10000,length_cycle = 100):
         energ = np.zeros(n_cycles)
@@ -167,4 +186,6 @@ class States:
         return energ
     
                 
+    
+
                     
