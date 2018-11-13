@@ -154,37 +154,139 @@ class States:
         return dE
     
     def local_update_pos(self, pos):
+        """
+        This method allows local updates, described in Fig.2 of the article. We will look for various type of 
+        pattern, which are localised on four "white squares" in the pattern. We will call them the conf_down, 
+        conf_up, conf_left, conf_right. 
+        """
         ae = self.Jz/4
         th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
         coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
         energymatrix = np.array([-ae, -ae, ae+coth, ae+coth, ae+th, ae+th])
         
-        a = np.zeros(6)
-        a[:]=np.nan
-        a[0]=1
-        b = np.zeros(6)
-        b[:]=np.nan
-        b[1]=1
-        c = np.zeros(6)
-        b[:]=np.nan
-        c[2]=1
-        d = np.zeros(6)
-        d[:]=np.nan
-        d[3]=1
-        e = np.zeros(6)
-        e[:]=np.nan
-        e[4]=1
-        f = np.zeros(6)
-        f[:]=np.nan
-        f[5]=1
-        conf = np.nanargmax(np.array(self.pattern[pos[0],pos[1],:])) + 1
+        #here are the various allowed conf in our pattern for each white square
+        conf1 = np.zeros(6)
+        conf1[:]=np.nan
+        conf1[0]=1
+        conf2 = np.zeros(6)
+        conf2[:]=np.nan
+        conf2[1]=1
+        conf3 = np.zeros(6)
+        conf3[:]=np.nan
+        conf3[2]=1
+        conf4 = np.zeros(6)
+        conf4[:]=np.nan
+        conf4[3]=1
+        conf5 = np.zeros(6)
+        conf5[:]=np.nan
+        conf5[4]=1
+        conf6 = np.zeros(6)
+        conf6[:]=np.nan
+        conf6[5]=1
         
+        #we get the conf of the white squares we are interested in
+        conf_down = np.nanargmax(self.pattern[pos[0],pos[1],:]) + 1
+        conf_up = np.nanargmax(self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
+                                              pos[1],\
+                                              :]) + 1
+        conf_left = np.nanargmax(self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                                ( pos[1] - 1 )%self.n_spins,\
+                                                :]) + 1
+        conf_right = np.nanargmax(self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                                ( pos[1] + 1 )%self.n_spins,\
+                                                :]) + 1
         
-        if (pos[2]) == 0:
-            
-        
-        
-        
+        #we can eliminate the cases in which the first spins are up-up or down-down
+        if conf_down < 3: 
+            print('conf_down est plus petit que 3')
+            return 0
+        #the bottom square is up-down==>down-up   
+        elif conf_down == 3:
+            #the up square must be down-up==>up-down
+            if conf_up != 4:
+                return 0
+            #then we have two possibilities for the left square, either up-down==>up-down or down-down==>down-down
+            elif (conf_left !=1 and conf_left!=6):
+                return 0
+            #then we have two possibilities for the right square, either up-down==>up-down or up-up==>up-up
+            elif (conf_right !=2 and conf_right!=6):
+                return 0
+            #we move the spins from up-down==>down-up==>down-up==>up-down to 
+            #up-down==>up-down==>up-down==>up-down as describe in the local update
+            else:
+                self.pattern[pos[0],pos[1],:] = conf6
+                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
+                             pos[1],\
+                             :] = conf6
+                self.pattern[pos[0],\
+                             ( pos[1] - 1 )%self.n_spins,\
+                             :] = (conf_left==1)*conf5 + (conf_left==6)*conf2
+                self.pattern[pos[0],\
+                             ( pos[1] + 1 )%self.n_spins,\
+                             :] = (conf_right==2)*conf5 + (conf_right==6)*conf1
+                return 'changement d energie'
+        #case in which the bottom square is down-up==>up-down
+        elif conf_down == 4:
+            if conf_up != 3:
+                return 0
+            elif (conf_left !=2 and conf_left!=5):
+                return 0
+            elif (conf_right !=1 and conf_right!=5):
+                return 0
+            else:
+                self.pattern[pos[0],pos[1],:] = conf5
+                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
+                             pos[1],\
+                             :] = conf5
+                self.pattern[pos[0],\
+                             ( pos[1] - 1 )%self.n_spins,\
+                             :] = (conf_left==2)*conf6 + (conf_left==5)*conf1
+                self.pattern[pos[0],\
+                             ( pos[1] + 1 )%self.n_spins,\
+                             :] = (conf_right==1)*conf6 + (conf_right==5)*conf2
+                return 'changement d energie'
+        #case in which the bottom square is down-up==>down-up
+        elif conf_down == 5:
+            if conf_up != 5:
+                return 0
+            elif (conf_left !=1 and conf_left!=6):
+                return 0
+            elif (conf_right !=2 and conf_right!=6):
+                return 0
+            else:
+                self.pattern[pos[0],pos[1],:] = conf4
+                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
+                             pos[1],\
+                             :] = conf3
+                self.pattern[pos[0],\
+                             ( pos[1] - 1 )%self.n_spins,\
+                             :] = (conf_left==1)*conf5 + (conf_left==6)*conf2
+                self.pattern[pos[0],\
+                             ( pos[1] + 1 )%self.n_spins,\
+                             :] = (conf_right==2)*conf5 + (conf_right==6)*conf1
+                return 'changement d energie'
+        #case in which the bottom square is updown==>up-down
+        else:
+            if conf_up != 6:
+                return 0
+            elif (conf_left !=2 and conf_left!=5):
+                return 0
+            elif (conf_right !=1 and conf_right!=5):
+                return 0
+            else:
+                self.pattern[pos[0],pos[1],:] = conf4
+                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
+                             pos[1],\
+                             :] = conf3
+                self.pattern[pos[0],\
+                             ( pos[1] - 1 )%self.n_spins,\
+                             :] = (conf_left==2)*conf6 + (conf_left==5)*conf1
+                self.pattern[pos[0],\
+                             ( pos[1] + 1 )%self.n_spins,\
+                             :] = (conf_right==1)*conf6 + (conf_right==5)*conf2
+                return 'changement d energie'
+
+        return 0
         
         
         
