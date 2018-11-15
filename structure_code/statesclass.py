@@ -31,6 +31,47 @@ class States:
                     self.pattern[i,j,0] = np.nan
         
         self.spins_up = 0
+
+    def createimage(self, casesize=20):
+        greycase = np.ones((20,20),dtype=np.uint8) * 70
+        case1 = np.ones((20,20))*255
+        case2 = np.ones((20,20))*255
+        case3 = np.ones((20,20),dtype=np.uint8)*255
+        case4 = np.ones((20,20))*255
+        case5 = np.ones((20,20))*255
+        case6 = np.ones((20,20))*255
+        
+        case2[:,:2]=0
+        case2[:,18:]=0
+        
+        for i in range(19):
+            case3[i,19-i]=0
+            case3[i,18-i]=0
+            case4[i,i]=0
+            case4[i,i+1]=0
+            
+        case6[:,:2]=0
+        
+        case5[:,18:]=0
+        cases = [case1,case2,case3,case4,case5,case6,greycase]
+        
+        image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
+        for i in range(self.m_trotter*2):
+            l = self.m_trotter*2 - i
+            
+            for j in range(self.n_spins):
+                if((i+j+1)%2):
+                    conf = np.nanargmax(np.array(self.pattern[i,j,:]))
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=cases[conf]
+                else:
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=130
+                    
+                
+        image = np.array(image,dtype=np.uint8)
+        cv2.imshow('image', image)
+
+        cv2.waitKey(1)
+        
     
     
 #    def to_boxconfig(self):
@@ -51,7 +92,7 @@ class States:
         coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
         energymatrix = np.array([-a, -a, a+coth, a+coth, a+th, a+th])
         energy = np.nansum(self.pattern*energymatrix)
-        print("en",energy)
+        #print("en",energy)
         return energy
     
     def weight(self):
@@ -73,7 +114,7 @@ class States:
         cosh = np.cosh(self.dtau*self.Jx/2)
         sinh = np.sinh(self.dtau*self.Jx/2)
         weightmatrix = np.array([1/aw, 1/aw, -aw*sinh, -aw*sinh, aw*cosh, aw*cosh])
-        print("pos",pos)
+        #print("pos",pos)
         conf1 = np.zeros(6)
         conf1[:]=np.nan
         conf1[0]=1
@@ -93,7 +134,7 @@ class States:
         conf6[:]=np.nan
         conf6[5]=1
         conf = np.nanargmax(np.array(self.pattern[pos[0],pos[1],:])) + 1
-        print("conf",conf)
+        #print("conf",conf)
         if(pos[2]==0):
             if(conf==1):
                 self.pattern[pos[0],pos[1],:] = conf6
@@ -165,12 +206,12 @@ class States:
         dw = 1
         n  = int(rnd.randint(0,self.n_spins)/2)*2#attention derniere ligne a checker
         gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
-        print("randspin", n)
+        #print("randspin", n)
         p = [0,n,gd] #[line, column, left or right]
         for i in range(2*self.m_trotter):
             p, dE, dw = self.splitspin(p,dE,dw)
             
-            print("p", p)
+            #print("p", p)
         return dE, dw
     
     def local_update_pos(self, pos):
@@ -215,11 +256,9 @@ class States:
         conf_right = np.nanargmax(self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                                 ( pos[1] + 1 )%self.n_spins,\
                                                 :]) + 1
-        print(conf_left, conf_right)    
     
         #we can eliminate the cases in which the first spins are up-up or down-down
         if conf_down < 3: 
-            print('conf_down est plus petit que 3')
             return 0
         #the bottom square is up-down==>down-up   
         elif conf_down == 3:
@@ -239,12 +278,24 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf6
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] - 1 )%self.n_spins,\
-                             :] = (conf_left==1)*conf5 + (conf_left==6)*conf2
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] + 1 )%self.n_spins,\
-                             :] = (conf_right==2)*conf5 + (conf_right==6)*conf1
+                #moving the left white square
+                if conf_left == 1:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf5
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf2
+                #moving the right white square
+                if conf_right == 2:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf5
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf1
                 return 'changement d energie 3'
         #case in which the bottom square is down-up==>up-down
         elif conf_down == 4:
@@ -259,12 +310,24 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf5
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] - 1 )%self.n_spins,\
-                             :] = (conf_left==2)*conf6 + (conf_left==5)*conf1
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] + 1 )%self.n_spins,\
-                             :] = (conf_right==1)*conf6 + (conf_right==5)*conf2
+                #moving the left white square
+                if conf_left == 2:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf6
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf1
+                #moving the right white square
+                if conf_right == 1:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf6
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf2
                 return 'changement d energie 4'
         #case in which the bottom square is down-up==>down-up
         elif conf_down == 5:
@@ -279,12 +342,24 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf3
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] - 1 )%self.n_spins,\
-                             :] = (conf_left==1)*conf5 + (conf_left==6)*conf2
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] + 1 )%self.n_spins,\
-                             :] = (conf_right==2)*conf5 + (conf_right==6)*conf1
+                #moving the left white square
+                if conf_left == 1:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf5
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf2
+                #moving the right white square
+                if conf_right == 2:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf5
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf1
                 return 'changement d energie 5'
         #case in which the bottom square is updown==>up-down
         else:
@@ -295,20 +370,34 @@ class States:
             elif (conf_right !=1 and conf_right!=5):
                 return 0
             else:
-                self.pattern[pos[0],pos[1],:] = conf4
+                self.pattern[pos[0],pos[1],:] = conf3
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
-                             :] = conf3
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] - 1 )%self.n_spins,\
-                             :] = (conf_left==2)*conf6 + (conf_left==5)*conf1
-                self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                             ( pos[1] + 1 )%self.n_spins,\
-                             :] = (conf_right==1)*conf6 + (conf_right==5)*conf2
+                             :] = conf4
+                #moving the left white square
+                if conf_left == 2:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf6
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] - 1 )%self.n_spins,\
+                                 :] = conf1
+                #moving the right white square
+                if conf_right == 1:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf6
+                else:
+                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+                                 ( pos[1] + 1 )%self.n_spins,\
+                                 :] = conf2
                 return 'changement d energie 6'
 
         #il faut modifier la somme pour hanger conf left et conf right. 
 
+        self.createimage()
+        
         return 0
         
         
@@ -331,47 +420,7 @@ class States:
                 
     
     
-    def createimage(self, casesize=20):
-        greycase = np.ones((20,20),dtype=np.uint8) * 70
-        case1 = np.ones((20,20))*255
-        case2 = np.ones((20,20))*255
-        case3 = np.ones((20,20),dtype=np.uint8)*255
-        case4 = np.ones((20,20))*255
-        case5 = np.ones((20,20))*255
-        case6 = np.ones((20,20))*255
-        
-        case2[:,:2]=0
-        case2[:,18:]=0
-        
-        for i in range(19):
-            case3[i,19-i]=0
-            case3[i,18-i]=0
-            case4[i,i]=0
-            case4[i,i+1]=0
-            
-        case6[:,:2]=0
-        
-        case5[:,18:]=0
-        cases = [case1,case2,case3,case4,case5,case6,greycase]
-        
-        image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
-        for i in range(self.m_trotter*2):
-            for j in range(self.n_spins):
-                if((i+j+1)%2):
-                    conf = np.nanargmax(np.array(self.pattern[i,j,:]))
-                    image[20*i:20*(i+1),20*j:20*(j+1)]=cases[conf]
-                else:
-                    image[20*i:20*(i+1),20*j:20*(j+1)]=130
-                    
-                
-        image = np.array(image,dtype=np.uint8)
-        cv2.imshow('image', image)
-
-        cv2.waitKey()
-        
-        
-
-        
+ 
     
 
                     
