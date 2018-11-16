@@ -10,7 +10,7 @@ import numpy.random as rnd
 import cv2
 
 class States:
-    """A Feynman path in position/imaginary time space"""
+    """A spin tab in position/imaginary time space"""
 
     def __init__(self, m_trotter, dtau, n_spins, Jx, Jz):
         """Construct a path at inverse temperature beta in dim spatial
@@ -417,10 +417,35 @@ class States:
         return energ
 
     
+    
                 
     
     
  
     
 
+
+
+
+
+
+
+class config:
+    """A Feynman path in position/imaginary time space"""
+
+    def __init__(self, m_trotter, dtau, n_spins, Jx, Jz, mode = 'local', ):
+        self.m_trotter = m_trotter #division of the temporary time"
+        self.dtau = dtau
+        self.n_spins = n_spins
+        self.Jx = Jx
+        self.Jz = Jz
+        self.mode = mode
+
+
+    def compute_decorrelation(self,n_splitspin,n_localupdate):
+        if(self.mode is 'local'):
+            s = States(self.m_trotter,self.dtau,self.n_spins,self.Jx,self.Jz)
+            
+            
+        if(self.mode is 'loop'):
                     
