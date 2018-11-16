@@ -6,6 +6,7 @@ s.splitline()
 s.splitline()
 s.createimage()
 
+"""
 for k in range(10000):
     if k % 500 == 0:
         s.splitline()
@@ -14,3 +15,4 @@ for k in range(10000):
 
     
 print('end')
+"""

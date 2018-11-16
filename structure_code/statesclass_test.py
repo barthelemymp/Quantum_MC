@@ -32,6 +32,16 @@ class States:
         
         self.spins_up = 0
 
+        self.a = self.Jz/4
+        self.th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
+        self.coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
+        self.energymatrix = np.array([-self.a, -self.a, self.a+self.coth, self.a+self.coth, self.a+self.th, self.a+self.th])
+
+        self.b = np.exp(self.dtau*self.Jz/4)
+        self.cosh = np.cosh(self.dtau*self.Jx/2)
+        self.sinh = np.sinh(self.dtau*self.Jx/2)
+        self.weightmatrix = np.array([1/self.b, 1/self.b, -self.b*self.sinh, -self.b*self.sinh, self.b*self.cosh, self.b*self.cosh])
+
     def createimage(self, casesize=20):
         greycase = np.ones((20,20),dtype=np.uint8) * 70
         case1 = np.ones((20,20))*255
@@ -86,34 +96,18 @@ class States:
             
         
     def total_energy(self):
-        
-        a = self.Jz/4
-        th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
-        coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
-        energymatrix = np.array([-a, -a, a+coth, a+coth, a+th, a+th])
-        energy = np.nansum(self.pattern*energymatrix)
-        #print("en",energy)
+        energy = np.nansum(self.pattern*self.energymatrix)
         return energy
     
     def weight(self):
-        a = np.exp(self.dtau*self.Jz/4)
-        cosh = np.cosh(self.dtau*self.Jx/2)
-        sinh = np.sinh(self.dtau*self.Jx/2)
-        weightmatrix = np.array([1/a, 1/a, -a*sinh, -a*sinh, a*cosh, a*cosh])
-        weight = np.nanprod(self.pattern*weightmatrix)
+        weight = np.nanprod(self.pattern*self.weightmatrix)
         return weight
     
-    def splitspin(self,pos,dE,dw): #probleme d'origine du dernier mouvement a regler 
+    def splitspin(self,pos,dE,dw):  
+        #getting the weight matrix
+        energymatrix = self.energymatrix
+        weightmatrix = self.weightmatrix
         
-        ae = self.Jz/4
-        th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
-        coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
-        energymatrix = np.array([-ae, -ae, ae+coth, ae+coth, ae+th, ae+th])
-        
-        aw = np.exp(self.dtau*self.Jz/4)
-        cosh = np.cosh(self.dtau*self.Jx/2)
-        sinh = np.sinh(self.dtau*self.Jx/2)
-        weightmatrix = np.array([1/aw, 1/aw, -aw*sinh, -aw*sinh, aw*cosh, aw*cosh])
         #print("pos",pos)
         conf1 = np.zeros(6)
         conf1[:]=np.nan
@@ -220,10 +214,8 @@ class States:
         pattern, which are localised on four "white squares" in the pattern. We will call them the conf_down, 
         conf_up, conf_left, conf_right. 
         """
-        ae = self.Jz/4
-        th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
-        coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
-        energymatrix = np.array([-ae, -ae, ae+coth, ae+coth, ae+th, ae+th])
+        energymatrix = self.energymatrix
+        weightmatrix = self.weightmatrix
         
         #here are the various allowed conf in our pattern for each white square
         conf1 = np.zeros(6)
