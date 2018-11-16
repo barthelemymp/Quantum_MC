@@ -70,7 +70,7 @@ class States:
         image = np.array(image,dtype=np.uint8)
         cv2.imshow('image', image)
 
-        cv2.waitKey(1)
+        cv2.waitKey()
         
     
     
@@ -214,7 +214,7 @@ class States:
             #print("p", p)
         return dE, dw
     
-    def local_update_pos(self, pos):
+    def local_update_pos(self, pos): # ETIENNE RENVOIE DE ET DW
         """
         This method allows local updates, described in Fig.2 of the article. We will look for various type of 
         pattern, which are localised on four "white squares" in the pattern. We will call them the conf_down, 
@@ -397,6 +397,34 @@ class States:
         #il faut modifier la somme pour hanger conf left et conf right. 
 
         return 0
+    
+    
+    def local_update(self,):
+        mpos  = rnd.randint(0,self.m_trotter)
+        spinpos  = rnd.randint(0,self.n_spins)
+        pos = [mpos,spinpos]
+        c = s.localupdate(pos)
+        while (c == 0):
+            s.localupdate(pos)
+        return c
+    
+    def basic_move(self,n_splitline,n_localupdate):
+        dw = 0
+        dE = 0
+        for i in range(n_splitline):
+            det, dwt = self.splitline()
+            dE += det
+            dw *= dwt
+        for i in range(n_localupdate):
+            det, dwt = self.local_update()
+            dE += det
+            dw *= dwt
+        return dE, dw
+            
+            
+        
+        
+        
         
         
         
@@ -440,10 +468,16 @@ class config:
         self.mode = mode
 
 
-    def compute_decorrelation(self,n_splitspin,n_localupdate):
+    def compute_decorrelation(self,n_splitline,n_localupdate):
         if(self.mode is 'local'):
             s = States(self.m_trotter,self.dtau,self.n_spins,self.Jx,self.Jz)
+            for i in range(n_splitline):
+                s.splitline()
+            for i in range(n_localupdate):
+                s.local_update()
+                
             
             
         if(self.mode is 'loop'):
+            return
                     
