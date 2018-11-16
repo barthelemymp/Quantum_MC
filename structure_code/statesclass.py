@@ -396,8 +396,6 @@ class States:
 
         #il faut modifier la somme pour hanger conf left et conf right. 
 
-        self.createimage()
-        
         return 0
         
         
