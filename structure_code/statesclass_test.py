@@ -421,16 +421,16 @@ class States:
         return energ
 
 
-        def basic_move(self,n_splitline,n_localupdate):
+    def basic_move(self,n_splitline,n_localupdate):
         dw = 0
         dE = 0
         for i in range(n_splitline):
-            det, dwt = self.splitline()
-            dE += det
-            dw *= dwt
-        for i in range(n_localupdate):
-            det, dwt = self.local_update()
-            dE += det
-            dw *= dwt
+            dEtrans, dwtrans = self.splitline()
+            dE += dEtrans
+            dw *= dwtrans
+        for j in range(n_localupdate):
+            dEtrans, dwt = self.local_update()
+            dE += dEtrans
+            dw *= dwtrans
         return dE, dw
-   
+            

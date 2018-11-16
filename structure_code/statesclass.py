@@ -400,25 +400,25 @@ class States:
     
     
     def local_update(self,):
-        mpos  = rnd.randint(0,self.m_trotter)
+        mpos  = rnd.randint(0,2*self.m_trotter)
         spinpos  = rnd.randint(0,self.n_spins)
-        pos = [mpos,spinpos]
-        c = s.localupdate(pos)
-        while (c == 0):
-            s.localupdate(pos)
-        return c
+        pos = np.array([mpos,spinpos])
+        has_changed = self.localupdate(pos)
+        while (has_changed == 0):
+            self.localupdate(pos)
+        return has_changed
     
     def basic_move(self,n_splitline,n_localupdate):
         dw = 0
         dE = 0
         for i in range(n_splitline):
-            det, dwt = self.splitline()
-            dE += det
-            dw *= dwt
-        for i in range(n_localupdate):
-            det, dwt = self.local_update()
-            dE += det
-            dw *= dwt
+            dEtrans, dwtrans = self.splitline()
+            dE += dEtrans
+            dw *= dwtrans
+        for j in range(n_localupdate):
+            dEtrans, dwt = self.local_update()
+            dE += dEtrans
+            dw *= dwtrans
         return dE, dw
             
             
