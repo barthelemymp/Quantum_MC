@@ -80,7 +80,7 @@ class States:
         image = np.array(image,dtype=np.uint8)
         cv2.imshow('image', image)
 
-        cv2.waitKey(1)
+        cv2.waitKey(1000)
         
     
     
@@ -208,7 +208,7 @@ class States:
             #print("p", p)
         return dE, dw
     
-    def local_update_pos(self, pos):
+    def local_update_pos(self, pos):       
         """
         This method allows local updates, described in Fig.2 of the article. We will look for various type of 
         pattern, which are localised on four "white squares" in the pattern. We will call them the conf_down, 
@@ -216,6 +216,9 @@ class States:
         """
         energymatrix = self.energymatrix
         weightmatrix = self.weightmatrix
+
+        dE = 0
+        dw = 1
         
         #here are the various allowed conf in our pattern for each white square
         conf1 = np.zeros(6)
@@ -251,18 +254,18 @@ class States:
     
         #we can eliminate the cases in which the first spins are up-up or down-down
         if conf_down < 3: 
-            return 0
+            return (dE, dw)
         #the bottom square is up-down==>down-up   
         elif conf_down == 3:
             #the up square must be down-up==>up-down
             if conf_up != 4:
-                return 0
+                return (dE, dw)
             #then we have two possibilities for the left square, either up-down==>up-down or down-down==>down-down
             elif (conf_left !=1 and conf_left!=6):
-                return 0
+                return (dE, dw)
             #then we have two possibilities for the right square, either up-down==>up-down or up-up==>up-up
             elif (conf_right !=2 and conf_right!=6):
-                return 0
+                return (dE, dw)
             #we move the spins from up-down==>down-up==>down-up==>up-down to 
             #up-down==>up-down==>up-down==>up-down as describe in the local update
             else:
@@ -270,125 +273,167 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf6
+                dE += 2*energymatrix[5] - 2*energymatrix[2]
+                dw *= weightmatrix[5]**2 / weightmatrix[3]**2
                 #moving the left white square
                 if conf_left == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf5
+                    dE += energymatrix[4] - energymatrix[0]
+                    dw *= weightmatrix[4] / weightmatrix[0]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf2
+                    dE += energymatrix[1] - energymatrix[5]
+                    dw *= weightmatrix[1] / weightmatrix[5]
                 #moving the right white square
                 if conf_right == 2:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf5
+                    dE += energymatrix[4] - energymatrix[1]
+                    dw *= weightmatrix[4] / weightmatrix[1]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf1
-                return 'changement d energie 3'
+                    dE += energymatrix[0] - energymatrix[5]
+                    dw *= weightmatrix[0] / weightmatrix[5]
+                return (dE, dw)
         #case in which the bottom square is down-up==>up-down
         elif conf_down == 4:
             if conf_up != 3:
-                return 0
+                return (dE, dw)
             elif (conf_left !=2 and conf_left!=5):
-                return 0
+                return (dE, dw)
             elif (conf_right !=1 and conf_right!=5):
-                return 0
+                return (dE, dw)
             else:
                 self.pattern[pos[0],pos[1],:] = conf5
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf5
+                dE += 2 * (energymatrix[4] - energymatrix[2])
+                dw *= (weightmatrix[4] / weightmatrix[3]) ** 2
                 #moving the left white square
                 if conf_left == 2:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf6
+                    dE += energymatrix[5] - energymatrix[1]
+                    dw *= weightmatrix[5] / weightmatrix[1]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf1
+                    dE += energymatrix[0] - energymatrix[4]
+                    dw *= weightmatrix[0] / weightmatrix[4]
                 #moving the right white square
                 if conf_right == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf6
+                    dE += energymatrix[5] - energymatrix[0]
+                    dw *= weightmatrix[5] / weightmatrix[0]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf2
-                return 'changement d energie 4'
+                    dE += energymatrix[1] - energymatrix[4]
+                    dw *= weightmatrix[1] / weightmatrix[4]
+                
+                return (dE, dw)
         #case in which the bottom square is down-up==>down-up
         elif conf_down == 5:
             if conf_up != 5:
-                return 0
+                return (dE, dw)
             elif (conf_left !=1 and conf_left!=6):
-                return 0
+                return (dE, dw)
             elif (conf_right !=2 and conf_right!=6):
-                return 0
+                return (dE, dw)
             else:
                 self.pattern[pos[0],pos[1],:] = conf4
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf3
+                dE += 2 * (energymatrix[3] - energymatrix[4])
+                dw *= (weightmatrix[2] / weightmatrix[4]) ** 2
                 #moving the left white square
                 if conf_left == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf5
+                    dE += energymatrix[4] - energymatrix[0]
+                    dw *= weightmatrix[4] / weightmatrix[0]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf2
+                    dE += energymatrix[1] - energymatrix[5]
+                    dw *= weightmatrix[1] / weightmatrix[5]
                 #moving the right white square
                 if conf_right == 2:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf5
+                    dE += energymatrix[4] - energymatrix[1]
+                    dw *= weightmatrix[4] / weightmatrix[1]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf1
-                return 'changement d energie 5'
+                    dE += energymatrix[0] - energymatrix[5]
+                    dw *= weightmatrix[0] / weightmatrix[5]
+                    
+                return (dE, dw)
         #case in which the bottom square is updown==>up-down
         else:
             if conf_up != 6:
-                return 0
+                return (dE, dw)
             elif (conf_left !=2 and conf_left!=5):
-                return 0
+                return (dE, dw)
             elif (conf_right !=1 and conf_right!=5):
-                return 0
+                return (dE, dw)
             else:
                 self.pattern[pos[0],pos[1],:] = conf3
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf4
+                dE += 2 * (energymatrix[2] - energymatrix[5])
+                dw *= (weightmatrix[2] / weightmatrix[5]) ** 2
                 #moving the left white square
                 if conf_left == 2:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf6
+                    dE += energymatrix[5] - energymatrix[1]
+                    dw *= weightmatrix[5] / weightmatrix[1]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] - 1 )%self.n_spins,\
                                  :] = conf1
+                    dE += energymatrix[0] - energymatrix[4]
+                    dw *= weightmatrix[0] / weightmatrix[4]
                 #moving the right white square
                 if conf_right == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf6
+                    dE += energymatrix[5] - energymatrix[0]
+                    dw *= weightmatrix[5] / weightmatrix[0]
                 else:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
                                  ( pos[1] + 1 )%self.n_spins,\
                                  :] = conf2
-                return 'changement d energie 6'
+                    dE += energymatrix[1] - energymatrix[4]
+                    dw *= weightmatrix[1] / weightmatrix[4]
+                return (dE, dw)
 
         #il faut modifier la somme pour hanger conf left et conf right. 
 
-        return 0
+        return (dE, dw)
 
     def local_update(self):
         #introducing randomness
@@ -398,9 +443,9 @@ class States:
         x = i // self.n_spins 
         y = i % self.n_spins + x%2
 
-        self.local_update_pos(np.array([x,y], dtype = int))
+        dE, dw = self.local_update_pos(np.array([x,y], dtype = int))
 
-        return self.createimage()
+        return dE, dw
         
     
         
