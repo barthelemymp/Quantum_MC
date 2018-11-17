@@ -80,7 +80,7 @@ class States:
         image = np.array(image,dtype=np.uint8)
         cv2.imshow('image', image)
 
-        cv2.waitKey(1000)
+        cv2.waitKey(1)
         
     
     
