@@ -41,6 +41,14 @@ class States:
         self.cosh = np.cosh(self.dtau*self.Jx/2)
         self.sinh = np.sinh(self.dtau*self.Jx/2)
         self.weightmatrix = np.array([1/self.b, 1/self.b, -self.b*self.sinh, -self.b*self.sinh, self.b*self.cosh, self.b*self.cosh])
+        
+        
+    def copy(self,):
+        copy = States(self.m_trotter, self.dtau, self.n_spins, self.Jx, self.Jz)
+        copy.pattern = self.pattern
+        copy.spins_up = self.spins_up
+        return copy
+        
 
     def createimage(self, casesize=20):
         greycase = np.ones((20,20),dtype=np.uint8) * 70
@@ -471,7 +479,7 @@ class States:
             _,has_changed =self.local_update_pos(pos)
         return 0,0   #has_changed
     
-    def basic_move(self,n_splitline,n_localupdate):
+    def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change
         dw = 0
         dE = 0
         for i in range(n_splitline):
@@ -484,6 +492,25 @@ class States:
             print("locally updated")
             dE += dEtrans
             dw *= dwtrans
+            
+    def basic_move(self,n_splitline,n_localupdate):
+        dw = 0
+        dE = 0
+        test = self.copy()
+        for i in range(n_splitline):
+            dEtrans, dwtrans = test.splitline()
+            print("line split")
+            dE += dEtrans
+            dw *= dwtrans
+        for j in range(n_localupdate):
+            dEtrans, dwt = test.local_update()
+            print("locally updated")
+            dE += dEtrans
+            dw *= dwtrans
+        choice = rnd.random()
+        if (dw>choice):
+            self.pattern = test.pattern
+        return
 
 #    def local_update(self):
 #        #introducing randomness
@@ -516,6 +543,30 @@ class States:
                 energ[n-n_warmup] = self.total_energy()
         return energ
 
+
+class config:
+    """A Feynman path in position/imaginary time space"""
+
+    def __init__(self, m_trotter, dtau, n_spins, Jx, Jz, mode = 'local', ):
+        self.m_trotter = m_trotter #division of the temporary time"
+        self.dtau = dtau
+        self.n_spins = n_spins
+        self.Jx = Jx
+        self.Jz = Jz
+        self.mode = mode
+
+
+    def compute_energy_autocorrelation(self,n_splitline,n_localupdate):
+        if(self.mode is 'local'):
+            s = States(self.m_trotter,self.dtau,self.n_spins,self.Jx,self.Jz)
+            s.basic_move(n_splitline,n_localupdate)
+            
+            
+
+            
+            
+        if(self.mode is 'loop'):
+            return
 
 #    def basic_move(self,n_splitline,n_localupdate):
 #        dw = 0
