@@ -80,7 +80,7 @@ class States:
         image = np.array(image,dtype=np.uint8)
         cv2.imshow('image', image)
 
-        cv2.waitKey(1)
+        cv2.waitKey()
         
     
     
@@ -390,17 +390,55 @@ class States:
 
         return 0
 
-    def local_update(self):
-        #introducing randomness
-        i = rnd.randint(0, self.m_trotter*self.n_spins)
-        i *= 2
-        #getting random position on the white squares
-        x = i // self.n_spins 
-        y = i % self.n_spins + x%2
-
-        self.local_update_pos(np.array([x,y], dtype = int))
-
-        return self.createimage()
+#    def local_update(self):
+#        #introducing randomness
+#        i = rnd.randint(0, self.m_trotter*self.n_spins)
+#        i *= 2
+#        #getting random position on the white squares
+#        x = i // self.n_spins 
+#        y = i % self.n_spins + x%2
+#
+#        self.local_update_pos(np.array([x,y], dtype = int))
+#
+#        return self.createimage()
+    
+    
+    def local_update(self,):
+        
+        spinpos  = rnd.randint(0,self.n_spins)
+        mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
+        pos = np.array([mpos,spinpos])
+        i = mpos * self.n_spins + spinpos
+        has_changed = self.local_update_pos(pos)
+        print("try",pos)
+        while (has_changed == 0):
+            i+=2
+#            spinpos  = rnd.randint(0,self.n_spins)
+#            mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
+            spinpos  = i%self.n_spins
+            mpos  = (i//self.n_spins)%(2*self.m_trotter)
+            if(spinpos + mpos % 2 ==1):
+                spinpos +=1
+                i+=1
+            pos = np.array([mpos,spinpos])
+            print("try",pos)
+            has_changed =self.local_update_pos(pos)
+        return 0,0   #has_changed
+    
+    def basic_move(self,n_splitline,n_localupdate):
+        dw = 0
+        dE = 0
+        for i in range(n_splitline):
+            dEtrans, dwtrans = self.splitline()
+            print("line split")
+            dE += dEtrans
+            dw *= dwtrans
+        for j in range(n_localupdate):
+            dEtrans, dwt = self.local_update()
+            print("locally updated")
+            dE += dEtrans
+            dw *= dwtrans
+        return dE, dw
         
     
         
@@ -421,16 +459,16 @@ class States:
         return energ
 
 
-    def basic_move(self,n_splitline,n_localupdate):
-        dw = 0
-        dE = 0
-        for i in range(n_splitline):
-            dEtrans, dwtrans = self.splitline()
-            dE += dEtrans
-            dw *= dwtrans
-        for j in range(n_localupdate):
-            dEtrans, dwt = self.local_update()
-            dE += dEtrans
-            dw *= dwtrans
-        return dE, dw
+#    def basic_move(self,n_splitline,n_localupdate):
+#        dw = 0
+#        dE = 0
+#        for i in range(n_splitline):
+#            dEtrans, dwtrans = self.splitline()
+#            dE += dEtrans
+#            dw *= dwtrans
+#        for j in range(n_localupdate):
+#            dEtrans, dwt = self.local_update()
+#            dE += dEtrans
+#            dw *= dwtrans
+#        return dE, dw
             

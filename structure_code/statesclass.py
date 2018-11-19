@@ -403,7 +403,7 @@ class States:
         mpos  = rnd.randint(0,2*self.m_trotter)
         spinpos  = rnd.randint(0,self.n_spins)
         pos = np.array([mpos,spinpos])
-        has_changed = self.localupdate(pos)
+        has_changed = self.local_update_pos(pos)
         while (has_changed == 0):
             self.localupdate(pos)
         return has_changed
