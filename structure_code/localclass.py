@@ -8,6 +8,7 @@ Created on Wed Nov  7 15:18:03 2018
 import numpy as np
 import numpy.random as rnd
 import cv2
+import matplotlib.pyplot as plt
 
 class States:
     """A spin tab in position/imaginary time space"""
@@ -214,7 +215,7 @@ class States:
             p, dE, dw = self.splitspin(p,dE,dw)
             
             #print("p", p)
-        return dE, dw
+        return dE, dw, True
     
     def local_update_pos(self, pos):       
         """
@@ -262,18 +263,18 @@ class States:
     
         #we can eliminate the cases in which the first spins are up-up or down-down
         if conf_down < 3: 
-            return (dE, dw)
+            return (dE, dw,False)
         #the bottom square is up-down==>down-up   
         elif conf_down == 3:
             #the up square must be down-up==>up-down
             if conf_up != 4:
-                return (dE, dw)
+                return (dE, dw,False)
             #then we have two possibilities for the left square, either up-down==>up-down or down-down==>down-down
             elif (conf_left !=1 and conf_left!=6):
-                return (dE, dw)
+                return (dE, dw,False)
             #then we have two possibilities for the right square, either up-down==>up-down or up-up==>up-up
             elif (conf_right !=2 and conf_right!=6):
-                return (dE, dw)
+                return (dE, dw,False)
             #we move the spins from up-down==>down-up==>down-up==>up-down to 
             #up-down==>up-down==>up-down==>up-down as describe in the local update
             else:
@@ -309,15 +310,15 @@ class States:
                                  :] = conf1
                     dE += energymatrix[0] - energymatrix[5]
                     dw *= weightmatrix[0] / weightmatrix[5]
-                return (dE, dw)
+                return (dE, dw,True)
         #case in which the bottom square is down-up==>up-down
         elif conf_down == 4:
             if conf_up != 3:
-                return (dE, dw)
+                return (dE, dw,False)
             elif (conf_left !=2 and conf_left!=5):
-                return (dE, dw)
+                return (dE, dw,False)
             elif (conf_right !=1 and conf_right!=5):
-                return (dE, dw)
+                return (dE, dw,False)
             else:
                 self.pattern[pos[0],pos[1],:] = conf5
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
@@ -352,15 +353,15 @@ class States:
                     dE += energymatrix[1] - energymatrix[4]
                     dw *= weightmatrix[1] / weightmatrix[4]
                 
-                return (dE, dw)
+                return (dE, dw,True)
         #case in which the bottom square is down-up==>down-up
         elif conf_down == 5:
             if conf_up != 5:
-                return (dE, dw)
+                return (dE, dw,False)
             elif (conf_left !=1 and conf_left!=6):
-                return (dE, dw)
+                return (dE, dw,False)
             elif (conf_right !=2 and conf_right!=6):
-                return (dE, dw)
+                return (dE, dw,False)
             else:
                 self.pattern[pos[0],pos[1],:] = conf4
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
@@ -395,15 +396,15 @@ class States:
                     dE += energymatrix[0] - energymatrix[5]
                     dw *= weightmatrix[0] / weightmatrix[5]
                     
-                return (dE, dw)
+                return (dE, dw, True)
         #case in which the bottom square is updown==>up-down
         else:
             if conf_up != 6:
-                return (dE, dw)
+                return (dE, dw,False)
             elif (conf_left !=2 and conf_left!=5):
-                return (dE, dw)
+                return (dE, dw,False)
             elif (conf_right !=1 and conf_right!=5):
-                return (dE, dw)
+                return (dE, dw, False)
             else:
                 self.pattern[pos[0],pos[1],:] = conf3
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
@@ -437,7 +438,7 @@ class States:
                                  :] = conf2
                     dE += energymatrix[1] - energymatrix[4]
                     dw *= weightmatrix[1] / weightmatrix[4]
-                return (dE, dw)
+                return (dE, dw, True)
 
         #il faut modifier la somme pour hanger conf left et conf right. 
 
@@ -458,14 +459,16 @@ class States:
     
     
     def local_update(self,):
+        dE = 0
+        dw = 1
         
         spinpos  = rnd.randint(0,self.n_spins)
         mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
         pos = np.array([mpos,spinpos])
         i = mpos * self.n_spins + spinpos
-        _,has_changed = self.local_update_pos(pos)
-        print("try",pos)
-        while (has_changed == 0):
+        dE,dw,has_changed = self.local_update_pos(pos)
+        print("try",pos,dE, dw)
+        while (has_changed == False ):
             i+=2
 #            spinpos  = rnd.randint(0,self.n_spins)
 #            mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
@@ -475,42 +478,47 @@ class States:
                 spinpos +=1
                 i+=1
             pos = np.array([mpos,spinpos])
-            print("try",pos)
-            _,has_changed =self.local_update_pos(pos)
-        return 0,0   #has_changed
+            print("try",pos,dE, dw)
+            dE,dw,has_changed =self.local_update_pos(pos)
+        return dE,dw  #has_changed
     
     def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change
-        dw = 0
+        dw = 1
         dE = 0
         for i in range(n_splitline):
             dEtrans, dwtrans = self.splitline()
-            print("line split")
+            #print("line split")
             dE += dEtrans
             dw *= dwtrans
         for j in range(n_localupdate):
             dEtrans, dwt = self.local_update()
-            print("locally updated")
+            #print("locally updated")
             dE += dEtrans
             dw *= dwtrans
             
     def basic_move(self,n_splitline,n_localupdate):
-        dw = 0
+        dw = 1
         dE = 0
         test = self.copy()
         for i in range(n_splitline):
             dEtrans, dwtrans = test.splitline()
-            print("line split")
+            #print("line split")
             dE += dEtrans
             dw *= dwtrans
+            print("split",dE, dw)
         for j in range(n_localupdate):
-            dEtrans, dwt = test.local_update()
-            print("locally updated")
+            dEtrans, dwtrans = test.local_update()
+            #print("locally updated")
             dE += dEtrans
             dw *= dwtrans
+            print("loc",dE, dw)
+        print("fin",dE, dw)
         choice = rnd.random()
         if (dw>choice):
             self.pattern = test.pattern
-        return
+            print("change accepted",dE, dw)
+            return dE, dw
+        return 0 ,0
 
 #    def local_update(self):
 #        #introducing randomness
@@ -523,7 +531,7 @@ class States:
 #        dE, dw = self.local_update_pos(np.array([x,y], dtype = int))
 
 
-        return dE, dw
+#        return dE, dw
         
     
         
@@ -559,10 +567,29 @@ class config:
     def compute_energy_autocorrelation(self,n_splitline,n_localupdate):
         if(self.mode is 'local'):
             s = States(self.m_trotter,self.dtau,self.n_spins,self.Jx,self.Jz)
-            s.basic_move(n_splitline,n_localupdate)
-            
-            
-
+            for i in range (100): # warm
+                s.basic_move_simple(n_splitline,n_localupdate)
+            E = s.total_energy()
+            En_list = [E]
+            for k in range (15): # compute energie evolution
+                dE, _ = s.basic_move(n_splitline, n_localupdate)
+                E +=dE
+                En_list += [E]
+            Energies = np.array(En_list[:10])
+            sqmean = np.mean(Energies * Energies)
+            meansq = np.mean(Energies)**2
+            autocorr = np.zeros(5)
+            for t in range (5):
+                Energies_tmove = (En_list[t:t+10])
+                corr = np.mean(Energies * Energies_tmove)
+                autocorr[t] = (corr - meansq)/(sqmean - meansq)
+            x=np.linspace(0,4,5)
+            plt.plot(x,autocorr)
+            print("enelist",En_list)
+            print("Energies",Energies)
+            print("sqmean",sqmean)
+            print("meansq",meansq)
+            return
             
             
         if(self.mode is 'loop'):
