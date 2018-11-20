@@ -35,7 +35,7 @@ class States:
         self.a = self.Jz/4
         self.th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
         self.coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
-        self.energymatrix = np.array([-self.a, -self.a, self.a+self.coth, self.a+self.coth, self.a+self.th, self.a+self.th])
+        self.energymatrix = (-1/m_trotter)*np.array([-self.a, -self.a, self.a+self.coth, self.a+self.coth, self.a+self.th, self.a+self.th])
 
         self.b = np.exp(self.dtau*self.Jz/4)
         self.cosh = np.cosh(self.dtau*self.Jx/2)

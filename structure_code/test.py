@@ -1,7 +1,7 @@
 import localclass as st
 import numpy as np
 
-s = st.States(10,1,16,1,1)
+s = st.States(4,1,16,1,1)
 s.splitline()
 s.splitline()
 s.createimage()

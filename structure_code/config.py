@@ -56,7 +56,7 @@ class config:
             return
         
         
-    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 200,length_cycle = 50):
+    def Quantum_Monte_Carlo(self,n_warmup=1000,n_cycles = 400,length_cycle = 100):
         state = lc.States(self.m_trotter, self.dtau, self.n_spins,self.Jx, self.Jz)
         state.basic_move_simple(11,20)
         
