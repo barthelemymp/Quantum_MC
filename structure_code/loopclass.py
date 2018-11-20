@@ -146,3 +146,4 @@ class Loop:
                 
         image = np.array(image,dtype=np.uint8)
         cv2.imshow('graphs', image)
+        cv2.waitKey()

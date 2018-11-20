@@ -7,7 +7,7 @@ for k in range(1000):
     if k%100 == 0:
         s.splitline()
     s.local_update()
-    s.createimage()
+    #s.createimage()
 
 
 
