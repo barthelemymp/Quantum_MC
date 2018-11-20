@@ -1,4 +1,4 @@
-import statesclass_test as st
+import localclass as st
 import numpy as np
 
 s = st.States(10,1,16,1,1)
@@ -17,7 +17,7 @@ for k in range(100):
 
 #"""
 for k in range(10000):
-    if k % 500 == 0:
+    if k % 50 == 0:
         s.splitline()
     else:
         s.local_update()
