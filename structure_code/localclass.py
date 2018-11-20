@@ -89,7 +89,7 @@ class States:
         image = np.array(image,dtype=np.uint8)
         cv2.imshow('image', image)
 
-        cv2.waitKey()
+        cv2.waitKey(1)
         
     
     
@@ -439,8 +439,6 @@ class States:
                     dE += energymatrix[1] - energymatrix[4]
                     dw *= weightmatrix[1] / weightmatrix[4]
                 return (dE, dw, True)
-
-        #il faut modifier la somme pour hanger conf left et conf right. 
 
         return (dE, dw)
 

@@ -1,4 +1,4 @@
-import statesclass_test as st
+import localclass as st
 import loopclass as lp
 import numpy as np
 
