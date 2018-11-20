@@ -52,6 +52,7 @@ class States:
         
 
     def createimage(self, casesize=20):
+        fig, ax = plt.subplots(figsize = (10,10))
         greycase = np.ones((20,20),dtype=np.uint8) * 70
         case1 = np.ones((20,20))*255
         case2 = np.ones((20,20))*255
@@ -87,11 +88,9 @@ class States:
                     
                 
         image = np.array(image,dtype=np.uint8)
-        cv2.imshow('image', image)
+        ax.imshow(image, cmap = 'Greys_r')
 
-        cv2.waitKey(1)
-        
-    
+          
     
 #    def to_boxconfig(self):
 #        new_writing = np.zeros((6,2*self.m_trotter))
@@ -263,18 +262,18 @@ class States:
     
         #we can eliminate the cases in which the first spins are up-up or down-down
         if conf_down < 3: 
-            return (dE, dw,False)
+            return (dE, dw, False)
         #the bottom square is up-down==>down-up   
         elif conf_down == 3:
             #the up square must be down-up==>up-down
             if conf_up != 4:
-                return (dE, dw,False)
+                return (dE, dw, False)
             #then we have two possibilities for the left square, either up-down==>up-down or down-down==>down-down
-            elif (conf_left !=1 and conf_left!=6):
-                return (dE, dw,False)
+            elif (conf_left != 1 and conf_left!= 6):
+                return (dE, dw, False)
             #then we have two possibilities for the right square, either up-down==>up-down or up-up==>up-up
-            elif (conf_right !=2 and conf_right!=6):
-                return (dE, dw,False)
+            elif (conf_right != 2 and conf_right!= 6):
+                return (dE, dw, False)
             #we move the spins from up-down==>down-up==>down-up==>up-down to 
             #up-down==>up-down==>up-down==>up-down as describe in the local update
             else:
@@ -283,7 +282,7 @@ class States:
                              pos[1],\
                              :] = conf6
                 dE += 2*energymatrix[5] - 2*energymatrix[2]
-                dw *= weightmatrix[5]**2 / weightmatrix[3]**2
+                dw *= weightmatrix[5]**2 / weightmatrix[2]**2
                 #moving the left white square
                 if conf_left == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
@@ -357,18 +356,18 @@ class States:
         #case in which the bottom square is down-up==>down-up
         elif conf_down == 5:
             if conf_up != 5:
-                return (dE, dw,False)
-            elif (conf_left !=1 and conf_left!=6):
-                return (dE, dw,False)
-            elif (conf_right !=2 and conf_right!=6):
-                return (dE, dw,False)
+                return (dE, dw, False)
+            elif (conf_left != 1 and conf_left != 6):
+                return (dE, dw, False)
+            elif (conf_right != 2 and conf_right != 6):
+                return (dE, dw, False)
             else:
                 self.pattern[pos[0],pos[1],:] = conf4
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf3
                 dE += 2 * (energymatrix[3] - energymatrix[4])
-                dw *= (weightmatrix[2] / weightmatrix[4]) ** 2
+                dw *= (weightmatrix[3] / weightmatrix[4]) ** 2
                 #moving the left white square
                 if conf_left == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
@@ -476,8 +475,8 @@ class States:
                 spinpos +=1
                 i+=1
             pos = np.array([mpos,spinpos])
-            print("try",pos,dE, dw)
             dE,dw,has_changed =self.local_update_pos(pos)
+            print("try",pos,dE, dw)
         return dE,dw  #has_changed
     
     def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change

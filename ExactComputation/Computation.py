@@ -17,7 +17,7 @@ class Chain:
     """
     
     
-    def __init__(self, L, Jx, Jz, periodic = True):
+    def __init__(self, L, Jx, Jz, beta, periodic = True):
         """
         Let initialize our chain
         """
@@ -28,6 +28,8 @@ class Chain:
         #coupling
         self.Jx = Jx
         self.Jz = Jz
+        #beta
+        self.beta = beta
         #matrix
         self.hamiltonian = np.zeros((2**self.L, 2**self.L))
         
@@ -47,6 +49,8 @@ class Chain:
         
         #energies of eigen states
         self.energies = np.array([])
+        
+        self.softmax = np.array([])
     
     
     
@@ -120,11 +124,22 @@ class Chain:
         The library np.linalg allows us to compute the eigenvalues and thus the energies 
         of the eigenstates of the hamiltonian
         """
-        self.energies = np.linalg.eigvals(self.hamiltonian)
+        self.energies = np.real(np.linalg.eigvals(self.hamiltonian))
     
     def get_fundamental(self):
         self.set_eigenvalues()
         return np.min(self.energies)
+    
+    def set_softmax(self):
+        ex = np.exp( - self.beta * self.energies )
+        sum_ex = np.sum( ex )
+        self.softmax = ex / sum_ex
+    
+    def get_mean_energy(self):
+        self.set_eigenvalues()
+        self.set_softmax()
+        return np.dot(self.energies, self.softmax)
+    
 
 
 

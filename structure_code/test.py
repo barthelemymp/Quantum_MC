@@ -12,10 +12,10 @@ for k in range(100):
     if k % 10 == 0:
         print(s.splitline())
     print(s.local_update())
-    s.createimage()
-    """
-
+#    s.createimage()
 #"""
+
+"""
 for k in range(10000):
     if k % 50 == 0:
         s.splitline()
@@ -25,4 +25,4 @@ for k in range(10000):
 
     
 print('end')
-#"""
+"""
