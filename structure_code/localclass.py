@@ -7,7 +7,6 @@ Created on Wed Nov  7 15:18:03 2018
 
 import numpy as np
 import numpy.random as rnd
-import cv2
 import matplotlib.pyplot as plt
 
 class States:
@@ -283,8 +282,8 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf6
-                dE += 2*energymatrix[5] - 2*energymatrix[2]
-                dw *= weightmatrix[5]**2 / weightmatrix[2]**2
+                dE += 2*energymatrix[4] - 2*energymatrix[2]
+                dw *= weightmatrix[4]**2 / weightmatrix[2]**2
                 #moving the left white square
                 if conf_left == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
@@ -326,7 +325,7 @@ class States:
                              pos[1],\
                              :] = conf5
                 dE += 2 * (energymatrix[4] - energymatrix[2])
-                dw *= (weightmatrix[4] / weightmatrix[3]) ** 2
+                dw *= (weightmatrix[4] / weightmatrix[2]) ** 2
                 #moving the left white square
                 if conf_left == 2:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
@@ -368,8 +367,8 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf3
-                dE += 2 * (energymatrix[3] - energymatrix[4])
-                dw *= (weightmatrix[3] / weightmatrix[4]) ** 2
+                dE += 2 * (energymatrix[2] - energymatrix[4])
+                dw *= (weightmatrix[2] / weightmatrix[4]) ** 2
                 #moving the left white square
                 if conf_left == 1:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
@@ -411,8 +410,8 @@ class States:
                 self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
                              pos[1],\
                              :] = conf4
-                dE += 2 * (energymatrix[2] - energymatrix[5])
-                dw *= (weightmatrix[2] / weightmatrix[5]) ** 2
+                dE += 2 * (energymatrix[2] - energymatrix[4])
+                dw *= (weightmatrix[2] / weightmatrix[4]) ** 2
                 #moving the left white square
                 if conf_left == 2:
                     self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
@@ -441,7 +440,7 @@ class States:
                     dw *= weightmatrix[1] / weightmatrix[4]
                 return (dE, dw, True)
 
-        return (dE, dw)
+        return (dE, dw, False)
 
 
 #    def local_update(self):
@@ -478,14 +477,8 @@ class States:
                 spinpos +=1
                 i+=1
             pos = np.array([mpos,spinpos])
-<<<<<<< HEAD
-            dE,dw,has_changed =self.local_update_pos(pos)
-            print("try",pos,dE, dw)
-=======
-            
             dE,dw,has_changed =self.local_update_pos(pos)
             print("trylocal",pos,dE, dw, has_changed)
->>>>>>> origin
         return dE,dw  #has_changed
     
     def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change

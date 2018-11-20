@@ -7,7 +7,7 @@ Created on Wed Nov  7 15:18:03 2018
 
 import numpy as np
 import numpy.random as rnd
-import cv2
+import matplotlib.pyplot as plt
 
 class Loop:
 
@@ -76,7 +76,8 @@ class Loop:
         self.graph4 = self.case3 + self.case4
         self.graphs = [self.graph1, self.graph2, self.graph3, self.graph4]
 
-    def createimage(self):       
+    def createimage(self):    
+        fig, ax = plt.subplots(figsize = (10,10))
         image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
         for i in range(self.m_trotter*2):
             l = self.m_trotter*2 - i
@@ -90,7 +91,7 @@ class Loop:
                     
                 
         image = np.array(image,dtype=np.uint8)
-        cv2.imshow('image', image)
+        ax.imshow(image)
 
     def total_energy(self):
         energy = np.nansum(self.pattern*self.energymatrix)
@@ -133,6 +134,7 @@ class Loop:
         return image_graph
 
     def creategraph(self):
+        fig, ax = plt.subplots(figsize = (10, 10))
         image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
         for i in range(self.m_trotter*2):
             l = self.m_trotter*2 - i
@@ -145,5 +147,4 @@ class Loop:
                     
                 
         image = np.array(image,dtype=np.uint8)
-        cv2.imshow('graphs', image)
-        cv2.waitKey()
+        ax.imshow(image, cmap = 'Greys_r')
