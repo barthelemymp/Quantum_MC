@@ -9,7 +9,7 @@ import numpy as np
 import numpy.random as rnd
 import cv2
 import matplotlib.pyplot as plt
-
+import localclass as lc
 
 
 class config:
@@ -26,7 +26,7 @@ class config:
 
     def compute_energy_autocorrelation(self,n_splitline,n_localupdate):
         if(self.mode is 'local'):
-            s = States(self.m_trotter,self.dtau,self.n_spins,self.Jx,self.Jz)
+            s = lc.States(self.m_trotter,self.dtau,self.n_spins,self.Jx,self.Jz)
             for i in range (100): # warm
                 s.basic_move_simple(n_splitline,n_localupdate)
             E = s.total_energy()
@@ -56,15 +56,20 @@ class config:
             return
         
         
-        def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 10000,length_cycle = 100):
+    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 200,length_cycle = 50):
+        state = lc.States(self.m_trotter, self.dtau, self.n_spins,self.Jx, self.Jz)
+        state.basic_move_simple(11,20)
+        
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
             # Monte Carlo moves
             for l in range(length_cycle):
-                self.splitline
+                state.stoch_move(0.5)
+                
                 #self.autremodif
             # measures
             if n >= n_warmup:
-                energ[n-n_warmup] = self.total_energy()
+                energ[n-n_warmup] = state.total_energy()
+        print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
         return energ

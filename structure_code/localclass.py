@@ -89,7 +89,7 @@ class States:
         image = np.array(image,dtype=np.uint8)
         cv2.imshow('image', image)
 
-        cv2.waitKey(1)
+        cv2.waitKey()
         
     
     
@@ -215,7 +215,9 @@ class States:
             p, dE, dw = self.splitspin(p,dE,dw)
             
             #print("p", p)
-        return dE, dw, True
+        print("trysplit",n, dE, dw)
+        return dE, dw
+    
     
     def local_update_pos(self, pos):       
         """
@@ -464,9 +466,10 @@ class States:
         mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
         pos = np.array([mpos,spinpos])
         i = mpos * self.n_spins + spinpos
+        i_init = mpos * self.n_spins + spinpos
         dE,dw,has_changed = self.local_update_pos(pos)
-        print("try",pos,dE, dw)
-        while (has_changed == False ):
+        #print("try",pos,dE, dw)
+        while (has_changed == False and i-i_init<self.n_spins*2*self.m_trotter ):
             i+=2
 #            spinpos  = rnd.randint(0,self.n_spins)
 #            mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
@@ -476,8 +479,9 @@ class States:
                 spinpos +=1
                 i+=1
             pos = np.array([mpos,spinpos])
-            print("try",pos,dE, dw)
+            
             dE,dw,has_changed =self.local_update_pos(pos)
+            print("trylocal",pos,dE, dw, has_changed)
         return dE,dw  #has_changed
     
     def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change
@@ -499,7 +503,7 @@ class States:
         dE = 0
         test = self.copy()
         for i in range(n_splitline):
-            dEtrans, dwtrans = test.splitline()
+            dEtrans, dwtrans,_ = test.splitline()
             #print("line split")
             dE += dEtrans
             dw *= dwtrans
@@ -516,7 +520,29 @@ class States:
             self.pattern = test.pattern
             print("change accepted",dE, dw)
             return dE, dw
-        return 0 ,0
+        return 0 ,1
+    
+    def stoch_move(self,threshold):
+        dw = 1
+        dE = 0
+        test = self.copy()
+        a = rnd.rand()
+        if (a<threshold):
+            dEt,dwt= test.local_update()
+            dE += dEt
+            dw *= dwt
+        else:
+            dEt,dwt= test.splitline()
+            dE += dEt
+            dw *= dwt
+            
+            
+        if (dw>a):
+            self.pattern = test.pattern
+            print("change accepted",dE, dw)
+            return dE, dw
+        return 0 ,1
+        
 
 #    def local_update(self):
 #        #introducing randomness
