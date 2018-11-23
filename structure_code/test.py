@@ -1,12 +1,12 @@
-import localclass as st
+import config as st
 import numpy as np
 
-s = st.States(4,1,16,1,1)
-s.splitline()
-s.splitline()
-s.createimage()
+s = st.config(2,100,6,0.001,-1)
+#s.splitline()
+#s.splitline()
+#s.createimage()
 
-
+s.Quantum_Monte_Carlo()
 """
 for k in range(100):
     if k % 10 == 0:
@@ -14,6 +14,8 @@ for k in range(100):
     print(s.local_update())
 #    s.createimage()
 #"""
+    
+#s.createimage()
 
 """
 for k in range(10000):
