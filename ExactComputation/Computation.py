@@ -45,12 +45,22 @@ class Chain:
                 self.states[i,j] = 2*num-1
         
         #at least
-        self.states = self.states[:, 8-self.L:8]
+        self.states = 1/np.sqrt(self.L) * self.states[:, 8-self.L:8]
         
         #energies of eigen states
         self.energies = np.array([])
         
         self.softmax = np.array([])
+    
+    
+    """
+    ON DOIT AVOIR UNE ERREUR ICI. EN EFFET, LE CALCUL DE LHAMILTONIEN IMPLIQUE 
+    QUE DEUX ETATS PEUVENT INTERAGIR ALORS QUILS SONT ORTHOGONAUX (SI JE NE ME TROMPE)
+    EN GROS UN UP UP UP DOWN PEUT INTERAGIR AVEC UN UP UP DOWN UP ALORS QUE
+    JX EST NUL, CE QUI EST PAS POSSIBLE NON ?
+    
+    """
+    
     
     
     
@@ -62,9 +72,9 @@ class Chain:
         This method compute < pair 2 | hamiltonian_two_sites | pair 1 >
         """
         #instanciate
-        upup = np.array([1.,1.])
+        upup = 1/np.sqrt(self.L) * np.array([1.,1.])
         downdown = - upup
-        updown = np.array([1.,-1.])
+        updown = 1/np.sqrt(self.L) * np.array([1.,-1.])
         downup = - updown
         #if up - up, the element matrix is non zero only for pair2 = up - up
         if np.array_equal(pair1, upup):
@@ -124,7 +134,7 @@ class Chain:
         The library np.linalg allows us to compute the eigenvalues and thus the energies 
         of the eigenstates of the hamiltonian
         """
-        self.energies = np.real(np.linalg.eigvals(self.hamiltonian))
+        self.energies = np.real(np.linalg.eigvalsh(self.hamiltonian))
     
     def get_fundamental(self):
         self.set_eigenvalues()
