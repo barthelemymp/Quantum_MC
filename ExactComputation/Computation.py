@@ -149,6 +149,11 @@ def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', per
                       + str(L) + " with Jx,Jz = " + str((Jx,Jz)) + " is " + 
                       str(Chain(L, Jx, Jz, periodic).get_fundamental()))
     
+    
+def moyenneenergy2(beta):
+    Z = 2*np.exp(beta*0.5) + 2*np.exp(-beta*0.5)
+    Emo = -np.exp(beta*0.5) + np.exp(-beta*0.5)
+    return Emo/Z
 
 
         
