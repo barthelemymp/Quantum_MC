@@ -56,7 +56,7 @@ class config:
             return
         
         
-    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 200,length_cycle = 10):
+    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 200,length_cycle = 100):
         state = lc.States(self.m_trotter, self.dtau, self.n_spins,self.Jx, self.Jz)
         state.basic_move_simple(10,30)
         
@@ -66,12 +66,14 @@ class config:
             print(n)
             # Monte Carlo moves
             for l in range(length_cycle):
-                state.stoch_move(0.95)
+                dE, dw = state.stoch_move(0.5)
+
                 
                 #self.autremodif
             # measures
             if n >= n_warmup:
                 e = state.total_energy()
+                #state.createimage()
                 energ[n-n_warmup] = e
                 #print("ener",e)
         print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
