@@ -56,20 +56,22 @@ class config:
             return
         
         
-    def Quantum_Monte_Carlo(self,n_warmup=1000,n_cycles = 400,length_cycle = 100):
+    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 200,length_cycle = 50):
         state = lc.States(self.m_trotter, self.dtau, self.n_spins,self.Jx, self.Jz)
-        state.basic_move_simple(11,20)
+        state.basic_move_simple(11,0)
         
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
             # Monte Carlo moves
             for l in range(length_cycle):
-                state.stoch_move(0.5)
+                state.stoch_move(0)
                 
                 #self.autremodif
             # measures
             if n >= n_warmup:
-                energ[n-n_warmup] = state.total_energy()
+                e = state.total_energy()
+                energ[n-n_warmup] = e
+                print("ener",e)
         print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
         return energ

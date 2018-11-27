@@ -45,7 +45,8 @@ class States:
         
     def copy(self,):
         copy = States(self.m_trotter, self.dtau, self.n_spins, self.Jx, self.Jz)
-        copy.pattern = self.pattern
+        copy.pattern = self.pattern.copy()
+        
         copy.spins_up = self.spins_up
         return copy
         
@@ -213,7 +214,7 @@ class States:
             p, dE, dw = self.splitspin(p,dE,dw)
             
             #print("p", p)
-        print("trysplit",n, dE, dw)
+        #print("trysplit",n, dE, dw)
         return dE, dw
     
     
@@ -248,6 +249,8 @@ class States:
         conf6 = np.zeros(6)
         conf6[:]=np.nan
         conf6[5]=1
+        
+        #print("pos",pos)
         
         #we get the conf of the white squares we are interested in
         conf_down = np.nanargmax(self.pattern[pos[0],pos[1],:]) + 1
@@ -474,11 +477,12 @@ class States:
             spinpos  = i%self.n_spins
             mpos  = (i//self.n_spins)%(2*self.m_trotter)
             if(spinpos + mpos % 2 ==1):
-                spinpos +=1
+                spinpos += 1
+                spinpos = spinpos%self.n_spins
                 i+=1
             pos = np.array([mpos,spinpos])
             dE,dw,has_changed =self.local_update_pos(pos)
-            print("trylocal",pos,dE, dw, has_changed)
+            #print("trylocal",pos,dE, dw, has_changed)
         return dE,dw  #has_changed
     
     def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change
@@ -504,22 +508,23 @@ class States:
             #print("line split")
             dE += dEtrans
             dw *= dwtrans
-            print("split",dE, dw)
+            #print("split",dE, dw)
         for j in range(n_localupdate):
             dEtrans, dwtrans = test.local_update()
             #print("locally updated")
             dE += dEtrans
             dw *= dwtrans
-            print("loc",dE, dw)
-        print("fin",dE, dw)
+            #print("loc",dE, dw)
+        #print("fin",dE, dw)
         choice = rnd.random()
         if (dw>choice):
             self.pattern = test.pattern
-            print("change accepted",dE, dw)
+            #print("change accepted",dE, dw)
             return dE, dw
         return 0 ,1
     
     def stoch_move(self,threshold):
+        
         dw = 1
         dE = 0
         test = self.copy()
@@ -528,16 +533,18 @@ class States:
             dEt,dwt= test.local_update()
             dE += dEt
             dw *= dwt
+            mtype = "local"
         else:
             dEt,dwt= test.splitline()
             dE += dEt
             dw *= dwt
-            
-            
+            mtype = "splitline"
+        print("try a = ",a,"dw = ",dw)
         if (dw>a):
             self.pattern = test.pattern
-            print("change accepted",dE, dw)
+            print("change accepted"+mtype,dE, dw)
             return dE, dw
+        print("aborted",mtype)
         return 0 ,1
         
 
