@@ -52,41 +52,52 @@ class Chain:
         
         self.softmax = np.array([])
     
-    
-    """
-    ON DOIT AVOIR UNE ERREUR ICI. EN EFFET, LE CALCUL DE LHAMILTONIEN IMPLIQUE 
-    QUE DEUX ETATS PEUVENT INTERAGIR ALORS QUILS SONT ORTHOGONAUX (SI JE NE ME TROMPE)
-    EN GROS UN UP UP UP DOWN PEUT INTERAGIR AVEC UN UP UP DOWN UP ALORS QUE
-    JX EST NUL, CE QUI EST PAS POSSIBLE NON ?
-    
-    """
-    
-    
-    
-    
+      
     #For a chain, the hamiltonian can be separated in halmitonians
     #only acting on pairs.
     
-    def compute_hamiltonian_on_pair(self, pair1, pair2):
+    def compute_hamiltonian_on_pair(self, k, state_i, state_j):
         """
-        This method compute < pair 2 | hamiltonian_two_sites | pair 1 >
+        This method compute hamiltonian_two_sites | state >
         """
+        
+        pair = np.array([state_i[k], state_i[ (k+1) % self.L ]])
+                
         #instanciate
         upup = 1/np.sqrt(self.L) * np.array([1.,1.])
         downdown = - upup
         updown = 1/np.sqrt(self.L) * np.array([1.,-1.])
         downup = - updown
-        #if up - up, the element matrix is non zero only for pair2 = up - up
-        if np.array_equal(pair1, upup):
-            return self.Jz/4*np.array_equal(pair2, upup)
+        
+        state_flip = np.array([])
+        
+        #if up - up, the element matrix is non zero only for pair_state_j = up - up
+        if np.array_equal(pair, upup):
+            return self.Jz/4 * np.array_equal(state_i, state_j)
         #if down - down
-        elif np.array_equal(pair1, downdown):
-            return self.Jz/4*np.array_equal(pair2, downdown)
-        #if up - down, either pair2 is down - up or up -down
-        elif np.array_equal(pair1, updown):
-            return -self.Jz/4*np.array_equal(pair2, updown) + self.Jx/2*np.array_equal(pair2, downup)
-       #if down - up
-        return -self.Jz/4*np.array_equal(pair2, downup) + self.Jx/2*np.array_equal(pair2, updown)
+        elif np.array_equal(pair, downdown):
+#            print("dd")
+            return self.Jz/4 * np.array_equal(state_i, state_j)
+        #if up - down, either pair_state_j is down - up or up -down
+        elif np.array_equal(pair, updown):
+#            print("updown")
+            
+            if k < self.L - 1:
+                state_flip = np.concatenate((state_i[:k], downup, state_i[k+2:]))
+            elif (k == self.L - 1) and self.periodic:
+                state_flip = np.concatenate((np.array([downup[1]]), state_i[1:k], np.array([downup[0]])))
+            return ( -self.Jz/4 * np.array_equal(state_i, state_j) +
+                     self.Jx/2 * np.array_equal(state_flip, state_j) )
+        #if down - up
+#        print("downup")
+        if k < self.L - 1:
+            state_flip = np.concatenate((state_i[:k], updown, state_i[k+2:]))
+        elif (k == self.L - 1) and self.periodic:
+            state_flip = np.concatenate((np.array([updown[1]]), state_i[1:k], np.array([updown[0]])))
+#        print(state_flip, state_j)
+#        print(np.array_equal(state_flip, state_j))
+        return  ( -self.Jz/4 * np.array_equal(state_i, state_j) +
+                  self.Jx/2 * np.array_equal(state_flip, state_j) )
     
 
     def compute_element_matrix(self, i, j):
@@ -97,21 +108,15 @@ class Chain:
         #let get i and j
         state_i = self.states[i]
         state_j = self.states[j]
-        
+#        print(state_i, state_j)
         
         #result
-        sum = 0
-        
+        sum = 0.
         
         #let compute the pair to pair hamiltonian
-        for k in range(0, self.L-1):
-            sum += self.compute_hamiltonian_on_pair(state_i[k:(k+2)], state_j[k:(k+2)])
-               
-        
-        #if the chain is periodic
-        if self.periodic:
-            sum += self.compute_hamiltonian_on_pair(np.array([state_i[self.L-1], state_i[0]]),
-                                                    np.array([state_j[self.L-1], state_j[0]]))
+        for k in range(0, self.L):
+            sum += self.compute_hamiltonian_on_pair(k, state_i, state_j)
+#            print(k, sum)
 
         return sum
         
@@ -151,7 +156,8 @@ class Chain:
         return np.dot(self.energies, self.softmax)
     
 
-
+c = Chain(4, -1, 0, 1)
+c.get_fundamental()
 
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
     with open(s, 'w') as fichier:
