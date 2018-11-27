@@ -539,12 +539,12 @@ class States:
             dE += dEt
             dw *= dwt
             mtype = "splitline"
-        print("try a = ",a,"dw = ",dw)
+        #print("try a = ",a,"dw = ",dw)
         if (dw>a):
             self.pattern = test.pattern
-            print("change accepted"+mtype,dE, dw)
+            #print("change accepted"+mtype,dE, dw)
             return dE, dw
-        print("aborted",mtype)
+        #print("aborted",mtype)
         return 0 ,1
         
 

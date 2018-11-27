@@ -171,5 +171,10 @@ def moyenneenergy2(beta):
     Emo = -np.exp(beta*0.5) + np.exp(-beta*0.5)
     return Emo/Z
 
-
+def moyenneenergy4(beta):
+    Z = 2*np.exp(beta*1) + 2*np.exp(-beta*1)+12
+    Emo = -2*np.exp(beta*1) + 2*np.exp(-beta*1)
+    return Emo/Z
+    
+    
         
