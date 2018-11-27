@@ -7,7 +7,7 @@ Created on Wed Nov  7 15:18:03 2018
 
 import numpy as np
 import numpy.random as rnd
-import cv2
+#import cv2
 
 class States:
     """A spin tab in position/imaginary time space"""
