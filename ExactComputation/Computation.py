@@ -140,6 +140,7 @@ class Chain:
         of the eigenstates of the hamiltonian
         """
         self.energies = np.real(np.linalg.eigvalsh(self.hamiltonian))
+        return self.energies
     
     def get_fundamental(self):
         self.set_eigenvalues()
@@ -156,7 +157,7 @@ class Chain:
         return np.dot(self.energies, self.softmax)
     
 
-c = Chain(4, -0.5, -1, 1.5)
+c = Chain(4, -1, 0, 10, periodic = True)
 print(c.get_mean_energy())
 
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
@@ -164,7 +165,21 @@ def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', per
         fichier.write("The fundamental's energy for a " + periodic*"periodic "+ "chain of length " 
                       + str(L) + " with Jx,Jz = " + str((Jx,Jz)) + " is " + 
                       str(Chain(L, Jx, Jz, periodic).get_fundamental()))
+
+def compute_energies(L, Jx, Jz, periodic = True):
+    with open('energies' + str((L, Jx, Jz)) + '.txt', 'w') as fichier:
+        fichier.write("The energies for a " + periodic*"periodic "+ "chain of length " 
+                      + str(L) + " with Jx,Jz = " + str((Jx,Jz)) + " is " + 
+                      str(Chain(L, Jx, Jz, 0, periodic).set_eigenvalues()))
+
+def compute_mean_chain_Jx(L, Jz, beta, periodic = True ):
+    with open('MeanEnergyJx' + str((Jz, beta)) + '.txt', 'w') as fichier:
+        for Jx in range(0, 5):
+            fichier.write("The mean energy for a " + periodic*"periodic "+ "chain of length " 
+                          + str(L) + " with Jx,Jz, beta = " + str((-Jx,Jz, beta)) + " is " + 
+                          str(Chain(L, -Jx, Jz, beta, periodic).get_mean_energy()) + '\n')
     
+
     
 def moyenneenergy2(beta):
     Z = 2*np.exp(beta*0.5) + 2*np.exp(-beta*0.5)
