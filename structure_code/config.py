@@ -7,7 +7,7 @@ Created on Tue Nov 20 14:03:23 2018
 
 import numpy as np
 import numpy.random as rnd
-import cv2
+#import cv2
 import matplotlib.pyplot as plt
 import localclass as lc
 
