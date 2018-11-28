@@ -101,18 +101,18 @@ class Loop:
 
     
     def spins_to_pattern(self):
-        for i in range(self.n_spins):
-            for l in range(self.m_trotter):
+        for l in range(self.m_trotter):
+            for j in range(self.n_spins):
                 conf = np.zeros(6)
                 conf[:]=np.nan
-                if i % 2:
-                    j = 2 * l + 1
+                if j % 2:
+                    i = 2 * l + 1
                 else:
-                    j = 2 * l 
-                vertg = np.bool(self.spins[i, j] * self.spins[(i+1)%self.n_spins, j])
-                vertd = np.bool(self.spins[i, (j+1)%(2*self.m_trotter)] * self.spins[(i+1)%self.n_spins, (j+1)%(2*self.m_trotter)])
-                diag1 = np.bool(self.spins[i, j] * self.spins[(i+1)%self.n_spins, (j+1)%(2*self.m_trotter)])
-                diag2 = np.bool(self.spins[i, (j+1)%(2*self.m_trotter)] * self.spins[(i+1)%self.n_spins, j])
+                    i = 2 * l 
+                vertg = np.bool(self.spins[i, j] * self.spins[(i+1)%(2*self.m_trotter), j])
+                vertd = np.bool(self.spins[i, (j+1)%(self.n_spins)] * self.spins[(i+1)%(2*self.m_trotter), (j+1)%(self.n_spins)])
+                diag1 = np.bool(self.spins[i, j] * self.spins[(i+1)%(2*self.m_trotter), (j+1)%(self.n_spins)])
+                diag2 = np.bool(self.spins[i, (j+1)%(self.n_spins)] * self.spins[(i+1)%(2*self.m_trotter), j])
 #                print(i, j, vertg, vertd, diag1, diag2)
                 if vertg*vertd:
                     assert(diag1)
@@ -182,13 +182,13 @@ class Loop:
         return graph
     
     def set_total_graph(self):
-        for i in range(self.n_spins):
-            for j in range(2*self.m_trotter):
+        for i in range(2*self.m_trotter):
+            for j in range(self.n_spins):
                 self.total_graph[i,j] = self.white_square_in_graph(np.array([i, j]))
         return
         
     
-    def loop_from_graph(self, spin, pos_graph):
+    def find_next(self, spin, pos_graph):
         graph = self.total_graph[pos_graph]
         assert(graph != 5)
         
@@ -253,9 +253,41 @@ class Loop:
                     return ((spin_i, spin_j_minus), (pos_graph_up, pos_graph_left))
                 elif graph == 4:
                     #graph is cross
-                    return ((spin_i_minus, spin_j_minus), (pos_graph_down, pos_graph_up))
+                    return ((spin_i_minus, spin_j_minus), (pos_graph_down, pos_graph_left))
         return
     
+    def find_loops(self):
+        done = []
+        self.loops = []
+        for i in range(2*self.m_trotter):
+            for j in range(self.n_spins):
+                if not ((i, j) in done):
+                    prob = rnd.random()
+                    bool_prob = prob < 0.5
+#                    print(bool_prob)
+                    if bool_prob:
+                        self.spins[i, j] = int(not self.spins[i, j])
+                    done += [(i,j)]
+#                    k = 0
+                    new_loop = [(i, j)]
+#                    print(i, j, i//2, j//2)
+                    temp = self.find_next((i,j), (2*(i//2),2*(j//2)))
+#                    print(temp)
+                    while (temp[0] != (i,j)):
+                        indexes = temp[0]
+                        new_loop += [indexes]
+                        done += [indexes]
+                        temp = self.find_next(indexes, temp[1])
+#                        print(temp[0])
+                        
+#                        print('new loop', new_loop)
+                        if bool_prob:
+                            self.spins[indexes[0], indexes[1]] = int(not self.spins[indexes[0], indexes[1]])
+
+#                        k += 1
+                    self.loops += [new_loop]
+#                    print(bool_prob, new_loop)
+#                    print(self.spins)
     
     
     def spin_flip_along_loop(self, ):
