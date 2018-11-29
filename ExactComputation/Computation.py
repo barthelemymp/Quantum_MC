@@ -157,9 +157,9 @@ class Chain:
         return np.dot(self.energies, self.softmax)
     
 
-c = Chain(4, 1, 1, 4, periodic = True)
-c.set_eigenvalues()
-print(c.energies)
+c = Chain(4, 0, -1, 10, periodic = True)
+#c.set_eigenvalues()
+print(c.get_mean_energy())
 
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
     with open(s, 'w') as fichier:
