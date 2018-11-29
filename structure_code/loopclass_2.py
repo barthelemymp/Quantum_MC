@@ -106,7 +106,7 @@ class Loop_2:
         self.inv = np.array([[ 0.5, -0.5,  0.5], \
                              [ 0.5,  0.5, -0.5], \
                              [-0.5,  0.5,  0.5]])
-        self.w   = np.array([self.b*self.cosh, self.b*self.sinh, 1/self.b])
+        self.w   = np.array([self.b*self.cosh, -self.b*self.sinh, 1/self.b])
         self.w11 = np.dot(self.inv, self.w)[0]
         self.w12 = np.dot(self.inv, self.w)[1]
         self.w24 = np.dot(self.inv, self.w)[2]
@@ -204,14 +204,14 @@ class Loop_2:
         tile = [1, 0, 0, 0, 6, 3, 0, 4, 5, 0, 0, 0, 2][self.pattern[pos[0], pos[1]]]
 #        print(tile)
         if not tile:
-            return 5
+            return graph
         
         #now, we are sure that at least one element of conf_array is not nan
         #we get the tile
 #        tile = np.nanargmax(tile_array)
 
         #going over the possible choices
-        if tile < 3:     #the tile is of type 3. So the graph is 1 or 4
+        if tile < 3:     #the tile has a weight w[3]. So the graph is 1 or 4
             #the probality of choosing each and the choice according to it
             prob = self.w31/self.w[2]
             if rnd.random() < prob :
@@ -369,7 +369,7 @@ class Loop_2:
         return
     
     
-    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 200,length_cycle = 100):
+    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 1000,length_cycle = 20):
         
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
@@ -383,7 +383,7 @@ class Loop_2:
             # measures
             if n >= n_warmup:
                 e = self.total_energy()
-                if e > 0: break
+#                if e > 0: break
                 energ[n-n_warmup] = e
                 print("ener",e)
         print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))

@@ -157,7 +157,7 @@ class Chain:
         return np.dot(self.energies, self.softmax)
     
 
-c = Chain(4, 0, -1, 10, periodic = True)
+c = Chain(4, -1, -1, 0.1, periodic = True)
 #c.set_eigenvalues()
 print(c.get_mean_energy())
 
