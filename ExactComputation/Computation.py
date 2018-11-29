@@ -158,7 +158,8 @@ class Chain:
     
 
 c = Chain(4, 1, 1, 4, periodic = True)
-print(c.get_mean_energy())
+c.set_eigenvalues()
+print(c.energies)
 
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
     with open(s, 'w') as fichier:
