@@ -530,6 +530,7 @@ class States:
         test = self.copy()
         a = rnd.rand()
         b = rnd.rand()
+        print(a)
         if (a<threshold):
             dEt,dwt= test.local_update()
             dE += dEt
@@ -541,11 +542,15 @@ class States:
             dw *= dwt
             mtype = "splitline"
         #print("try a = ",a,"dw = ",dw)
-        if (dw>b):
+        dw2 = test.weight()/self.weight()
+        if (dw != dw2):
+            print("alert", mtype, dw,dw2)
+            
+        if (dw2>b):
             self.pattern = test.pattern
-            #print("change accepted"+mtype,dE, dw)
-            return dE, dw
-        #print("aborted",mtype)
+            print("change accepted "+mtype,dE, dw)
+            return dE, dw2
+        print("aborted",mtype)
         return 0 ,1
         
 
