@@ -4,18 +4,26 @@ import numpy as np
 
 np.random.seed(2985729547)
 
-loop = lp.Loop_2(4,0.05,4,-2,-2)
+s = "QMCMeanEnergyJxJzBeta0.1_1.txt"
+with open(s, 'w') as fichier:
+    for k in range (10):
+        loop = lp.Loop_2(10, ( k + 1 ) * 0.01, 8, -1, -1)
+        energ = loop.Quantum_Monte_Carlo()
+        fichier.write("The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, " + str((k+1) * 0.01) + " is " + 
+                      str(np.mean(energ)) + '+/-' + str(np.std(energ)/np.sqrt(len(energ))) + "\n")
 
-loop.spins = np.array([[1,0,1,0],
-                       [1,0,1,0],
-                       [1,0,1,0],
-                       [1,0,1,0],
-                       [1,0,1,0],
-                       [1,0,1,0],
-                       [1,0,1,0],
-                       [1,0,1,0]])
+#loop = lp.Loop_2(10,0.1,8,-2,-2)
 
-loop.spins_to_pattern()
+##loop.spins = np.array([[1,0,1,0],
+#                       [1,0,1,0],
+#                       [1,0,1,0],
+#                       [1,0,1,0],
+#                       [1,0,1,0],
+#                       [1,0,1,0],
+#                       [1,0,1,0],
+#                       [1,0,1,0]])
+
+#loop.spins_to_pattern()
 #print(loop.total_energy(), loop.weight())
 #energ = loop.Quantum_Monte_Carlo()
 

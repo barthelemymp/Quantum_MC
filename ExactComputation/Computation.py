@@ -157,9 +157,9 @@ class Chain:
         return np.dot(self.energies, self.softmax)
     
 
-c = Chain(4, -1, -1, 0.1, periodic = True)
+#c = Chain(8, -2, -2, 1, periodic = True)
 #c.set_eigenvalues()
-print(c.get_mean_energy())
+#print(c.get_mean_energy())
 
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
     with open(s, 'w') as fichier:
@@ -179,8 +179,16 @@ def compute_mean_chain_Jx(L, Jz, beta, periodic = True ):
             fichier.write("The mean energy for a " + periodic*"periodic "+ "chain of length " 
                           + str(L) + " with Jx,Jz, beta = " + str((-Jx,Jz, beta)) + " is " + 
                           str(Chain(L, -Jx, Jz, beta, periodic).get_mean_energy()) + '\n')
-    
 
+def compute_mean_energy(L, Jx, Jz, s = 'MeanEnergyJxJzBeta0.1_1.txt', periodic = True):
+    with open(s, 'w') as fichier:
+        for k in range(10):
+            beta = (k + 1) * 0.1
+            fichier.write("The mean energy for a " + periodic*"periodic "+ "chain of length " 
+                          + str(L) + " with Jx,Jz, beta = " + str((Jx,Jz, beta)) + " is " + 
+                          str(Chain(L, Jx, Jz, beta, periodic).get_mean_energy()) + '\n')
+    
+#compute_mean_energy(8, -1, -1)
     
 def moyenneenergy2(beta):
     Z = 2*np.exp(beta*0.5) + 2*np.exp(-beta*0.5)

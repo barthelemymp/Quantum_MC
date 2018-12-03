@@ -1,0 +1,10 @@
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.1 is -0.17536958692468602+/-0.04503124112222176
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.2 is -0.3180950336808736+/-0.05206707493025834
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.3 is -0.4281882304775687+/-0.04755562899045207
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.4 is -0.5508197493554989+/-0.046099772467277624
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.5 is -0.6145866607995087+/-0.03980041448795957
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.6 is -0.7754945849471734+/-0.04025830789728469
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.7 is -0.8588183437539938+/-0.03902940438713555
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.8 is -0.9120769320824843+/-0.03477959322752931
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 0.9 is -0.9602196248989701+/-0.03540830061599584
+The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, 1.0 is -1.0810816499448148+/-0.03562463588896318
