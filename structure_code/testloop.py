@@ -1,17 +1,37 @@
-import localclass as st
-import loopclass as lp
+import loopclass_2 as lp
 import numpy as np
+#import matplotlib.pyplot as plt
 
-s = st.States(4,1,8,1,1)
-for k in range(1000):
-    if k%100 == 0:
-        s.splitline()
-    s.local_update()
-    #s.createimage()
+np.random.seed(2985729547)
+
+loop = lp.Loop_2(4,0.05,4,-2,-2)
+
+loop.spins = np.array([[1,0,1,0],
+                       [1,0,1,0],
+                       [1,0,1,0],
+                       [1,0,1,0],
+                       [1,0,1,0],
+                       [1,0,1,0],
+                       [1,0,1,0],
+                       [1,0,1,0]])
+
+loop.spins_to_pattern()
+#print(loop.total_energy(), loop.weight())
+#energ = loop.Quantum_Monte_Carlo()
+
+#for k in range(10):
+#    loop.spins_to_pattern()
+#    loop.set_total_graph()
+##    loop.creategraph()
+#    loop.find_loops()
+#    loop.createimage()
 
 
+#for k in range(10):
+#    loop.spins_to_pattern()
+#    loop.set_total_graph()
+#    loop.find_loops()
+    
+#loop.createimage()
 
-loop = lp.Loop(4,1,8,1,1)
-loop.pattern = s.pattern
 
-loop.creategraph()

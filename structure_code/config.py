@@ -78,3 +78,15 @@ class config:
                 #print("ener",e)
         print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
         return energ
+
+
+def QMC_mean_chain(m_trotter, dtau, n_spins, Jx, Jz):
+    with open('QMCMeanEnergyJx' + str((n_spins, Jz, m_trotter, dtau)) + '.txt', 'w') as fichier:
+        for Jx in range(0, 5):
+            conf = config(m_trotter, dtau, n_spins, Jx, Jz)
+            energy = conf.Quantum_Monte_Carlo(1000)
+            beta = dtau* m_trotter
+            fichier.write("The QMC mean energy for a periodic chain of length " 
+                          + str(n_spins) + " with Jx,Jz, beta = " + str((-Jx,Jz, beta)) + " is " + 
+                          str(energy) + '\n')
+    

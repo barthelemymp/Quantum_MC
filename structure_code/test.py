@@ -1,6 +1,8 @@
+import config as cf
 import localclass as st
 import numpy as np
 
+"""
 s = st.States(2, 0.025, 4, 0.0000001, -1)
 s.createimage()
 for k in range (5):
@@ -8,14 +10,15 @@ for k in range (5):
     s.createimage()
     print(s.local_update())
     s.createimage()
-    
+"""
 
-#s = st.config(2,100,6,0.001,-1)
+conf = cf.config(10, 0.15, 8, -2, -1)
+sta = st.States(1, 1, 4, -1, 0)
 #s.splitline()
 #s.splitline()
 #s.createimage()
 
-#s.Quantum_Monte_Carlo()
+#conf.Quantum_Monte_Carlo(n_cycles = 1000)
 """
 for k in range(100):
     if k % 10 == 0:
