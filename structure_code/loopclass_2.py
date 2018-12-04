@@ -153,19 +153,7 @@ class Loop_2:
         """
         self.pattern = np.dot(self.p_left, np.dot(self.spins, self.p_right))
     
-    
-    def plot_image(self):
-        """
         
-        """
-        x, y = [], []
-        for i in range(2*self.m_trotter):
-            for j in range(self.n_spins):
-                if self.spins[i,j]:
-                    x += [i]
-                    y += [j]
-        plt.scatter(y,x)
-    
     def createimage(self):
         """
         Give the pattern representation of the configuration on the screen
@@ -385,6 +373,6 @@ class Loop_2:
                 e = self.total_energy()
 #                if e > 0: break
                 energ[n-n_warmup] = e
-                print("ener",e)
-        print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
+#                print("ener",e)
+#        print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
         return energ
