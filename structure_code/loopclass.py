@@ -13,10 +13,11 @@ import matplotlib.pyplot as plt
 class Loop:
 
     def __init__(self, m_trotter, dtau, n_spins, Jx, Jz):
-        """Constructing a 2D pattern with beta = m_trotter * dtau
-           The horizontal dimension is the spatial one, with n_spins steps
-           the vertical one is the temporal one, with 2*m_trotter steps
-           The interaction are defined by Jx and Jz
+        """
+        Constructing a 2D pattern with beta = m_trotter * dtau
+       The horizontal dimension is the spatial one, with n_spins steps
+       The vertical one is the temporal one, with 2*m_trotter steps
+       The interactions are defined by Jx and Jz
         """
 
         #division of the imaginary time
@@ -113,11 +114,18 @@ class Loop:
         self.w22 = np.dot(self.inv, self.w)[1]
         self.w31 = np.dot(self.inv, self.w)[0]
         self.w34 = np.dot(self.inv, self.w)[2]
+#        self.w11 = 0.5
+#        self.w12 = 0.5
+#        self.w24 = 0.5
+#        self.w22 = 0.5
+#        self.w31 = 0.5
+#        self.w34 = 0.5
         
         #initializing the graphs
         self.graph1 = self.case2
         self.graph2 = np.transpose(self.case2)
-        self.graph3 = np.ones((20,20))*255
+        self.graph3 = np.ones((20,20), dtype = np.uint8)*255
+#        self.graph4 = self.graph3
         self.graph4 = self.case3/2 + self.case4/2
         self.graphs = [self.graph1, self.graph2, self.graph3, self.graph4, self.greycase]
 
@@ -160,7 +168,7 @@ class Loop:
         """
         
         #initializing the figure
-        fig, ax = plt.subplots(figsize = (10,10))
+#        fig, ax = plt.subplots(figsize = (10,10))
         
         #this array corresponds to the image
         image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
@@ -175,8 +183,10 @@ class Loop:
                 else:
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=130
         
-        image = np.array(image,dtype=np.uint8)
-        ax.imshow(image, cmap = "Greys_r")
+        image = np.array(image)
+        
+        return image
+#        ax.imshow(image, cmap = "Greys_r")
 
                 
     def tile_in_graph(self, pos):
@@ -235,26 +245,40 @@ class Loop:
         
     
     def find_next(self, spin, pos_graph):
+        """
+        In order to find the loops, we go over total_graph. Given one spin and 
+        one associated graph, we are able to know the next spin in the total_graph
+        and the next graph, which are returned by this method
+        """
+        
+        #extract the graph
         graph = self.total_graph[pos_graph]
+        #let us be sure that our method is coherent and does not fall on a grey graph
         assert(graph != 5)
         
+        #Parameters to compute easily
         modulo_trotter = 2*self.m_trotter
-        modulo_spin = self.n_spins
+        modulo_spin    = self.n_spins
         
+        #given the spin position "spin", we compute the other 
+        #accessible spin positions
         spin_i_minus = (spin[0] - 1)%modulo_trotter
-        spin_i = spin[0]
-        spin_i_plus = (spin[0] + 1)%modulo_trotter
+        spin_i       =  spin[0]
+        spin_i_plus  = (spin[0] + 1)%modulo_trotter
         spin_j_minus = (spin[1] - 1)%modulo_spin
-        spin_j = spin[1]
-        spin_j_plus = (spin[1] + 1)%modulo_spin
+        spin_j       =  spin[1]
+        spin_j_plus  = (spin[1] + 1)%modulo_spin
         
-        pos_graph_up = (pos_graph[0] + 1)%modulo_trotter
-        pos_graph_down = (pos_graph[0] - 1)%modulo_trotter
-        pos_graph_left = (pos_graph[1] - 1)%modulo_spin
+        #given the graph position "pos_graph", we compute the other 
+        #accessible graph positions
+        pos_graph_up    = (pos_graph[0] + 1)%modulo_trotter
+        pos_graph_down  = (pos_graph[0] - 1)%modulo_trotter
+        pos_graph_left  = (pos_graph[1] - 1)%modulo_spin
         pos_graph_right = (pos_graph[1] + 1)%modulo_spin
         
-        #where is the spin on the graph ?
+        #where is the spin on the graph. We need to discrimine on the corner on 
         if spin_i == pos_graph[0]:
+            #spin is on the bottom of the graph
             if spin_j == pos_graph[1]:
                 #spin is bottom left of the graph
                 if graph == 1:
@@ -264,7 +288,7 @@ class Loop:
                     #graph is horizontal
                     return ((spin_i, spin_j_plus), (pos_graph_down, pos_graph_right))
                 elif graph == 4:
-                    #graph is cross
+                    #graph is crossed
                     return ((spin_i_plus, spin_j_plus), (pos_graph_up, pos_graph_right))
             else:
                 #spin is bottom right
@@ -275,9 +299,10 @@ class Loop:
                     #graph is horizontal
                     return ((spin_i, spin_j_minus), (pos_graph_down, pos_graph_left))
                 elif graph == 4:
-                    #graph is cross
+                    #graph is crossed
                     return ((spin_i_plus, spin_j_minus), (pos_graph_up, pos_graph_left))
         else:
+            #spin is on the top of the graph
             if spin[1] == pos_graph[1]:
                 #spin is up left
                 if graph == 1:
@@ -300,84 +325,113 @@ class Loop:
                 elif graph == 4:
                     #graph is cross
                     return ((spin_i_minus, spin_j_minus), (pos_graph_down, pos_graph_left))
+        
         return
     
     
-    #on pourrait directement calculer les graphes ici en fait a voir !! 
-    
     def find_loops(self):
+        """
+        This method find the loops on the given graph and flip the spins along them
+        with probability 0.5
+        """
+        
+        #Need to know whether a spin is already in the loop or not, thanks
+        #to the "done" list
         done = []
+        
+        #Let us pass the loops in class parameter in order to be able to access them
         self.loops = []
+        
+        #Going over all the spins
         for i in range(2*self.m_trotter):
             for j in range(self.n_spins):
+                
+                #Is the spin already considered ? 
                 if not ((i, j) in done):
-                    prob = rnd.random()
-                    bool_prob = prob < 0.5
-#                    print(bool_prob)
+                    
+                    #boolean probability to flip the total loop
+                    bool_prob = rnd.random() < 0.5
                     if bool_prob:
+                        #let flip the spin
                         self.spins[i, j] = int(not self.spins[i, j])
+                        
+                    #actualize the done list
                     done += [(i,j)]
-#                    k = 0
+                    
+                    #create new loop
                     new_loop = [(i, j)]
-#                    print(i, j, i//2, j//2)
+                    
+                    #we now need to find the whole loop. Let us get the next spin and 
+                    #loop until we find back the first spin.
                     temp = self.find_next((i,j), (2*(i//2),2*(j//2)))
-#                    print(temp)
+                    
+                    #loop. temp is of the form (position of the spin, position of the graph)
                     while (temp[0] != (i,j)):
                         indexes = temp[0]
+                        #actualize the loop
                         new_loop += [indexes]
+                        #the spin will become "done"
                         done += [indexes]
+                        #next step
                         temp = self.find_next(indexes, temp[1])
-#                        print(temp[0])
                         
-#                        print('new loop', new_loop)
+                        #flip the spin
                         if bool_prob:
                             self.spins[indexes[0], indexes[1]] = int(not self.spins[indexes[0], indexes[1]])
-
-#                        k += 1
+                    
+                    #Store the loops in case
                     self.loops += [new_loop]
-#                    print(bool_prob, new_loop)
-#                    print(self.spins)
     
 
     def creategraph(self):
-        fig, ax = plt.subplots(figsize = (10, 10))
+        """
+        Give the graph representation of the configuration
+        """
+        
+        #initializing
+#        fig, ax = plt.subplots(figsize = (10, 10))
+        
+        #this array is the image
         image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
         for i in range(self.m_trotter*2):
             l = self.m_trotter*2 - i
             
             for j in range(self.n_spins):
-#                print(self.tile_in_graph([i, j]))
                 if((i+j+1)%2):
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=self.graphs[self.total_graph[i, j] - 1]
                 else:
-                    image[20*(l-1):20*(l),20*j:20*(j+1)]=130                    
-#        print(image)
-        image = np.array(image,dtype=np.uint8)
-        ax.imshow(image, cmap = 'Greys_r')
-        return
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=130     
+                    
+        image = np.array(image)
+        return image
+#        ax.imshow(image, cmap = 'Greys_r')
     
-    def array_to_string(self):
-        
+    
+    def pattern_to_string(self):
         st = ''
-        for i in range(2 * self.n_spins):
-            for j in range(self.m_trotter):
+        for i in range(2 * self.m_trotter):
+            for j in range(self.n_spins):
                 st += '1' if self.spins[i, j] else '0'
         return st
     
+    def QMC_step(self):
+        self.spins_to_pattern()
+        self.set_total_graph()
+        self.find_loops()
+           
     def Quantum_Monte_Carlo(self, n_warmup=100, n_cycles = 100000, length_cycle = 1):
         
-        pattern_done = np.array([self.pattern])
+        pattern_done = {}
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
             print(n)
             # Monte Carlo moves
             for l in range(length_cycle):
+                pattern_done[self.pattern_to_string()] = 1
                 self.spins_to_pattern()
                 self.set_total_graph()
                 self.find_loops()
-                if not (self.pattern in pattern_done):
-                    pattern_done += np.array([self.pattern])
             # measures
             if n >= n_warmup:
                 e = self.total_energy()

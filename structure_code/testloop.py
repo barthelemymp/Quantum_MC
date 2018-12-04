@@ -1,8 +1,10 @@
 import loopclass as lp
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
-np.random.seed(2985729547)
+
+#np.random.seed(2985729547)
 """
 s = "QMCMeanEnergy
 with open(s, 'w') as fichier:
@@ -11,6 +13,7 @@ with open(s, 'w') as fichier:
         energ = loop.Quantum_Monte_Carlo()
         fichier.write("The mean energy for a periodic chain of length 8 with Jx, Jz, beta = -1, -1, " + str((k+1) * 0.01) + " is " + 
                       str(np.mean(energ)) + '+/-' + str(np.std(energ)/np.sqrt(len(energ))) + "\n")
+"""
 """
 x = [2]
 yerr = []
@@ -22,4 +25,18 @@ for k in x:
     yerr += [np.std(energ/np.sqrt(len(energ)))]
 
 plt.errorbar(x, y, yerr=yerr)
+"""
+
+fig = plt.figure()
+loop = lp.Loop(3, 1. / 3., 4, 1, 1)
+
+im = plt.imshow(loop.createimage(), cmap = 'Greys_r')
+
+#def make_frame(i):
+#    loop.QMC_step()
+#    im.set_array(loop.createimage())
+#    return im,
+#
+#
+#animation.FuncAnimation(fig, make_frame, interval = 10)
     
