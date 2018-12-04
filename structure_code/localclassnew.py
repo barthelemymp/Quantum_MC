@@ -16,291 +16,144 @@ class States:
         """Construct a path at inverse temperature beta in dim spatial
            dimensions and ntau imaginary time points"""
 
-        self.m_trotter = m_trotter #division of the temporary time"
+       #division of the imaginary time
+        self.m_trotter = m_trotter 
         self.dtau = dtau
+        
+        #number of spins along the chain
         self.n_spins = n_spins
+        
+        #interactions
         self.Jx = Jx
         self.Jz = Jz
-        #self.spins_up = rnd.randint(0, n_spins+1)
-        self.pattern = np.zeros((2*m_trotter,n_spins,6))
-        self.pattern[:,:,:]=np.nan
-        for i in range (2*m_trotter):
-            for j in range(n_spins):
-                self.pattern[i,j,0] = (i+j+1)%2
-                if (self.pattern[i,j,0] == 0):
-                    self.pattern[i,j,0] = np.nan
         
-        self.spins_up = 0
+        #this matrix describes the state of the spins along the 2D pattern
+        #if self.spins[i, j] describes the spin at space = i and time = j
+        self.spins = np.zeros((2*m_trotter, n_spins), dtype = int)
+        
+        #this matrix allows the computation of the energy and the weight 
+        #it also allows the representation of the pattern given in the
+        #Article (with a grey and white board, each black line is a line
+        #of up spins at the corner of the tiles)
+        self.pattern = np.zeros((2*m_trotter,n_spins), dtype = int)
+        
+        self.p_right = np.diag(np.ones(self.n_spins, dtype = int)) + np.diag(2 * np.ones(self.n_spins - 1, dtype = int), k = -1) + np.diag([2], k = self.n_spins - 1)
+        self.p_left = np.diag(3 * np.ones(2 * self.m_trotter, dtype = int)) + np.diag(np.ones(2 * self.m_trotter - 1, dtype = int), k = 1) + np.diag([1], k = -2 * self.m_trotter + 1)
+        
+        self.p_mask = np.zeros((2*self.m_trotter, self.n_spins), dtype = int)
+        for i in range(2 * self.m_trotter):
+            for j in range(self.n_spins):
+                if (i + j + 1)%2:
+                    self.p_mask[i, j] = 1
+        self.p_mask = self.p_mask.astype(bool)
 
+        #computing the energy depending on the configuration of the tiles.
+        #Each tile has a particular energy, and one has to sum over the white tiles 
+        #to find the energy. This is why we adopted the "pattern" representation
         self.a = self.Jz/4
         self.th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
         self.coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
-        self.energymatrix = (-1/self.m_trotter)*np.array([-self.a, -self.a, self.a+self.coth, self.a+self.coth, self.a+self.th, self.a+self.th])
-
+        self.energymatrix = (-1/self.m_trotter)*np.array([-self.a, 0, 0, 0,
+                                      self.a+self.th, self.a+self.coth, 0,
+                                      self.a+self.coth, self.a+self.th, 
+                                      0, 0, 0, -self.a])
+    
+        #computing the weight depending on the configuration of the tiles. 
+        #Each tile has a particular weight, and one has to make the product over the white tiles 
+        #to find the weight.
         self.b = np.exp(self.dtau*self.Jz/4)
         self.cosh = np.cosh(self.dtau*self.Jx/2)
         self.sinh = np.sinh(self.dtau*self.Jx/2)
-        self.weightmatrix = np.array([1/self.b, 1/self.b, -self.b*self.sinh, -self.b*self.sinh, self.b*self.cosh, self.b*self.cosh])
-        self.n_change = 0
-        self.n_accepted = 0
-        self.n_acclocal = 0
-        self.n_accsplitline = 0
+        self.weightmatrix = np.array([1/self.b, 1, 1, 1,
+                                      self.b*self.cosh, self.b*self.sinh, 1,
+                                      self.b*self.sinh, self.b*self.cosh, 
+                                      1, 1, 1, 1/self.b])
+        
+        #initializing the image
+        self.greycase = np.ones((20,20),dtype=np.uint8) * 130
+        self.case1 = np.ones((20,20))*255
+        self.case2 = np.ones((20,20))*255
+        self.case3 = np.ones((20,20),dtype=np.uint8)*255
+        self.case4 = np.ones((20,20))*255
+        self.case5 = np.ones((20,20))*255
+        self.case6 = np.ones((20,20))*255
+        self.case2[:,:2]=0
+        self.case2[:,18:]=0
+        for i in range(19):
+            self.case3[i,19-i]=0
+            self.case3[i,18-i]=0
+            self.case4[i,i]=0
+            self.case4[i,i+1]=0
+        self.case6[:,:2]=0
+        self.case5[:,18:]=0
+        self.cases = np.array([self.case1, self.greycase, self.greycase, 
+                          self.greycase, self.case6, self.case3,
+                          self.greycase, self.case4, self.case5,
+                          self.greycase, self.greycase, self.greycase, self.case2])
         
         
         
     def copy(self,):
         copy = States(self.m_trotter, self.dtau, self.n_spins, self.Jx, self.Jz)
         copy.pattern = self.pattern.copy()
-        
-        copy.spins_up = self.spins_up
         return copy
         
+    def spins_to_pattern(self):
+        """
+        Given the spin configuration, turn it into a pattern configuration. Allows the
+        image to be created or the graph to be computed.
+        """
+        self.pattern = np.dot(self.p_left, np.dot(self.spins, self.p_right))
 
-    def createimage(self, casesize=20):
+    def createimage(self):
+        """
+        Give the pattern representation of the configuration on the screen
+        """
+        
+        #initializing the figure
         fig, ax = plt.subplots(figsize = (10,10))
-        greycase = np.ones((20,20),dtype=np.uint8) * 70
-        case1 = np.ones((20,20))*255
-        case2 = np.ones((20,20))*255
-        case3 = np.ones((20,20),dtype=np.uint8)*255
-        case4 = np.ones((20,20))*255
-        case5 = np.ones((20,20))*255
-        case6 = np.ones((20,20))*255
         
-        case2[:,:2]=0
-        case2[:,18:]=0
-        
-        for i in range(19):
-            case3[i,19-i]=0
-            case3[i,18-i]=0
-            case4[i,i]=0
-            case4[i,i+1]=0
-            
-        case6[:,:2]=0
-        
-        case5[:,18:]=0
-        cases = [case1,case2,case3,case4,case5,case6,greycase]
-        
+        #this array corresponds to the image
         image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
+        
         for i in range(self.m_trotter*2):
             l = self.m_trotter*2 - i
             
             for j in range(self.n_spins):
                 if((i+j+1)%2):
-                    conf = np.nanargmax(np.array(self.pattern[i,j,:]))
-                    image[20*(l-1):20*(l),20*j:20*(j+1)]=cases[conf]
+                    tile = self.pattern[i, j]
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=self.cases[tile]
                 else:
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=130
-                    
-                
-        image = np.array(image,dtype=np.uint8)
-        ax.imshow(image, cmap = 'Greys_r')
-
         
-    
-#    def to_boxconfig(self):
-#        new_writing = np.zeros((6,2*self.m_trotter))
-#        for line in range(2*self.m_trotter):
-#            for column in range(self.n_spins-1):
-#                if (self.pattern[line,column]!=0):
-#                    new_writing[self.pattern[line,column],line]+=1
-#                    
-#        return new_writing
-                    
+        image = np.array(image,dtype=np.uint8)
+        ax.imshow(image, cmap = "Greys_r")
             
         
     def total_energy(self):
-        energy = np.nansum(self.pattern*self.energymatrix)
+        """
+        Computes the Energy of the configuration. Uses self.pattern to know the tiles
+        Then uses self.energymatrix to know the energy of each tile. Sum over them.
+        """
+        pattern_energy = self.energymatrix[self.pattern]
+        pattern_energy = pattern_energy[self.p_mask]
+        energy = np.sum(pattern_energy)
         return energy
     
+    
     def weight(self):
-        weight = np.nanprod(self.pattern*self.weightmatrix)
+        """
+        Computes the Weight of the configuration. Uses self.pattern to know the tiles
+        Then uses self.weightmatrix to know the weight of each tile. Make the product of them.
+        """
+        pattern_weight = self.weightmatrix[self.pattern]
+        pattern_weight = pattern_weight[self.p_mask]
+        weight = np.prod(pattern_weight)
         return weight
     
-    def splitspinfixed(self,pos,dE,dw):
-                #getting the weight matrix
-        energymatrix = self.energymatrix
-        weightmatrix = self.weightmatrix
-        
-        #print("pos",pos)
-        conf1 = np.zeros(6)
-        conf1[:]=np.nan
-        conf1[0]=1
-        conf2 = np.zeros(6)
-        conf2[:]=np.nan
-        conf2[1]=1
-        conf3 = np.zeros(6)
-        conf3[:]=np.nan
-        conf3[2]=1
-        conf4 = np.zeros(6)
-        conf4[:]=np.nan
-        conf4[3]=1
-        conf5 = np.zeros(6)
-        conf5[:]=np.nan
-        conf5[4]=1
-        conf6 = np.zeros(6)
-        conf6[:]=np.nan
-        conf6[5]=1
-        conf = np.nanargmax(np.array(self.pattern[pos[0],pos[1],:])) + 1
-        
-         #print("conf",conf)
-        if(pos[2]==0):
-            if(conf==1):
-                self.pattern[pos[0],pos[1],:] = conf6
-                dE += energymatrix[5]-energymatrix[0]
-                dw *= weightmatrix[5]/weightmatrix[0]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw,True
-            
-            if(conf==2):
-                self.pattern[pos[0],pos[1],:,] = conf5
-                dw *= weightmatrix[4]/weightmatrix[1]
-                dE +=energymatrix[4]-energymatrix[1]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw,True
-            if(conf==3):
-#                self.pattern[pos[0],pos[1],:] = conf1
-#                dw *= weightmatrix[0]/weightmatrix[2]
-#                dE += energymatrix[0]-energymatrix[2]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw, False
-            if(conf==4):
-#                self.pattern[pos[0],pos[1],:] = conf2
-#                dw *= weightmatrix[1]/weightmatrix[3]
-#                dE += energymatrix[1]-energymatrix[3]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw, False
-            if(conf==5):
-                self.pattern[pos[0],pos[1],:] = conf2
-                dw *= weightmatrix[1]/weightmatrix[4]
-                dE +=energymatrix[1]-energymatrix[4]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw,True
-            if(conf==6):
-                self.pattern[pos[0],pos[1],:] = conf1
-                dw *= weightmatrix[0]/weightmatrix[5]
-                dE += energymatrix[0]-energymatrix[5]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw,True    
-        elif(pos[2]==1) :
-            if(conf==1):
-                self.pattern[pos[0],pos[1],:] = conf5
-                dw *= weightmatrix[4]/weightmatrix[0]
-                dE +=energymatrix[4]-energymatrix[0]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw,True
-            if(conf==2):
-                self.pattern[pos[0],pos[1],:] = conf6
-                dw *= weightmatrix[5]/weightmatrix[1]
-                dE +=energymatrix[5]-energymatrix[1]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw,True
-            if(conf==3):
-#                self.pattern[pos[0],pos[1],:] = conf2
-#                dw *= weightmatrix[1]/weightmatrix[2]
-#                dE +=energymatrix[1]-energymatrix[2]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw, False
-            if(conf==4):
-#                self.pattern[pos[0],pos[1],:] = conf1
-#                dw *= weightmatrix[0]/weightmatrix[3]
-#                dE +=energymatrix[0]-energymatrix[3]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw, False
-            if(conf==5):
-                self.pattern[pos[0],pos[1],:] = conf1
-                dw *= weightmatrix[0]/weightmatrix[4]
-                dE +=energymatrix[0]-energymatrix[4]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw,True
-            if(conf==6):
-                self.pattern[pos[0],pos[1],:] = conf2
-                dw *= weightmatrix[1]/weightmatrix[5]
-                dE +=energymatrix[1]-energymatrix[5]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw,True
-        
-        
-        
-        
     
-    def splitspin(self,pos,dE,dw):  
-        #getting the weight matrix
-        energymatrix = self.energymatrix
-        weightmatrix = self.weightmatrix
-        
-        #print("pos",pos)
-        conf1 = np.zeros(6)
-        conf1[:]=np.nan
-        conf1[0]=1
-        conf2 = np.zeros(6)
-        conf2[:]=np.nan
-        conf2[1]=1
-        conf3 = np.zeros(6)
-        conf3[:]=np.nan
-        conf3[2]=1
-        conf4 = np.zeros(6)
-        conf4[:]=np.nan
-        conf4[3]=1
-        conf5 = np.zeros(6)
-        conf5[:]=np.nan
-        conf5[4]=1
-        conf6 = np.zeros(6)
-        conf6[:]=np.nan
-        conf6[5]=1
-        conf = np.nanargmax(np.array(self.pattern[pos[0],pos[1],:])) + 1
-        #print("conf",conf)
-        if(pos[2]==0):
-            if(conf==1):
-                self.pattern[pos[0],pos[1],:] = conf6
-                dE += energymatrix[5]-energymatrix[0]
-                dw *= weightmatrix[5]/weightmatrix[0]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
-            
-            if(conf==2):
-                self.pattern[pos[0],pos[1],:,] = conf5
-                dw *= weightmatrix[4]/weightmatrix[1]
-                dE +=energymatrix[4]-energymatrix[1]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
-            if(conf==3):
-                self.pattern[pos[0],pos[1],:] = conf1
-                dw *= weightmatrix[0]/weightmatrix[2]
-                dE += energymatrix[0]-energymatrix[2]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
-            if(conf==4):
-                self.pattern[pos[0],pos[1],:] = conf2
-                dw *= weightmatrix[1]/weightmatrix[3]
-                dE += energymatrix[1]-energymatrix[3]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
-            if(conf==5):
-                self.pattern[pos[0],pos[1],:] = conf2
-                dw *= weightmatrix[1]/weightmatrix[4]
-                dE +=energymatrix[1]-energymatrix[4]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
-            if(conf==6):
-                self.pattern[pos[0],pos[1],:] = conf1
-                dw *= weightmatrix[0]/weightmatrix[5]
-                dE += energymatrix[0]-energymatrix[5]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw     
-        elif(pos[2]==1) :
-            if(conf==1):
-                self.pattern[pos[0],pos[1],:] = conf5
-                dw *= weightmatrix[4]/weightmatrix[0]
-                dE +=energymatrix[4]-energymatrix[0]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
-            if(conf==2):
-                self.pattern[pos[0],pos[1],:] = conf6
-                dw *= weightmatrix[5]/weightmatrix[1]
-                dE +=energymatrix[5]-energymatrix[1]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
-            if(conf==3):
-                self.pattern[pos[0],pos[1],:] = conf2
-                dw *= weightmatrix[1]/weightmatrix[2]
-                dE +=energymatrix[1]-energymatrix[2]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
-            if(conf==4):
-                self.pattern[pos[0],pos[1],:] = conf1
-                dw *= weightmatrix[0]/weightmatrix[3]
-                dE +=energymatrix[0]-energymatrix[3]
-                return np.array([pos[0]+1,(pos[1]-1)%self.n_spins,1]), dE, dw
-            if(conf==5):
-                self.pattern[pos[0],pos[1],:] = conf1
-                dw *= weightmatrix[0]/weightmatrix[4]
-                dE +=energymatrix[0]-energymatrix[4]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw
-            if(conf==6):
-                self.pattern[pos[0],pos[1],:] = conf2
-                dw *= weightmatrix[1]/weightmatrix[5]
-                dE +=energymatrix[1]-energymatrix[5]
-                return np.array([pos[0]+1,(pos[1]+1)%self.n_spins,0]), dE, dw 
-        
+    def splitspin(self,pos,dE,dw):
+        return
         
     
     def splitline(self):
@@ -326,239 +179,6 @@ class States:
         pattern, which are localised on four "white squares" in the pattern. We will call them the conf_down, 
         conf_up, conf_left, conf_right. 
         """
-        energymatrix = self.energymatrix
-        weightmatrix = self.weightmatrix
-
-        dE = 0
-        dw = 1
-        
-        #here are the various allowed conf in our pattern for each white square
-        conf1 = np.zeros(6)
-        conf1[:]=np.nan
-        conf1[0]=1
-        conf2 = np.zeros(6)
-        conf2[:]=np.nan
-        conf2[1]=1
-        conf3 = np.zeros(6)
-        conf3[:]=np.nan
-        conf3[2]=1
-        conf4 = np.zeros(6)
-        conf4[:]=np.nan
-        conf4[3]=1
-        conf5 = np.zeros(6)
-        conf5[:]=np.nan
-        conf5[4]=1
-        conf6 = np.zeros(6)
-        conf6[:]=np.nan
-        conf6[5]=1
-        
-        #print("pos",pos)
-        
-        #we get the conf of the white squares we are interested in
-        conf_down = np.nanargmax(self.pattern[pos[0],pos[1],:]) + 1
-        conf_up = np.nanargmax(self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
-                                              pos[1],\
-                                              :]) + 1
-        conf_left = np.nanargmax(self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                                ( pos[1] - 1 )%self.n_spins,\
-                                                :]) + 1
-        conf_right = np.nanargmax(self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                                ( pos[1] + 1 )%self.n_spins,\
-                                                :]) + 1
-    
-        #we can eliminate the cases in which the first spins are up-up or down-down
-        if conf_down < 3: 
-            return (dE, dw, False)
-        #the bottom square is up-down==>down-up   
-        elif conf_down == 3:
-            #the up square must be down-up==>up-down
-            if conf_up != 4:
-                return (dE, dw, False)
-            #then we have two possibilities for the left square, either up-down==>up-down or down-down==>down-down
-            elif (conf_left != 1 and conf_left!= 6):
-                return (dE, dw, False)
-            #then we have two possibilities for the right square, either up-down==>up-down or up-up==>up-up
-            elif (conf_right != 2 and conf_right!= 6):
-                return (dE, dw, False)
-            #we move the spins from up-down==>down-up==>down-up==>up-down to 
-            #up-down==>up-down==>up-down==>up-down as describe in the local update
-            else:
-                self.pattern[pos[0],pos[1],:] = conf6
-                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
-                             pos[1],\
-                             :] = conf6
-                dE += 2*energymatrix[4] - 2*energymatrix[2]
-                dw *= weightmatrix[4]**2 / weightmatrix[2]**2
-                #moving the left white square
-                if conf_left == 1:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf5
-                    dE += energymatrix[4] - energymatrix[0]
-                    dw *= weightmatrix[4] / weightmatrix[0]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf2
-                    dE += energymatrix[1] - energymatrix[5]
-                    dw *= weightmatrix[1] / weightmatrix[5]
-                #moving the right white square
-                if conf_right == 2:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf5
-                    dE += energymatrix[4] - energymatrix[1]
-                    dw *= weightmatrix[4] / weightmatrix[1]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf1
-                    dE += energymatrix[0] - energymatrix[5]
-                    dw *= weightmatrix[0] / weightmatrix[5]
-                return (dE, dw,True)
-        #case in which the bottom square is down-up==>up-down
-        elif conf_down == 4:
-            if conf_up != 3:
-                return (dE, dw,False)
-            elif (conf_left !=2 and conf_left!=5):
-                return (dE, dw,False)
-            elif (conf_right !=1 and conf_right!=5):
-                return (dE, dw,False)
-            else:
-                self.pattern[pos[0],pos[1],:] = conf5
-                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
-                             pos[1],\
-                             :] = conf5
-                dE += 2 * (energymatrix[4] - energymatrix[2])
-                dw *= (weightmatrix[4] / weightmatrix[2]) ** 2
-                #moving the left white square
-                if conf_left == 2:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf6
-                    dE += energymatrix[5] - energymatrix[1]
-                    dw *= weightmatrix[5] / weightmatrix[1]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf1
-                    dE += energymatrix[0] - energymatrix[4]
-                    dw *= weightmatrix[0] / weightmatrix[4]
-                #moving the right white square
-                if conf_right == 1:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf6
-                    dE += energymatrix[5] - energymatrix[0]
-                    dw *= weightmatrix[5] / weightmatrix[0]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf2
-                    dE += energymatrix[1] - energymatrix[4]
-                    dw *= weightmatrix[1] / weightmatrix[4]
-                
-                return (dE, dw,True)
-        #case in which the bottom square is down-up==>down-up
-        elif conf_down == 5:
-            if conf_up != 5:
-                return (dE, dw, False)
-            elif (conf_left != 1 and conf_left != 6):
-                return (dE, dw, False)
-            elif (conf_right != 2 and conf_right != 6):
-                return (dE, dw, False)
-            else:
-                self.pattern[pos[0],pos[1],:] = conf4
-                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
-                             pos[1],\
-                             :] = conf3
-                dE += 2 * (energymatrix[2] - energymatrix[4])
-                dw *= (weightmatrix[2] / weightmatrix[4]) ** 2
-                #moving the left white square
-                if conf_left == 1:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf5
-                    dE += energymatrix[4] - energymatrix[0]
-                    dw *= weightmatrix[4] / weightmatrix[0]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf2
-                    dE += energymatrix[1] - energymatrix[5]
-                    dw *= weightmatrix[1] / weightmatrix[5]
-                #moving the right white square
-                if conf_right == 2:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf5
-                    dE += energymatrix[4] - energymatrix[1]
-                    dw *= weightmatrix[4] / weightmatrix[1]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf1
-                    dE += energymatrix[0] - energymatrix[5]
-                    dw *= weightmatrix[0] / weightmatrix[5]
-                    
-                return (dE, dw, True)
-        #case in which the bottom square is updown==>up-down
-        else:
-            if conf_up != 6:
-                return (dE, dw,False)
-            elif (conf_left !=2 and conf_left!=5):
-                return (dE, dw,False)
-            elif (conf_right !=1 and conf_right!=5):
-                return (dE, dw, False)
-            else:
-                self.pattern[pos[0],pos[1],:] = conf3
-                self.pattern[( pos[0] + 2 )%( 2 * self.m_trotter ),\
-                             pos[1],\
-                             :] = conf4
-                dE += 2 * (energymatrix[2] - energymatrix[4])
-                dw *= (weightmatrix[2] / weightmatrix[4]) ** 2
-                #moving the left white square
-                if conf_left == 2:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf6
-                    dE += energymatrix[5] - energymatrix[1]
-                    dw *= weightmatrix[5] / weightmatrix[1]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] - 1 )%self.n_spins,\
-                                 :] = conf1
-                    dE += energymatrix[0] - energymatrix[4]
-                    dw *= weightmatrix[0] / weightmatrix[4]
-                #moving the right white square
-                if conf_right == 1:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf6
-                    dE += energymatrix[5] - energymatrix[0]
-                    dw *= weightmatrix[5] / weightmatrix[0]
-                else:
-                    self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
-                                 ( pos[1] + 1 )%self.n_spins,\
-                                 :] = conf2
-                    dE += energymatrix[1] - energymatrix[4]
-                    dw *= weightmatrix[1] / weightmatrix[4]
-                return (dE, dw, True)
-
-        return (dE, dw, False)
-
-
-#    def local_update(self):
-#        #introducing randomness
-#        i = rnd.randint(0, self.m_trotter*self.n_spins)
-#        i *= 2
-#        #getting random position on the white squares
-#        x = i // self.n_spins 
-#        y = i % self.n_spins + x%2
-#
-#        self.local_update_pos(np.array([x,y], dtype = int))
-#
-#        return self.createimage()
     
     
     def local_update(self,):
