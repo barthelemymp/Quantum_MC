@@ -64,10 +64,10 @@ class States:
         self.b = np.exp(self.dtau*self.Jz/4)
         self.cosh = np.cosh(self.dtau*self.Jx/2)
         self.sinh = np.sinh(self.dtau*self.Jx/2)
-        self.weightmatrix = np.array([1/self.b, 1, 1, 1,
-                                      self.b*self.cosh, self.b*self.sinh, 1,
+        self.weightmatrix = np.array([1/self.b, 1., 1., 1.,
+                                      self.b*self.cosh, self.b*self.sinh, 1.,
                                       self.b*self.sinh, self.b*self.cosh, 
-                                      1, 1, 1, 1/self.b])
+                                      1., 1., 1., 1/self.b])
         
         #initializing the image
         self.greycase = np.ones((20,20),dtype=np.uint8) * 130
@@ -152,33 +152,65 @@ class States:
         return weight
     
     
-    def splitspin(self,pos,dE,dw):
-        return
+    def splitspin(self,pos):
+        
+        energymatrix = self.energymatrix
+        weightmatrix = self.weightmatrix
+        spin = self.spin[pos[0],pos[1]]
+        
+        if self.spin[pos[0],pos[1] +1] != spin :
+            return False
+        self.spin[pos[0],pos[1]] = (spin + 1)%2
+
+        return [pos[0]+1,pos[1]],True
         
     
     def splitline(self):
         dE = 0
         dw = 1
-        n  = int(rnd.randint(0,self.n_spins)/2)*2#attention derniere ligne a checker
-        gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
+        n  = rnd.randint(0,self.n_spins)
+        #gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
         #print("randspin", n)
-        p = [0,n,gd] #[line, column, left or right]
+        p = [0,n] #[line, column, left or right]
+        pattbefore = self.spins_to_pattern()
         for i in range(2*self.m_trotter):
-            p, dE, dw, has_changed = self.splitspinfixed(p,dE,dw)
+            p,  has_changed = self.splitspin(p)
             if has_changed == False :
                 return dE, dw, False
+        pattafter = self.spins_to_pattern()
+        
+        colg = n -1
+        if n==0 :
+            for i in range(2*self.m_trotter):
+                dE += self.energymatrix[pattafter[i,n]] - self.energymatrix[pattafter[i,n]]
+                dw *= self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattafter[i,n]])
             
+            
+        elif n == self.n_spins-1:
+            for i in range(2*self.m_trotter):
+                dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattafter[i,n-1]]
+                dw *= self.weightmatrix[pattafter[i,n-1]] / (self.weightmatrix[pattafter[i,n-1]])
+        
+        else:
+            for i in range(2*self.m_trotter):
+                dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattafter[i,n-1]] + self.energymatrix[pattafter[i,n]] - self.energymatrix[pattafter[i,n]]
+                dw *= self.weightmatrix[pattafter[i,n-1]]*self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattafter[i,n-1]] * self.weightmatrix[pattafter[i,n]])
             #print("p", p)
         #print("trysplit",n, dE, dw)
         return dE, dw, True
     
     
-    def local_update_pos(self, pos):       
+    def local_update_pos(self, pos):     
+        
         """
         This method allows local updates, described in Fig.2 of the article. We will look for various type of 
         pattern, which are localised on four "white squares" in the pattern. We will call them the conf_down, 
         conf_up, conf_left, conf_right. 
         """
+        
+        
+        
+        
     
     
     def local_update(self,):
@@ -186,10 +218,56 @@ class States:
         dw = 1
         
         spinpos  = rnd.randint(0,self.n_spins)
-        mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
+        mposprim  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
+        mpos = rnd.randint(0,2*self.m_trotter)
         pos = np.array([mpos,spinpos])
-        i = mpos * self.n_spins + spinpos
-        i_init = mpos * self.n_spins + spinpos
+        
+        gd = (mpos + spinpos) % 2
+        
+        spin = self.spin[pos[0],pos[1]]
+        spinup = self.spin[pos[0]+1,pos[1]]
+        if spin == 0:
+            return 0,1,False
+        if spinup == 0:
+            return 0,1,False
+        
+        if spinpos == 0 and mpos%2 ==0:
+            return 0,1,False
+        
+        elif spinpos == n_spins-1:
+            if n_spins%2== mpos%2:
+                return 0,1,False
+            
+                
+    
+        else :
+            if (mpos + spinpos) % 2 ==0 :
+                if self.spin[pos[0],pos[1]-1] == 1 or self.spin[pos[0]+1,pos[1]-1] == 1 :
+                    return 0,1,False
+                self.spin[pos[0],pos[1]-1] =1 
+                self.spin[pos[0]+1,pos[1]-1] = 1
+                self.spin[pos[0],pos[1]] =0
+                self.spin[pos[0]+1,pos[1]] = 0
+            
+            
+            
+            
+            
+            if (mpos + spinpos) % 2 ==1 :
+                if self.spin[pos[0],pos[1]+1] == 1 or self.spin[pos[0]+1,pos[1]+1] == 1 :
+                    return 0,1,False
+                self.spin[pos[0],pos[1]+1] =1 
+                self.spin[pos[0]+1,pos[1]+1] = 1
+                self.spin[pos[0],pos[1]] =0
+                self.spin[pos[0]+1,pos[1]] = 0
+            
+            
+        
+        
+        
+        
+        
+        
         dE,dw,has_changed = self.local_update_pos(pos)
         #print("try",pos,dE, dw)
 #        while (has_changed == False and i-i_init<self.n_spins*2*self.m_trotter ):
