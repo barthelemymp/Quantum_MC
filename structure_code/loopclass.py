@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov  7 15:18:03 2018
+Created on Thu Nov 29 10:12:45 2018
 
-@author: bmeyn
+@author: etien
 """
+
 
 import numpy as np
 import numpy.random as rnd
@@ -31,17 +32,26 @@ class Loop:
         
         #this matrix describes the state of the spins along the 2D pattern
         #if self.spins[i, j] describes the spin at space = i and time = j
-        self.spins = np.zeros((2*m_trotter, n_spins))
+        self.spins = np.zeros((2*m_trotter, n_spins), dtype = int)
         
         #this matrix allows the computation of the energy and the weight 
         #it also allows the representation of the pattern given in the
         #Article (with a grey and white board, each black line is a line
         #of up spins at the corner of the tiles)
-        self.pattern = np.zeros((2*m_trotter,n_spins,6))
-        self.pattern[:,:,:]=np.nan
+        self.pattern = np.zeros((2*m_trotter,n_spins), dtype = int)
+        
+        self.p_right = np.diag(np.ones(self.n_spins, dtype = int)) + np.diag(2 * np.ones(self.n_spins - 1, dtype = int), k = -1) + np.diag([2], k = self.n_spins - 1)
+        self.p_left = np.diag(3 * np.ones(2 * self.m_trotter, dtype = int)) + np.diag(np.ones(2 * self.m_trotter - 1, dtype = int), k = 1) + np.diag([1], k = -2 * self.m_trotter + 1)
+        
+        self.p_mask = np.zeros((2*self.m_trotter, self.n_spins), dtype = int)
+        for i in range(2 * self.m_trotter):
+            for j in range(self.n_spins):
+                if (i + j + 1)%2:
+                    self.p_mask[i, j] = 1
+        self.p_mask = self.p_mask.astype(bool)
         
         #in the loop algorithm, we need to have a representation of the spins in a graph
-        self.total_graph = np.zeros((2*self.m_trotter, self.n_spins), dtype = int)
+        self.total_graph = 5 * np.ones((2*self.m_trotter, self.n_spins), dtype = int)
         
         
         #computing the energy depending on the configuration of the tiles.
@@ -50,8 +60,10 @@ class Loop:
         self.a = self.Jz/4
         self.th = self.Jx/2*np.tanh(self.dtau*self.Jx/2)
         self.coth = self.Jx/(2*np.tanh(self.dtau*self.Jx/2))
-        self.energymatrix = np.array([-self.a, -self.a, self.a+self.coth, \
-                                      self.a+self.coth, self.a+self.th, self.a+self.th])
+        self.energymatrix = (-1/self.m_trotter)*np.array([-self.a, 0, 0, 0,
+                                      self.a+self.th, self.a+self.coth, 0,
+                                      self.a+self.coth, self.a+self.th, 
+                                      0, 0, 0, -self.a])
     
         #computing the weight depending on the configuration of the tiles. 
         #Each tile has a particular weight, and one has to make the product over the white tiles 
@@ -59,8 +71,10 @@ class Loop:
         self.b = np.exp(self.dtau*self.Jz/4)
         self.cosh = np.cosh(self.dtau*self.Jx/2)
         self.sinh = np.sinh(self.dtau*self.Jx/2)
-        self.weightmatrix = np.array([1/self.b, 1/self.b, -self.b*self.sinh,\
-                                      -self.b*self.sinh, self.b*self.cosh, self.b*self.cosh])
+        self.weightmatrix = np.array([1/self.b, 1, 1, 1,
+                                      self.b*self.cosh, self.b*self.sinh, 1,
+                                      self.b*self.sinh, self.b*self.cosh, 
+                                      1, 1, 1, 1/self.b])
         
         #initializing the image
         self.greycase = np.ones((20,20),dtype=np.uint8) * 130
@@ -79,16 +93,19 @@ class Loop:
             self.case4[i,i+1]=0
         self.case6[:,:2]=0
         self.case5[:,18:]=0
-        self.cases = [self.case1, self.case2, self.case3, self.case4, self.case5, self.case6]
+        self.cases = np.array([self.case1, self.greycase, self.greycase, 
+                          self.greycase, self.case6, self.case3,
+                          self.greycase, self.case4, self.case5,
+                          self.greycase, self.greycase, self.greycase, self.case2])
         
         #computing the weight for the passage from the pattern to the graph
         #the graph 3 (cf Article, i.e. the graph along witch each spin is flipped)
         #is NOT allowed
         #The weight of each graph depending on the previous configuration of
         #the pattern is computed thanks to equation (45) from the Article
-        self.inv = np.array([[ 0.5, -0.5,  0.5], \
-                             [ 0.5,  0.5, -0.5], \
-                             [-0.5,  0.5,  0.5]])
+        self.inv = np.array([[ 0., 0.,  1.], \
+                             [ 1.,  0., -1.], \
+                             [ -1.,  1.,  1.]])
         self.w   = np.array([self.b*self.cosh, self.b*self.sinh, 1/self.b])
         self.w11 = np.dot(self.inv, self.w)[0]
         self.w12 = np.dot(self.inv, self.w)[1]
@@ -110,7 +127,10 @@ class Loop:
         Computes the Energy of the configuration. Uses self.pattern to know the tiles
         Then uses self.energymatrix to know the energy of each tile. Sum over them.
         """
-        energy = np.nansum(self.pattern*self.energymatrix)
+        pattern_energy = self.energymatrix[self.pattern]
+#        print(pattern_energy)
+        pattern_energy = pattern_energy[self.p_mask]
+        energy = np.sum(pattern_energy)
         return energy
     
     
@@ -119,8 +139,11 @@ class Loop:
         Computes the Weight of the configuration. Uses self.pattern to know the tiles
         Then uses self.weightmatrix to know the weight of each tile. Make the product of them.
         """
-        weight = np.nanprod(self.pattern*self.weightmatrix)
+        pattern_weight = self.weightmatrix[self.pattern]
+        pattern_weight = pattern_weight[self.p_mask]
+        weight = np.prod(pattern_weight)
         return weight
+    
 
     
     def spins_to_pattern(self):
@@ -128,60 +151,9 @@ class Loop:
         Given the spin configuration, turn it into a pattern configuration. Allows the
         image to be created or the graph to be computed.
         """
+        self.pattern = np.dot(self.p_left, np.dot(self.spins, self.p_right))
+    
         
-        #going over all the tiles
-        for l in range(self.m_trotter):
-            for j in range(self.n_spins):
-                
-                #initialize the tile
-                tile = np.zeros(6)
-                tile[:]=np.nan
-                
-                #black and white board, and choosing only white tiles
-                if j % 2:
-                    i = 2 * l + 1
-                else:
-                    i = 2 * l 
-                
-                #how are the spins evolving along each tiles. Each boolean tells us about
-                #if the concerned spin are up or not.
-                vertg = np.bool(self.spins[i, j] * self.spins[(i+1)%(2*self.m_trotter), j])
-                vertd = np.bool(self.spins[i, (j+1)%(self.n_spins)] * self.spins[(i+1)%(2*self.m_trotter), (j+1)%(self.n_spins)])
-                diag1 = np.bool(self.spins[i, j] * self.spins[(i+1)%(2*self.m_trotter), (j+1)%(self.n_spins)])
-                diag2 = np.bool(self.spins[i, (j+1)%(self.n_spins)] * self.spins[(i+1)%(2*self.m_trotter), j])
-
-                #going over the possible tiles
-                
-                if vertg*vertd:   #all spins are up
-                    tile[1] = 1
-                elif diag1:       #only the first diagonal
-                    tile[2] = 1
-                elif diag2:       #only the second one
-                    tile[3] = 1
-                elif vertg:       #only the left vertical
-                    tile[5] = 1
-                elif vertd:       #only the right vertical
-                    tile[4] = 1
-                else:             #non of them are up
-                    tile[0] = 1
-                
-                #at this point, the tile has been chosen
-                self.pattern[i, j] = tile
-        return
-    
-    
-    def plot_image(self):
-        """
-        
-        """
-        x, y = [], []
-        for i in range(2*self.m_trotter):
-            for j in range(self.n_spins):
-                if self.spins[i,j]:
-                    x += [i]
-                    y += [j]
-        plt.scatter(y,x)
-    
     def createimage(self):
         """
         Give the pattern representation of the configuration on the screen
@@ -198,7 +170,7 @@ class Loop:
             
             for j in range(self.n_spins):
                 if((i+j+1)%2):
-                    tile = np.nanargmax(np.array(self.pattern[i,j,:]))
+                    tile = self.pattern[i, j]
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=self.cases[tile]
                 else:
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=130
@@ -213,35 +185,37 @@ class Loop:
         into the "graph" one. Here, for a specified tle, we get an adapted graph with
         respect to the weight defined in the article and computed in self.wIJ with I : tile and J : graph
         """
+        graph = 5
         
         #first, let us be sure that the considered tile is white. If not, we name
         #the "grey" graph 5.
-        tile_array = np.array(self.pattern[pos[0],pos[1],:])
-        if not (False in np.isnan(tile_array)):
-            return 5
+        tile = [1, 0, 0, 0, 6, 3, 0, 4, 5, 0, 0, 0, 2][self.pattern[pos[0], pos[1]]]
+#        print(tile)
+        if not tile:
+            return graph
         
         #now, we are sure that at least one element of conf_array is not nan
         #we get the tile
-        tile = np.nanargmax(tile_array)
+#        tile = np.nanargmax(tile_array)
 
         #going over the possible choices
-        if tile < 2:     #the tile is of type 3. So the graph is 1 or 4
+        if tile < 3:     #the tile has a weight w[3]. So the graph is 1 or 4
             #the probality of choosing each and the choice according to it
-            prob = self.w31/self.weightmatrix[0]
+            prob = self.w31/self.w[2]
             if rnd.random() < prob :
                 graph = 1
             else:
                 graph = 4
                 
-        elif tile < 4:   #the tile is of type 2. So the graph is 2 or 4
-            prob = self.w22/self.weightmatrix[2]
+        elif tile < 5:   #the tile is of type 2. So the graph is 2 or 4
+            prob = self.w22/self.w[1]
             if rnd.random() < prob :
                 graph = 2
             else:
                 graph = 4
                 
         else:            #the tile is of type 1. So the graph is 1 or 2
-            prob = self.w11/self.weightmatrix[4]
+            prob = self.w11/self.w[0]
             if rnd.random() < prob :
                 graph = 1
             else:
@@ -328,6 +302,9 @@ class Loop:
                     return ((spin_i_minus, spin_j_minus), (pos_graph_down, pos_graph_left))
         return
     
+    
+    #on pourrait directement calculer les graphes ici en fait a voir !! 
+    
     def find_loops(self):
         done = []
         self.loops = []
@@ -361,12 +338,6 @@ class Loop:
 #                    print(bool_prob, new_loop)
 #                    print(self.spins)
     
-    
-    def spin_flip_along_loop(self, ):
-        return
-        
-    
-    
 
     def creategraph(self):
         fig, ax = plt.subplots(figsize = (10, 10))
@@ -376,16 +347,26 @@ class Loop:
             
             for j in range(self.n_spins):
 #                print(self.tile_in_graph([i, j]))
-                image[20*(l-1):20*(l),20*j:20*(j+1)]=self.graphs[self.total_graph[i,j] - 1]
-                    
+                if((i+j+1)%2):
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=self.graphs[self.total_graph[i, j] - 1]
+                else:
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=130                    
 #        print(image)
         image = np.array(image,dtype=np.uint8)
         ax.imshow(image, cmap = 'Greys_r')
         return
     
-    
-    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 200,length_cycle = 100):
+    def array_to_string(self):
         
+        st = ''
+        for i in range(2 * self.n_spins):
+            for j in range(self.m_trotter):
+                st += '1' if self.spins[i, j] else '0'
+        return st
+    
+    def Quantum_Monte_Carlo(self, n_warmup=100, n_cycles = 100000, length_cycle = 1):
+        
+        pattern_done = np.array([self.pattern])
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
@@ -395,10 +376,13 @@ class Loop:
                 self.spins_to_pattern()
                 self.set_total_graph()
                 self.find_loops()
+                if not (self.pattern in pattern_done):
+                    pattern_done += np.array([self.pattern])
             # measures
             if n >= n_warmup:
                 e = self.total_energy()
+#                if e > 0: break
                 energ[n-n_warmup] = e
-                print("ener",e)
-        print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
-        return energ
+#                print("ener",e)
+#        print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
+        return energ, pattern_done
