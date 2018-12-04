@@ -1,4 +1,4 @@
-he# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Created on Tue Nov 20 14:03:23 2018
 
@@ -61,12 +61,14 @@ class config:
         state.basic_move_simple(10,30)
         
         energ = np.zeros(n_cycles)
+        state.n_accepted = 1
+        state.n_change=1
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
-            print(n)
+            print(n, state.n_change, "local accepted", state.n_acclocal, "split accepted", state.n_accsplitline)
             # Monte Carlo moves
             for l in range(length_cycle):
-                dE, dw = state.stoch_move(0.5)
+                dE, dw = state.stoch_move(0.999)
 
                 
                 #self.autremodif
@@ -76,6 +78,7 @@ class config:
                 #state.createimage()
                 energ[n-n_warmup] = e
                 #print("ener",e)
+        
         print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
         return energ
 
