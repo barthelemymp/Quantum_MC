@@ -581,7 +581,56 @@ class States:
         conf6[:]=np.nan
         conf6[5]=1
         
-        #print("pos",pos)
+        
+#        confdown = np.nanargmax(self.pattern[pos[0]-1,pos[1],:]) + 1
+#        confup = np.nanargmax(self.pattern[( pos[0] + 1 )%( 2 * self.m_trotter ),\
+#                                              pos[1],\
+#                                              :]) + 1
+#        confleft = np.nanargmax(self.pattern[( pos[0]  )%( 2 * self.m_trotter ),\
+#                                                ( pos[1] - 1 )%self.n_spins,\
+#                                                :]) + 1
+#        confright = np.nanargmax(self.pattern[(pos[0])%( 2 * self.m_trotter ), ( pos[1] + 1 )%self.n_spins, :]) + 1
+#        #print("pos",pos)
+#        if confleft  == 2 and confright == 1 :
+#            
+#            
+#        if confleft  == 2 and confright == 5 :
+#            
+#        if confleft  == 5 and confright == 5 :
+#            
+#        if confleft  == 5 and confright == 1 :
+#            
+#            
+#            
+#        if confleft  == 1 and confright == 2 :
+#            
+#        if confleft  == 6 and confright == 2 :
+#            
+#        if confleft  == 1 and confright == 6 :
+#            
+#        if confleft  == 6 and confright == 6 :
+#            
+#        if confleft  == 2 and confright == 1 :
+#            
+#        
+#        
+#        
+#        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         #we get the conf of the white squares we are interested in
         conf_down = np.nanargmax(self.pattern[pos[0],pos[1],:]) + 1
