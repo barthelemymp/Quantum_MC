@@ -35,7 +35,7 @@ class States:
         #it also allows the representation of the pattern given in the
         #Article (with a grey and white board, each black line is a line
         #of up spins at the corner of the tiles)
-        self.pattern = np.zeros((2*m_trotter,n_spins), dtype = int)
+        self.pattern = np.zeros((2*m_trotter,n_spins-1), dtype = int)
         
         self.p_right = np.diag(np.ones(self.n_spins, dtype = int)) + np.diag(2 * np.ones(self.n_spins - 1, dtype = int), k = -1) + np.diag([2], k = self.n_spins - 1)
         self.p_left = np.diag(3 * np.ones(2 * self.m_trotter, dtype = int)) + np.diag(np.ones(2 * self.m_trotter - 1, dtype = int), k = 1) + np.diag([1], k = -2 * self.m_trotter + 1)
@@ -114,7 +114,7 @@ class States:
         fig, ax = plt.subplots(figsize = (10,10))
         
         #this array corresponds to the image
-        image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
+        image = np.zeros((20*self.m_trotter*2,20*(self.n_spins)))
         
         for i in range(self.m_trotter*2):
             l = self.m_trotter*2 - i
@@ -156,11 +156,11 @@ class States:
         
         energymatrix = self.energymatrix
         weightmatrix = self.weightmatrix
-        spin = self.spin[pos[0],pos[1]]
+        spin = self.spins[pos[0],pos[1]]
         
-        if self.spin[pos[0],pos[1] +1] != spin :
-            return False
-        self.spin[pos[0],pos[1]] = (spin + 1)%2
+        if self.spins[pos[0],pos[1] +1] != spin :
+            return pos,False
+        self.spins[pos[0],pos[1]] = (spin + 1)%2
 
         return [pos[0]+1,pos[1]],True
         
@@ -169,12 +169,16 @@ class States:
         dE = 0
         dw = 1
         n  = rnd.randint(0,self.n_spins)
+        print(n)
         #gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
         #print("randspin", n)
         p = [0,n] #[line, column, left or right]
         pattbefore = self.spins_to_pattern()
+        print(self.spins.shape)
         for i in range(2*self.m_trotter):
+            print("p",p)
             p,  has_changed = self.splitspin(p)
+            print(p,has_changed)
             if has_changed == False :
                 return dE, dw, False
         pattafter = self.spins_to_pattern()
