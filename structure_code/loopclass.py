@@ -400,7 +400,7 @@ class Loop:
                 if((i+j+1)%2):
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=self.graphs[self.total_graph[i, j] - 1]
                 else:
-                    image[20*(l-1):20*(l),20*j:20*(j+1)]=130     
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=130  
                     
         image = np.array(image)
         return image
@@ -421,14 +421,14 @@ class Loop:
            
     def Quantum_Monte_Carlo(self, n_warmup=100, n_cycles = 100000, length_cycle = 1):
         
-        pattern_done = {}
+#        pattern_done = {}
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
             print(n)
             # Monte Carlo moves
             for l in range(length_cycle):
-                pattern_done[self.pattern_to_string()] = 1
+#                pattern_done[self.pattern_to_string()] = 1
                 self.spins_to_pattern()
                 self.set_total_graph()
                 self.find_loops()
@@ -439,4 +439,4 @@ class Loop:
                 energ[n-n_warmup] = e
 #                print("ener",e)
 #        print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
-        return energ, pattern_done
+        return energ
