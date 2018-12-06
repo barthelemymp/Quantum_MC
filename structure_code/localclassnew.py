@@ -41,11 +41,14 @@ class States:
         self.p_left = np.diag(3 * np.ones(2 * self.m_trotter, dtype = int)) + np.diag(np.ones(2 * self.m_trotter - 1, dtype = int), k = 1) + np.diag([1], k = -2 * self.m_trotter + 1)
         
         self.p_mask = np.zeros((2*self.m_trotter, self.n_spins), dtype = int)
+        self.black_mask = np.ones((2*self.m_trotter, self.n_spins), dtype = int)
         for i in range(2 * self.m_trotter):
             for j in range(self.n_spins):
                 if (i + j + 1)%2:
                     self.p_mask[i, j] = 1
+                    self.black_mask[i,j] = 0
         self.p_mask = self.p_mask.astype(bool)
+        self.black_mask = self.black_mask.astype(bool)
 
         #computing the energy depending on the configuration of the tiles.
         #Each tile has a particular energy, and one has to sum over the white tiles 
@@ -96,7 +99,14 @@ class States:
     def copy(self,):
         copy = States(self.m_trotter, self.dtau, self.n_spins, self.Jx, self.Jz)
         copy.pattern = self.pattern.copy()
+        copy.spins = self.spins.copy()
         return copy
+    def spinTostring(self):
+        s = ''
+        for i in range (2*self.m_trotter):
+            for j in range (self.n_spins):
+                s+= str(self.spins[i,j])
+        return s
         
     def spins_to_pattern(self):
         """
@@ -104,6 +114,7 @@ class States:
         image to be created or the graph to be computed.
         """
         self.pattern = np.dot(self.p_left, np.dot(self.spins, self.p_right))
+        self.pattern[self.black_mask]=1
 
     def createimage(self):
         """
@@ -114,12 +125,12 @@ class States:
         fig, ax = plt.subplots(figsize = (10,10))
         
         #this array corresponds to the image
-        image = np.zeros((20*self.m_trotter*2,20*(self.n_spins)))
+        image = np.zeros((20*self.m_trotter*2,20*(self.n_spins-1)))
         
         for i in range(self.m_trotter*2):
             l = self.m_trotter*2 - i
             
-            for j in range(self.n_spins):
+            for j in range(self.n_spins-1):
                 if((i+j+1)%2):
                     tile = self.pattern[i, j]
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=self.cases[tile]
@@ -157,8 +168,8 @@ class States:
         energymatrix = self.energymatrix
         weightmatrix = self.weightmatrix
         spin = self.spins[pos[0],pos[1]]
-        
-        if self.spins[pos[0],pos[1] +1] != spin :
+            
+        if (self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]] != spin and pos[0]!=2*self.m_trotter-1) :
             return pos,False
         self.spins[pos[0],pos[1]] = (spin + 1)%2
 
@@ -169,36 +180,42 @@ class States:
         dE = 0
         dw = 1
         n  = rnd.randint(0,self.n_spins)
-        print(n)
+        
+        #print(n)
         #gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
         #print("randspin", n)
         p = [0,n] #[line, column, left or right]
-        pattbefore = self.spins_to_pattern()
-        print(self.spins.shape)
+        self.spins_to_pattern()
+        pattbefore = self.pattern
+
         for i in range(2*self.m_trotter):
-            print("p",p)
+
             p,  has_changed = self.splitspin(p)
-            print(p,has_changed)
+
             if has_changed == False :
                 return dE, dw, False
-        pattafter = self.spins_to_pattern()
+        self.spins_to_pattern()
+        pattafter = self.pattern
         
-        colg = n -1
+
         if n==0 :
             for i in range(2*self.m_trotter):
-                dE += self.energymatrix[pattafter[i,n]] - self.energymatrix[pattafter[i,n]]
-                dw *= self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattafter[i,n]])
+                dE += self.energymatrix[pattafter[i,n]] - self.energymatrix[pattbefore[i,n]]
+                dw *= self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n]])
+                #print(self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n]]))
             
             
         elif n == self.n_spins-1:
             for i in range(2*self.m_trotter):
-                dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattafter[i,n-1]]
-                dw *= self.weightmatrix[pattafter[i,n-1]] / (self.weightmatrix[pattafter[i,n-1]])
+
+                dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattbefore[i,n-1]]
+                dw *= self.weightmatrix[pattafter[i,n-1]] / (self.weightmatrix[pattbefore[i,n-1]])
         
         else:
             for i in range(2*self.m_trotter):
-                dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattafter[i,n-1]] + self.energymatrix[pattafter[i,n]] - self.energymatrix[pattafter[i,n]]
-                dw *= self.weightmatrix[pattafter[i,n-1]]*self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattafter[i,n-1]] * self.weightmatrix[pattafter[i,n]])
+                
+                dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattbefore[i,n-1]] + self.energymatrix[pattafter[i,n]] - self.energymatrix[pattbefore[i,n]]
+                dw *= self.weightmatrix[pattafter[i,n-1]]*self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n-1]] * self.weightmatrix[pattbefore[i,n]])
             #print("p", p)
         #print("trysplit",n, dE, dw)
         return dE, dw, True
@@ -217,119 +234,281 @@ class States:
         
     
     
-    def local_update(self,):
+    def local_update(self):
+
         dE = 0
         dw = 1
         
         spinpos  = rnd.randint(0,self.n_spins)
-        mposprim  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
-        mpos = rnd.randint(0,2*self.m_trotter)
+
+        mpos = rnd.randint(0,2*self.m_trotter-1)
+        
         pos = np.array([mpos,spinpos])
+        #pos = np.array([2,2])
+        #print(pos)
         
-        gd = (mpos + spinpos) % 2
+        #gd = (mpos + spinpos) % 2
         
-        spin = self.spin[pos[0],pos[1]]
-        spinup = self.spin[pos[0]+1,pos[1]]
+        spin = self.spins[pos[0],pos[1]]
+        spinup = self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]]
         if spin == 0:
+            #print("spindown")
             return 0,1,False
         if spinup == 0:
+            #print("spinup down")
             return 0,1,False
         
+        
+         # check if it is not going to change spin out of bound at left (spin < 0)       
         if spinpos == 0 and mpos%2 ==0:
+            #print("spin bord")
             return 0,1,False
         
-        elif spinpos == n_spins-1:
-            if n_spins%2== mpos%2:
+        
+        # check if it is not going to change spin out of bound at right (spin > n_spin)
+        if spinpos == self.n_spins-1: 
+            
+            if self.n_spins%2 == mpos%2:
+                #print("spin bord")
                 return 0,1,False
             
                 
     
-        else :
-            if (mpos + spinpos) % 2 ==0 :
-                if self.spin[pos[0],pos[1]-1] == 1 or self.spin[pos[0]+1,pos[1]-1] == 1 :
-                    return 0,1,False
-                self.spin[pos[0],pos[1]-1] =1 
-                self.spin[pos[0]+1,pos[1]-1] = 1
-                self.spin[pos[0],pos[1]] =0
-                self.spin[pos[0]+1,pos[1]] = 0
+        
+        #print("enter")
+        if (mpos + spinpos) % 2 ==0 :
+            #print("m+s", (mpos + spinpos), (mpos + spinpos) % 2)
+            if self.spins[pos[0],pos[1]-1] == 1 or self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]-1] == 1 :
+                #print("occupied1" )
+                return 0,1,False
+            
+            patt_mpos= mpos
+            patt_spinpos = spinpos - 1
+            self.spins_to_pattern()
+             # je calcule les energie et poids des neufs cases autour de la case noir qui m'interesse, si je suis sur un bord je prend celle de l'autre cote (comme si on etait en periodique)
+             #mais comme je fais une difference avec apres modif ces termes disparaissent
+            Ebefore = self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
+            wbefore = self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
             
             
             
+            #print("modif")
             
+            self.spins[pos[0],pos[1]-1] =1 
+            self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]-1] = 1
+            self.spins[pos[0],pos[1]] =0
+            self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]] = 0
             
-            if (mpos + spinpos) % 2 ==1 :
-                if self.spin[pos[0],pos[1]+1] == 1 or self.spin[pos[0]+1,pos[1]+1] == 1 :
-                    return 0,1,False
-                self.spin[pos[0],pos[1]+1] =1 
-                self.spin[pos[0]+1,pos[1]+1] = 1
-                self.spin[pos[0],pos[1]] =0
-                self.spin[pos[0]+1,pos[1]] = 0
+#                if mpos == 2*self.m_trotter-1 :
+#                    self.spins[0,pos[1]] = 0
+#                    self.spins[0,pos[1]-1] = 1
+#                if mpos == 0 :
+#                    self.spins[2*self.m_trotter-1,pos[1]] = 0
+#                    self.spins[2*self.m_trotter-1,pos[1]-1] = 1
             
-            
+            self.spins_to_pattern()
+            Eafter = self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
+            wafter = self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
         
         
         
         
         
+        if (mpos + spinpos) % 2 ==1 : 
+            
+            # position of the black case in the pattern description
+            #print("enter")
+            patt_mpos= mpos
+            patt_spinpos = spinpos
+            self.spins_to_pattern()
+            Ebefore = self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
+            wbefore = self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
+            
+            
+            
+            
+            
+            if self.spins[pos[0],pos[1]+1] == 1 or self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] == 1 :
+                #print("occupied",self.spins[pos[0],pos[1]+1] == 1,self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] == 1)
+                return 0,1,False
+            
+            #print("modif2")
+            #print(self.spins[pos[0],pos[1]+1])
+            self.spins[pos[0],pos[1]+1] =1
+            #print(self.spins[pos[0],pos[1]+1])
+            self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] = 1
+            self.spins[pos[0],pos[1]] =0
+            self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]] = 0
+            
+#                if mpos == 2*self.m_trotter-1 :
+#                    self.spins[0,pos[1]] = 0
+#                    self.spins[0,pos[1]+1] = 1
+#                    
+#                if mpos == 0 :
+#                    self.spins[2*self.m_trotter-1,pos[1]] = 0
+#                    self.spins[2*self.m_trotter-1,pos[1]+1] = 1
+            #print('end modif')
+            
+            self.spins_to_pattern()
+            #print(self.spins[pos[0],pos[1]+1])
+            
+            Eafter = self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
+                    self.energymatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
+            wafter = self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] * \
+                    self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
+                
         
-        dE,dw,has_changed = self.local_update_pos(pos)
-        #print("try",pos,dE, dw)
-#        while (has_changed == False and i-i_init<self.n_spins*2*self.m_trotter ):
-#            i+=2
-##            spinpos  = rnd.randint(0,self.n_spins)
-##            mpos  = 2*rnd.randint(0,self.m_trotter) + spinpos % 2
-#            spinpos  = i%self.n_spins
-#            mpos  = (i//self.n_spins)%(2*self.m_trotter)
-#            if(spinpos + mpos % 2 ==1):
-#                spinpos += 1
-#                spinpos = spinpos%self.n_spins
-#                i+=1
-#            pos = np.array([mpos,spinpos])
-#            dE,dw,has_changed =self.local_update_pos(pos)
-            #print("trylocal",pos,dE, dw, has_changed)
 
-        return dE,dw,has_changed
-    
-    def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change
-        dw = 1
-        dE = 0
-        for i in range(n_splitline):
-            dEtrans, dwtrans = self.splitline()
-            #print("line split")
-            dE += dEtrans
-            dw *= dwtrans
-        for j in range(n_localupdate):
-            dEtrans, dwt = self.local_update()
-            #print("locally updated")
-            dE += dEtrans
-            dw *= dwtrans
+        dE= Eafter - Ebefore
+        dw = wafter / wbefore
+        
+        return dE, dw, True
             
-    def basic_move(self,n_splitline,n_localupdate):
+            
+        
+        
+        
+        
+
+    
+#    def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change
+#        dw = 1
+#        dE = 0
+#        for i in range(n_splitline):
+#            dEtrans, dwtrans = self.splitline()
+#            #print("line split")
+#            dE += dEtrans
+#            dw *= dwtrans
+#        for j in range(n_localupdate):
+#            dEtrans, dwt = self.local_update()
+#            #print("locally updated")
+#            dE += dEtrans
+#            dw *= dwtrans
+#            
+#    def basic_move(self,n_splitline,n_localupdate):
+#        dw = 1
+#        dE = 0
+#        test = self.copy()
+#        for i in range(n_splitline):
+#            dEtrans, dwtrans,_ = test.splitline()
+#            #print("line split")
+#            dE += dEtrans
+#            dw *= dwtrans
+#            #print("split",dE, dw)
+#        for j in range(n_localupdate):
+#            dEtrans, dwtrans = test.local_update()
+#            #print("locally updated")
+#            dE += dEtrans
+#            dw *= dwtrans
+#            #print("loc",dE, dw)
+#        #print("fin",dE, dw)
+#        choice = rnd.random()
+#        if (dw>choice):
+#            self.pattern = test.pattern
+#            #print("change accepted",dE, dw)
+#            return dE, dw
+#        return 0 ,1
+#    
+    def stoch_move(self,threshold):
+        
         dw = 1
         dE = 0
         test = self.copy()
-        for i in range(n_splitline):
-            dEtrans, dwtrans,_ = test.splitline()
-            #print("line split")
-            dE += dEtrans
-            dw *= dwtrans
-            #print("split",dE, dw)
-        for j in range(n_localupdate):
-            dEtrans, dwtrans = test.local_update()
-            #print("locally updated")
-            dE += dEtrans
-            dw *= dwtrans
-            #print("loc",dE, dw)
-        #print("fin",dE, dw)
-        choice = rnd.random()
-        if (dw>choice):
+        a = rnd.rand()
+        b = rnd.rand()
+        #print(a)
+        if (a<threshold):
+            dEt,dwt, has_changed= test.local_update()
+            dE += dEt
+            dw *= dwt
+            mtype = "local"
+            #print(mtype, dw)
+        else:
+            dEt,dwt, has_changed= test.splitline()
+            dE += dEt
+            dw *= dwt
+            mtype = "splitline"
+            #print("try split b = ",b,"dw = ",dw)
+#        dw2 = test.weight()/self.weight()
+#        if (dw != dw2):
+        #print("try", mtype, has_changed,dw)
+        if has_changed == False:
+            return 0,1
+        if (dw>b):
             self.pattern = test.pattern
-            #print("change accepted",dE, dw)
+            self.spins = test.spins
+            #print("change accepted "+mtype,dE, dw)
+
+
             return dE, dw
+        #print("aborted",mtype)
         return 0 ,1
-    
-    def stoch_move(self,threshold):
-        self.n_change +=1
+        
+
+    def stoch_move_forced(self,threshold):
+        
         dw = 1
         dE = 0
         test = self.copy()
@@ -351,20 +530,20 @@ class States:
 #        dw2 = test.weight()/self.weight()
 #        if (dw != dw2):
 #            print("alert", mtype, dw,dw2)
-        if has_changed == False:
-            return 0,1
-        if (dw>b):
-            self.pattern = test.pattern
-            #print("change accepted "+mtype,dE, dw)
-            self.n_accepted += 1
-            if mtype == "splitline":
-                self.n_accsplitline += 1
-            if mtype == "local":
-                self.n_acclocal +=1
-            return dE, dw
-        #print("aborted",mtype)
-        return 0 ,1
         
+        if has_changed == False:
+            #print(mtype, dw, has_changed)
+            #self.createimage()
+            return 0,1
+        if (has_changed == True):
+            self.pattern = test.pattern
+            self.spins = test.spins
+            #print(mtype, dw, has_changed)
+            #self.createimage()
+        
+        return dE ,dw
+
+
 
 #    def local_update(self):
 #        #introducing randomness
