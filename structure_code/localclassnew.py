@@ -234,14 +234,14 @@ class States:
         
     
     
-    def local_update(self):
+    def local_update(self,):
 
         dE = 0
         dw = 1
         
         spinpos  = rnd.randint(0,self.n_spins)
 
-        mpos = rnd.randint(0,2*self.m_trotter-1)
+        mpos = rnd.randint(0,2*self.m_trotter)
         
         pos = np.array([mpos,spinpos])
         #pos = np.array([2,2])
