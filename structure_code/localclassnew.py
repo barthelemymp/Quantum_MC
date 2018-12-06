@@ -101,6 +101,12 @@ class States:
         copy.pattern = self.pattern.copy()
         copy.spins = self.spins.copy()
         return copy
+    def spinTostring(self):
+        s = ''
+        for i in range (2*self.m_trotter):
+            for j in range (self.n_spins):
+                s+= str(self.spins[i,j])
+        return s
         
     def spins_to_pattern(self):
         """
@@ -175,7 +181,7 @@ class States:
         dw = 1
         n  = rnd.randint(0,self.n_spins)
         
-        print(n)
+        #print(n)
         #gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
         #print("randspin", n)
         p = [0,n] #[line, column, left or right]
@@ -196,7 +202,7 @@ class States:
             for i in range(2*self.m_trotter):
                 dE += self.energymatrix[pattafter[i,n]] - self.energymatrix[pattbefore[i,n]]
                 dw *= self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n]])
-                print(self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n]]))
+                #print(self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n]]))
             
             
         elif n == self.n_spins-1:
@@ -228,32 +234,34 @@ class States:
         
     
     
-    def local_update(self,):
+    def local_update(self):
 
         dE = 0
         dw = 1
         
         spinpos  = rnd.randint(0,self.n_spins)
 
-        mpos = rnd.randint(0,2*self.m_trotter)
+        mpos = rnd.randint(0,2*self.m_trotter-1)
+        
         pos = np.array([mpos,spinpos])
-        print(pos)
+        #pos = np.array([2,2])
+        #print(pos)
         
         #gd = (mpos + spinpos) % 2
         
         spin = self.spins[pos[0],pos[1]]
         spinup = self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]]
         if spin == 0:
-            print("spindown")
+            #print("spindown")
             return 0,1,False
         if spinup == 0:
-            print("spinup down")
+            #print("spinup down")
             return 0,1,False
         
         
          # check if it is not going to change spin out of bound at left (spin < 0)       
         if spinpos == 0 and mpos%2 ==0:
-            print("spin bord")
+            #print("spin bord")
             return 0,1,False
         
         
@@ -261,16 +269,17 @@ class States:
         if spinpos == self.n_spins-1: 
             
             if self.n_spins%2 == mpos%2:
-                print("spin bord")
+                #print("spin bord")
                 return 0,1,False
             
                 
     
         
-        print("enter")
+        #print("enter")
         if (mpos + spinpos) % 2 ==0 :
-            if self.spins[pos[0],pos[1]-1] == 1 or self.spins[pos[0]+1,pos[1]-1] == 1 :
-                print("occupied")
+            #print("m+s", (mpos + spinpos), (mpos + spinpos) % 2)
+            if self.spins[pos[0],pos[1]-1] == 1 or self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]-1] == 1 :
+                #print("occupied1" )
                 return 0,1,False
             
             patt_mpos= mpos
@@ -299,7 +308,7 @@ class States:
             
             
             
-            print("modif")
+            #print("modif")
             
             self.spins[pos[0],pos[1]-1] =1 
             self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]-1] = 1
@@ -340,7 +349,7 @@ class States:
         if (mpos + spinpos) % 2 ==1 : 
             
             # position of the black case in the pattern description
-            print("enter")
+            #print("enter")
             patt_mpos= mpos
             patt_spinpos = spinpos
             self.spins_to_pattern()
@@ -367,14 +376,14 @@ class States:
             
             
             
-            if self.spins[pos[0],pos[1]+1] == 1 or self.spins[pos[0]+1,pos[1]+1] == 1 :
-                print("occupied")
+            if self.spins[pos[0],pos[1]+1] == 1 or self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] == 1 :
+                #print("occupied",self.spins[pos[0],pos[1]+1] == 1,self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] == 1)
                 return 0,1,False
             
-            print("modif")
-            print(self.spins[pos[0],pos[1]+1])
+            #print("modif2")
+            #print(self.spins[pos[0],pos[1]+1])
             self.spins[pos[0],pos[1]+1] =1
-            print(self.spins[pos[0],pos[1]+1])
+            #print(self.spins[pos[0],pos[1]+1])
             self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] = 1
             self.spins[pos[0],pos[1]] =0
             self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]] = 0
@@ -386,10 +395,10 @@ class States:
 #                if mpos == 0 :
 #                    self.spins[2*self.m_trotter-1,pos[1]] = 0
 #                    self.spins[2*self.m_trotter-1,pos[1]+1] = 1
-            print('end modif')
+            #print('end modif')
             
             self.spins_to_pattern()
-            print(self.spins[pos[0],pos[1]+1])
+            #print(self.spins[pos[0],pos[1]+1])
             
             Eafter = self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
                     self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
@@ -484,7 +493,7 @@ class States:
             #print("try split b = ",b,"dw = ",dw)
 #        dw2 = test.weight()/self.weight()
 #        if (dw != dw2):
-#            print("alert", mtype, dw,dw2)
+        #print("try", mtype, has_changed,dw)
         if has_changed == False:
             return 0,1
         if (dw>b):
@@ -497,6 +506,44 @@ class States:
         #print("aborted",mtype)
         return 0 ,1
         
+
+    def stoch_move_forced(self,threshold):
+        
+        dw = 1
+        dE = 0
+        test = self.copy()
+        a = rnd.rand()
+        b = rnd.rand()
+        #print(a)
+        if (a<threshold):
+            dEt,dwt, has_changed= test.local_update()
+            dE += dEt
+            dw *= dwt
+            mtype = "local"
+            #print(mtype, dw)
+        else:
+            dEt,dwt, has_changed= test.splitline()
+            dE += dEt
+            dw *= dwt
+            mtype = "splitline"
+            #print("try split b = ",b,"dw = ",dw)
+#        dw2 = test.weight()/self.weight()
+#        if (dw != dw2):
+#            print("alert", mtype, dw,dw2)
+        
+        if has_changed == False:
+            #print(mtype, dw, has_changed)
+            #self.createimage()
+            return 0,1
+        if (has_changed == True):
+            self.pattern = test.pattern
+            self.spins = test.spins
+            #print(mtype, dw, has_changed)
+            #self.createimage()
+        
+        return dE ,dw
+
+
 
 #    def local_update(self):
 #        #introducing randomness
