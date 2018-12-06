@@ -71,6 +71,9 @@ class Chain:
         
         state_flip = np.array([])
         
+        if (k == self.L - 1) and not(self.periodic):
+            return 0
+        
         #if up - up, the element matrix is non zero only for pair_state_j = up - up
         if np.array_equal(pair, upup):
             return self.Jz/4 * np.array_equal(state_i, state_j)
@@ -160,8 +163,9 @@ class Chain:
 #c = Chain(8, -2, -2, 1, periodic = True)
 #c.set_eigenvalues()
 #print(c.get_mean_energy())
-chain = Chain(4, 5, 1, 0.4)
-exact = chain.get_mean_energy()
+chain = Chain(4, 0., 1., 1., periodic = False)
+exact = chain.get_fundamental()
+print(chain.beta, chain.Jx, chain.Jz, exact)
 
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
     with open(s, 'w') as fichier:

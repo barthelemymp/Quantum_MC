@@ -104,16 +104,16 @@ class Loop:
         #is NOT allowed
         #The weight of each graph depending on the previous configuration of
         #the pattern is computed thanks to equation (45) from the Article
-        self.inv = np.array([[ 0., 0.,  1.], \
-                             [ 1.,  0., -1.], \
-                             [ -1.,  1.,  1.]])
+        self.inv = 0.5 * np.array([[ 1., -1.,  1.], \
+                                   [ 1.,  1., -1.], \
+                                   [ -1.,  1.,  1.]])
         self.w   = np.array([self.b*self.cosh, self.b*self.sinh, 1/self.b])
         self.w11 = np.dot(self.inv, self.w)[0]
         self.w12 = np.dot(self.inv, self.w)[1]
         self.w24 = np.dot(self.inv, self.w)[2]
         self.w22 = np.dot(self.inv, self.w)[1]
         self.w31 = np.dot(self.inv, self.w)[0]
-        self.w34 = np.dot(self.inv, self.w)[2]
+        self.w34 = self.w24
 #        self.w11 = 0.5
 #        self.w12 = 0.5
 #        self.w24 = 0.5
@@ -125,8 +125,12 @@ class Loop:
         self.graph1 = self.case2
         self.graph2 = np.transpose(self.case2)
         self.graph3 = np.ones((20,20), dtype = np.uint8)*255
-#        self.graph4 = self.graph3
-        self.graph4 = self.case3/2 + self.case4/2
+        self.graph4 = np.ones((20,20))*255
+        for i in range(19):
+            self.graph4[i,19-i]=0
+            self.graph4[i,18-i]=0
+            self.graph4[i,i]=0
+            self.graph4[i,i+1]=0
         self.graphs = [self.graph1, self.graph2, self.graph3, self.graph4, self.greycase]
 
 
@@ -211,13 +215,9 @@ class Loop:
         #going over the possible choices
         if tile < 3:     #the tile has a weight w[3]. So the graph is 1 or 4
             #the probality of choosing each and the choice according to it
-            prob = self.w31/self.w[2]
-            if rnd.random() < prob :
-                graph = 1
-            else:
-                graph = 4
+            graph = 1
                 
-        elif tile < 5:   #the tile is of type 2. So the graph is 2 or 4
+        elif 2 < tile < 5:   #the tile is of type 2. So the graph is 2 or 4
             prob = self.w22/self.w[1]
             if rnd.random() < prob :
                 graph = 2
@@ -419,7 +419,7 @@ class Loop:
         self.set_total_graph()
         self.find_loops()
            
-    def Quantum_Monte_Carlo(self, n_warmup=100, n_cycles = 100000, length_cycle = 1):
+    def Quantum_Monte_Carlo(self, n_warmup=100, n_cycles = 10000, length_cycle = 1):
         
 #        pattern_done = {}
         energ = np.zeros(n_cycles)
