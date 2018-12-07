@@ -218,7 +218,7 @@
 	The final condition is then
 	\begin{equation}
 		\centering
-		J_{x} > |J_{z}|
+		J_{x} > |J_{z}| > 0
 	\end{equation}
 	If ever $|J_{z}|$ is higher than $J_{x}$, the algorithm can be implemented with another type of graph, called $G = 3$, that propagates the loop along all the arrows, which means all the spins on the tile are flipped. This is a graph accessible by all the vertex plaquettes, which allows a new system (\ref{systemsg}) and a supplementary degree of freedom to set the weights $V(G)$. This option will not be considered in our algorithm.
 	
@@ -260,6 +260,11 @@
 		\end{figure}
 		\item $find\_next(pos, graph)$ : This method is used to get the loops from the graph. The $pos$ and $graph$ parameters corresponds respectively to the position of a spin and the one of a graph. The method returns a new spin position and a new graph position after propagating the loop through the given $graph$ from the $spin$ position. For instance, if the graph is $G = 1$, $i.e.$ vertical, and the spin is on the upper left side on the graph, the method will return the spin just below the first spin and the graph down left the first graph. 
 		\begin{figure}[!h]
+			\centering
+			\includegraphics[]{firstgraph.png}
+			\includegraphics[]{twograph.png}
+			\includegraphics[]{secondgraph.png}
+			\caption{Ensemble of two graphs; the left graph with the blue spin position will give the right graph with the blue spin position through $find\_next()$}
 			
 		\end{figure}
 		\item $find\_loops()$ : This method will find all the loops and flip them with probability $\frac{1}{2}$. It goes over all the spin, and when any spin is not already in a loop, is uses the method $find\_next()$ to know the following spin in the associated loop, thus until is goes back to the same spin. At each step, is stores the spin to know which spins have already been treated. \\
@@ -323,6 +328,7 @@
 		$1.0$ & $-1.197217$ & $-1.149319 \pm 0.013671$ \\ \hline
 	\end{tabular} 
 	\newline
+	
 
 
 \end{document}
