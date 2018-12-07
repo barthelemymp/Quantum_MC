@@ -153,7 +153,7 @@
 	\end{figure}
 
 	We can observe that the correlation between two states requires more and more moves to disappear when m rises. This is due to two factors: firstly when m rises the system get bigger and therefore you need more accepted moves to de-correlate, secondly the weights of the kinks  decrease which means that less and less moves are accepted.
-	This has the effect of underestimating the standard deviation.
+
 	If we look at these functions more precisely, we can find the proper cycle length, which guarantees that two measures are not correlated.
 	We find :
 	\begin{itemize}
@@ -167,18 +167,19 @@
 
 	
 	The following results are found:
-	
-	Energy for m=2: -0.6393578437601745 +/- 0.002507393542860798
-	Energy for m=3: -0.6387051296013677 +/- 0.002749339051345642
-	Energy for m=4: -0.6380826437580377 +/- 0.0028694731132348273
-	
-		 	
+	\begin{itemize}
+	\item[]Energy for m=2: -0.6393578437601745 +/- 0.002507393542860798
+	\item[]Energy for m=3: -0.6387051296013677 +/- 0.002749339051345642
+	\item[]Energy for m=4: -0.6380826437580377 +/- 0.0028694731132348273
+	\end{itemize}
 		 
 
 
 
 	
 	\subsection{limits}
+	Several problems remains with this algorithm. Firstly as we have seen, it can only works on open border condition.
+	Moreover i
 
 
 
@@ -437,6 +438,20 @@
 	\paragraph{Ergodicity} In order to test our algorithm, we counted the number of different patterns that could be reached. If the algorithm is ergodic, is reaches all those patterns, that we are able to count. The script $check\_loop\_ergodicity.py$ allowed us to verify this property. 
 	
 	\paragraph{Autocorrelation}
+	Let us show on figure \ref{meanenergylooplarger} the mean energy depending on the number of moves. We use the measures produced by the script \\ $compute\_x$=$z$=$1\_beta1.py$. Those are lists of $1e7$ measures for $J_x=J_z=1$ and $\beta=1$, but only the first 1000 moves are shown, it is on this time scale that the mean energy varies a lot. It can be seen that depending on the value of $m\_trotter$, the mean energy converges towards a different limit. This will be studied in the following paragraph. 
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=12cm]{mean_energy_evolution_loop_x=z=1_m2-7.png}
+		\caption{ }
+		\label{meanenergylooplarger}
+	\end{figure}
+	The script $loop\_result.ipynb$ delivers the figure \ref{meanenergylooplarger} and \ref{autocorrloopxy}. The following figure directly computes the autocorrelation in the same way as in the local algorithm. One can observed that the autocorrelation is quite small, with an advised $length\_cycle$ at $10$.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=12cm]{autocorr_loop_x=y.png}
+		\caption{ }
+		\label{autocorrloopxy}
+	\end{figure}
 	
 	\paragraph{Result dependence on m}
 	For a given number of spins and a given division of the imaginary time, there is a given number of configuration of the spins. Each has a weight. The Quantum Monte Carlo computation of the energy returns an energy than can be predicted for low values of $n\_spins$ and $m\_trotter$. Those predictable energies were given to us by M. Ferrero. \\ The parameters are :
@@ -448,14 +463,15 @@
 			\Delta\tau & \in [\frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \frac{1}{4}, \frac{1}{5}, \frac{1}{6}, \frac{1}{7}, ]
 		\end{split}
 	\end{equation}
-	The following figure \ref{varymx=y}, given by the script $show_ThvsComp.py$, shows the theoretical values for the energy on the orange dashed line. The energies are then computed by the loop algorithm with $1e7$ measures. The error-bars are shown.
+	The following figure \ref{varymx=y}, given by the script $show\_ThvsComp.py$, shows the theoretical values for the energy on the orange dashed line. The energies are then computed by the loop algorithm with $1e7$ measures. The error-bars are shown.
 	\begin{figure}[!h]
 		\centering
-		\includegraphics[width=15cm]{ThvsComp_x=z=1_m2-8.png}
+		\includegraphics[width=12cm]{ThvsComp_x=z=1_m2-8.png}
+		\caption{ }
 		\label{varymx=y}
 	\end{figure}
 	
-	
+	\newpage
 	\subsubsection{Case $J_{x} > |J_{z}$|}
 	
 	\paragraph{Parameters} For this case, all graphs are considered.
@@ -476,7 +492,15 @@
 		$0.9$ & $-1.081434$ & $-1.122287 \pm 0.014313$ \\ \hline
 		$1.0$ & $-1.197217$ & $-1.149319 \pm 0.013671$ \\ \hline
 	\end{tabular} 
+	
+	\paragraph{Other results}
+	Due to time of computation, major results will be given during the oral.
 	\newline
+	
+	\newpage
+	\section{Conclusion}
+	Thanks to the power of the loop algorithm, one can compute the mean energy with a very low $length\_cycle$ and a high acceptance rate. Quite rapidly, as shown in figure \ref{meanenergylooplarger}, the mean energy converges towards the limit. 
+	
 	
 
 
