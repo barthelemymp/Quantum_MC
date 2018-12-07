@@ -28,15 +28,15 @@ plt.errorbar(x, y, yerr=yerr)
 """
 
 
-loop = lp.Loop(4, 0.5, 4, 5., 0.5)
+loop = lp.Loop(4, 0.25, 4, 1., 0.5)
 print(loop.w, loop.w11, loop.w12, loop.w22, loop.w24, loop.w31, loop.w34)
 
-energy = loop.Quantum_Monte_Carlo(n_cycles = 1000)
+energy = loop.Quantum_Monte_Carlo(n_cycles = 100000)
 print('beta = ' + str(loop.m_trotter * loop.dtau) + '\nJx = ' + str(loop.Jx) +
       '\nJz = ' + str(loop.Jz) + '\nenergy = ' + str(np.mean(energy)))
 
-fig = plt.figure(figsize = (10,15))
-plt.imshow(loop.creategraph(), cmap = 'Greys_r')
+#fig = plt.figure(figsize = (10,15))
+#plt.imshow(loop.creategraph(), cmap = 'Greys_r')
 
 #def make_frame(i):
 #    loop.QMC_step()

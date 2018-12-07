@@ -114,12 +114,7 @@ class Loop:
         self.w22 = np.dot(self.inv, self.w)[1]
         self.w31 = np.dot(self.inv, self.w)[0]
         self.w34 = self.w24
-#        self.w11 = 0.5
-#        self.w12 = 0.5
-#        self.w24 = 0.5
-#        self.w22 = 0.5
-#        self.w31 = 0.5
-#        self.w34 = 0.5
+
         
         #initializing the graphs
         self.graph1 = self.case2
@@ -140,7 +135,6 @@ class Loop:
         Then uses self.energymatrix to know the energy of each tile. Sum over them.
         """
         pattern_energy = self.energymatrix[self.pattern]
-#        print(pattern_energy)
         pattern_energy = pattern_energy[self.p_mask]
         energy = np.sum(pattern_energy)
         return energy
@@ -215,7 +209,11 @@ class Loop:
         #going over the possible choices
         if tile < 3:     #the tile has a weight w[3]. So the graph is 1 or 4
             #the probality of choosing each and the choice according to it
-            graph = 1
+            prob = self.w31/self.w[2]
+            if rnd.random() < prob :
+                graph = 1
+            else:
+                graph = 4
                 
         elif 2 < tile < 5:   #the tile is of type 2. So the graph is 2 or 4
             prob = self.w22/self.w[1]
@@ -388,9 +386,6 @@ class Loop:
         Give the graph representation of the configuration
         """
         
-        #initializing
-#        fig, ax = plt.subplots(figsize = (10, 10))
-        
         #this array is the image
         image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
         for i in range(self.m_trotter*2):
@@ -404,7 +399,6 @@ class Loop:
                     
         image = np.array(image)
         return image
-#        ax.imshow(image, cmap = 'Greys_r')
     
     
     def pattern_to_string(self):
@@ -418,25 +412,20 @@ class Loop:
         self.spins_to_pattern()
         self.set_total_graph()
         self.find_loops()
+        
+        
            
     def Quantum_Monte_Carlo(self, n_warmup=100, n_cycles = 10000, length_cycle = 1):
         
-#        pattern_done = {}
         energ = np.zeros(n_cycles)
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
             print(n)
             # Monte Carlo moves
             for l in range(length_cycle):
-#                pattern_done[self.pattern_to_string()] = 1
-                self.spins_to_pattern()
-                self.set_total_graph()
-                self.find_loops()
+                self.QMC_step()
             # measures
             if n >= n_warmup:
                 e = self.total_energy()
-#                if e > 0: break
                 energ[n-n_warmup] = e
-#                print("ener",e)
-#        print('Energy:', np.mean(energ), '+/-', np.std(energ)/np.sqrt(len(energ)))
         return energ
