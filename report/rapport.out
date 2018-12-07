@@ -1,12 +1,12 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
 \BOOKMARK [1][-]{section.2}{Local Algorithm}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{description}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{domain of validity}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.1}{Description}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Domain of validity}{section.2}% 4
 \BOOKMARK [3][-]{subsubsection.2.2.1}{Winding number}{subsection.2.2}% 5
-\BOOKMARK [3][-]{subsubsection.2.2.2}{straight line only can be flipped}{subsection.2.2}% 6
-\BOOKMARK [2][-]{subsection.2.3}{first results}{section.2}% 7
-\BOOKMARK [2][-]{subsection.2.4}{autocorrelation function}{section.2}% 8
-\BOOKMARK [2][-]{subsection.2.5}{limits}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Straight line only can be flipped}{subsection.2.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{First results}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.4}{Autocorrelation function}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.5}{Limits}{section.2}% 9
 \BOOKMARK [1][-]{section.3}{Loop Algorithm}{}% 10
 \BOOKMARK [2][-]{subsection.3.1}{Failure of the local algorithm}{section.3}% 11
 \BOOKMARK [3][-]{subsubsection.3.1.1}{Winding number}{subsection.3.1}% 12
