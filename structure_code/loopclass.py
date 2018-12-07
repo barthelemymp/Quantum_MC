@@ -8,7 +8,6 @@ Created on Thu Nov 29 10:12:45 2018
 
 import numpy as np
 import numpy.random as rnd
-import matplotlib.pyplot as plt
 
 class Loop:
 
@@ -165,9 +164,6 @@ class Loop:
         Give the pattern representation of the configuration on the screen
         """
         
-        #initializing the figure
-#        fig, ax = plt.subplots(figsize = (10,10))
-        
         #this array corresponds to the image
         image = np.zeros((20*self.m_trotter*2,20*self.n_spins))
         
@@ -184,7 +180,6 @@ class Loop:
         image = np.array(image)
         
         return image
-#        ax.imshow(image, cmap = "Greys_r")
 
                 
     def tile_in_graph(self, pos):
@@ -193,19 +188,17 @@ class Loop:
         into the "graph" one. Here, for a specified tle, we get an adapted graph with
         respect to the weight defined in the article and computed in self.wIJ with I : tile and J : graph
         """
+        #initializing the graph
         graph = 5
         
-        #first, let us be sure that the considered tile is white. If not, we name
-        #the "grey" graph 5.
+        #getting the tile
         tile = [1, 0, 0, 0, 6, 3, 0, 4, 5, 0, 0, 0, 2][self.pattern[pos[0], pos[1]]]
-#        print(tile)
+        
+        #if the tile is 0
         if not tile:
             return graph
         
-        #now, we are sure that at least one element of conf_array is not nan
-        #we get the tile
-#        tile = np.nanargmax(tile_array)
-
+        
         #going over the possible choices
         if tile < 3:     #the tile has a weight w[3]. So the graph is 1 or 4
             #the probality of choosing each and the choice according to it
@@ -402,6 +395,9 @@ class Loop:
     
     
     def pattern_to_string(self):
+        """
+        Transforms self.spins into a string
+        """
         st = ''
         for i in range(2 * self.m_trotter):
             for j in range(self.n_spins):
@@ -409,6 +405,10 @@ class Loop:
         return st
     
     def QMC_step(self):
+        """
+        Make a Monte Carlo move. First sets the pattern, then the total_graph.
+        The spin flip is made during the find_loops() method. 
+        """
         self.spins_to_pattern()
         self.set_total_graph()
         self.find_loops()
