@@ -8,6 +8,7 @@ Created on Wed Nov  7 15:18:03 2018
 import numpy as np
 import numpy.random as rnd
 import matplotlib.pyplot as plt
+rnd.seed(10)
 
 class States:
     """A spin tab in position/imaginary time space"""
@@ -40,10 +41,10 @@ class States:
         self.p_right = np.diag(np.ones(self.n_spins, dtype = int)) + np.diag(2 * np.ones(self.n_spins - 1, dtype = int), k = -1) + np.diag([2], k = self.n_spins - 1)
         self.p_left = np.diag(3 * np.ones(2 * self.m_trotter, dtype = int)) + np.diag(np.ones(2 * self.m_trotter - 1, dtype = int), k = 1) + np.diag([1], k = -2 * self.m_trotter + 1)
         
-        self.p_mask = np.zeros((2*self.m_trotter, self.n_spins), dtype = int)
-        self.black_mask = np.ones((2*self.m_trotter, self.n_spins), dtype = int)
+        self.p_mask = np.zeros((2*self.m_trotter, self.n_spins-1), dtype = int)
+        self.black_mask = np.ones((2*self.m_trotter, self.n_spins-1), dtype = int)
         for i in range(2 * self.m_trotter):
-            for j in range(self.n_spins):
+            for j in range(self.n_spins-1):
                 if (i + j + 1)%2:
                     self.p_mask[i, j] = 1
                     self.black_mask[i,j] = 0
@@ -113,7 +114,10 @@ class States:
         Given the spin configuration, turn it into a pattern configuration. Allows the
         image to be created or the graph to be computed.
         """
+
         self.pattern = np.dot(self.p_left, np.dot(self.spins, self.p_right))
+        self.pattern = self.pattern[:,:self.n_spins-1]
+
         self.pattern[self.black_mask]=1
 
     def createimage(self):
@@ -146,9 +150,14 @@ class States:
         Computes the Energy of the configuration. Uses self.pattern to know the tiles
         Then uses self.energymatrix to know the energy of each tile. Sum over them.
         """
+        #open_pattern = self.pattern[:,:self.n_spins-2]
         pattern_energy = self.energymatrix[self.pattern]
         pattern_energy = pattern_energy[self.p_mask]
         energy = np.sum(pattern_energy)
+        
+#        pattern_energy = self.energymatrix[open_pattern]
+#        pattern_energy = pattern_energy[self.p_mask]
+#        energy = np.sum(pattern_energy)
         return energy
     
     
@@ -187,6 +196,10 @@ class States:
         p = [0,n] #[line, column, left or right]
         self.spins_to_pattern()
         pattbefore = self.pattern
+        
+#        ebefore=self.total_energy()
+#        wbefore = self.weight()
+#        print(ebefore,wbefore)
 
         for i in range(2*self.m_trotter):
 
@@ -195,8 +208,16 @@ class States:
             if has_changed == False :
                 return dE, dw, False
         self.spins_to_pattern()
+
         pattafter = self.pattern
         
+#        eafter=self.total_energy()
+#        wafter = self.weight()
+#        print(eafter,wafter)
+        
+#        de2 = eafter - ebefore
+#        dw2 = wafter / wbefore
+#        
 
         if n==0 :
             for i in range(2*self.m_trotter):
@@ -234,7 +255,7 @@ class States:
         
     
     
-    def local_update(self,):
+    def local_update(self):
 
         dE = 0
         dw = 1
