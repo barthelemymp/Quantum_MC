@@ -14,17 +14,15 @@
 
 \begin{document}
 	\section{Local Algorithm}
+	\subsection{description}
 	This section focuses on a way to move through the configurations.
 	The local Algorithm need to implement two distinct moves:
-	\begin{enumerate}
-		\item{the splitline move}jhasdhhjsd
-		\item{the kink move} hdhdhhd
-	\section{Loop Algorithm}
-	In this section, we will discuss the loop algorithm, introduced in the Assaad and Evertz article page 12. 
+	\begin{itemize}
+		\item{the splitline move} This move is supposed to inverse a complete line. To be implemented we firstly chose a spin, then check if the all the spins upward have the same value, and in that case invert all opf them.
+		
+		\item{the kink move} This move move represents the effect of the quantic spins. The part Jx and Jy create variation from the usual spin model. It is taken in account with this move, which flip the 4 spins around a black case, if the two left spins are the same and are the oposite of the two right spins.
 	
-	\subsection{Failure of the local algorithm}
-	The previous algorithm is not reliable for the three following reasons.
-	
+	\subsection{domain of validity}
 	\subsubsection{Winding number}
 	It can not deal with periodic boundary conditions. Indeed, because the updates are either local or along a temporary line, the winding number is fixed. The winding number is an integer counting the number of period that the world-line takes to return to the same position. 
 	\begin{figure}[!h]
@@ -34,6 +32,35 @@
 		\caption{Configurations with W = 2 (left) and W = 1 (right)}
 		\label{winding}			
 	\end{figure}
+	
+		
+	\end{itemize}
+
+	\subsubsection{straight line only can be flipped}
+	After a few attempts to split any world-line we only add wrong result. Indded we realized it caused an error in the detailed balance.
+	Indeed if we start from the following situation 1 and split the worldline 3 we get to the situation 2.
+	
+	From the situation 2 it is not possible to come back at the situation 1 with a simple splitline. Indeed such move only creates situation 3. To do so a splitline and a kink move is mandatory. The detailed balance is in this case unbalanced.
+	The solution is then to only accept to flip straight world-line. 
+	
+	and we split the line 
+	
+
+	This algorithms 
+	\subsection{results}
+	For the proper parameter the algorithm enable to compute the mean energy. In the following we'll focuse on the case Jx = Jy = Jz =1, n_spins = 4, beta = 1.
+	\subsubsection{
+	
+	\subsection{limits}
+
+
+	\section{Loop Algorithm}
+	In this section, we will discuss the loop algorithm, introduced in the Assaad and Evertz article page 12. 
+	
+	\subsection{Failure of the local algorithm}
+	The previous algorithm is not reliable for the three following reasons.
+	
+
 
 	\subsubsection{Acceptance rate} The rate of acceptance of the move is highly dependant on the parameters. For instance, should ...
 	

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  7 DEC 2018 16:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=latex 2018.9.7)  7 DEC 2018 17:54
 entering extended mode
 **./rapport.tex
 (rapport.tex
@@ -490,7 +490,7 @@ Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO
 Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
+Package pdftexcmds Info: \pdfdraftmode is ignored in DVI mode.
 Package: pdfescape 2016/05/16 v1.14 Implements pdfTeX's escape features (HO)
 Package: bigintcalc 2016/05/16 v1.4 Expandable calculations on big integers (HO
 )
@@ -555,12 +555,20 @@ LaTeX Info: Redefining \pageref on input line 6443.
 \Hy@abspage=\count109
 \c@Item=\count110
 )
-Package hyperref Info: Driver (autodetected): hpdftex.
+Package hyperref Info: Driver (default): hdvips.
 
-(C:\Users\bmeyn\Documents\Latex\tex\latex\hyperref\hpdftex.def
-File: hpdftex.def 2018/02/06 v6.86b Hyperref driver for pdfTeX
-\Fld@listcount=\count111
-\c@bookmark@seq@number=\count112
+(C:\Users\bmeyn\Documents\Latex\tex\latex\hyperref\hdvips.def
+File: hdvips.def 2018/02/06 v6.86b Hyperref driver for dvips
+
+(C:\Users\bmeyn\Documents\Latex\tex\latex\hyperref\pdfmark.def
+File: pdfmark.def 2018/02/06 v6.86b Hyperref definitions for pdfmark specials
+\pdf@docset=\toks19
+\pdf@box=\box26
+\pdf@toks=\toks20
+\pdf@defaulttoks=\toks21
+\HyField@AnnotCount=\count111
+\Fld@listcount=\count112
+\c@bookmark@seq@number=\count113
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\oberdiek\rerunfilecheck.sty
 Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
@@ -568,14 +576,14 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 )
 \Hy@SectionHShift=\skip48
-)
+))
 (C:\Users\bmeyn\Documents\Latex\tex\latex\enumitem\enumitem.sty
 Package: enumitem 2011/09/28 v3.5.2 Customized lists
 \labelindent=\skip49
 \enit@outerparindent=\dimen110
-\enit@toks=\toks19
-\enit@inbox=\box26
-\enitdp@description=\count113
+\enit@toks=\toks22
+\enit@inbox=\box27
+\enitdp@description=\count114
 )
 (C:\Users\bmeyn\Documents\Latex\tex\latex\amsmath\amsmath.sty
 Package: amsmath 2017/09/02 v2.17a AMS math features
@@ -587,7 +595,7 @@ Package: amstext 2000/06/29 v2.01 AMS text
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks20
+\@emptytoks=\toks23
 \ex@=\dimen111
 ))
 (C:\Users\bmeyn\Documents\Latex\tex\latex\amsmath\amsbsy.sty
@@ -597,41 +605,41 @@ Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 (C:\Users\bmeyn\Documents\Latex\tex\latex\amsmath\amsopn.sty
 Package: amsopn 2016/03/08 v2.02 operator names
 )
-\inf@bad=\count114
+\inf@bad=\count115
 LaTeX Info: Redefining \frac on input line 213.
-\uproot@=\count115
-\leftroot@=\count116
+\uproot@=\count116
+\leftroot@=\count117
 LaTeX Info: Redefining \overline on input line 375.
-\classnum@=\count117
-\DOTSCASE@=\count118
+\classnum@=\count118
+\DOTSCASE@=\count119
 LaTeX Info: Redefining \ldots on input line 472.
 LaTeX Info: Redefining \dots on input line 475.
 LaTeX Info: Redefining \cdots on input line 596.
-\Mathstrutbox@=\box27
-\strutbox@=\box28
+\Mathstrutbox@=\box28
+\strutbox@=\box29
 \big@size=\dimen113
 LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
-\macc@depth=\count119
-\c@MaxMatrixCols=\count120
+\macc@depth=\count120
+\c@MaxMatrixCols=\count121
 \dotsspace@=\muskip11
-\c@parentequation=\count121
-\dspbrk@lvl=\count122
-\tag@help=\toks21
-\row@=\count123
-\column@=\count124
-\maxfields@=\count125
-\andhelp@=\toks22
+\c@parentequation=\count122
+\dspbrk@lvl=\count123
+\tag@help=\toks24
+\row@=\count124
+\column@=\count125
+\maxfields@=\count126
+\andhelp@=\toks25
 \eqnshift@=\dimen114
 \alignsep@=\dimen115
 \tagshift@=\dimen116
 \tagwidth@=\dimen117
 \totwidth@=\dimen118
 \lineht@=\dimen119
-\@envbody=\toks23
+\@envbody=\toks26
 \multlinegap=\skip51
 \multlinetaggap=\skip52
-\mathdisplay@stack=\toks24
+\mathdisplay@stack=\toks27
 LaTeX Info: Redefining \[ on input line 2817.
 LaTeX Info: Redefining \] on input line 2818.
 )
@@ -647,10 +655,10 @@ Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 (C:\Users\bmeyn\Documents\Latex\tex\latex\graphics-cfg\graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 99.
+Package graphics Info: Driver file: dvips.def on input line 99.
 
-(C:\Users\bmeyn\Documents\Latex\tex\latex\graphics-def\pdftex.def
-File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+(C:\Users\bmeyn\Documents\Latex\tex\latex\graphics-def\dvips.def
+File: dvips.def 2017/06/20 v3.1d Graphics/color driver for dvips
 ))
 \Gin@req@height=\dimen120
 \Gin@req@width=\dimen121
@@ -660,7 +668,7 @@ Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'french'.
 
-No file rapport.aux.
+(rapport.aux)
 \openout1 = `rapport.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
@@ -678,7 +686,7 @@ LaTeX Font Info:    ... okay on input line 15.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 15.
 LaTeX Font Info:    ... okay on input line 15.
 LaTeX Font Info:    Try loading font information for T1+lmr on input line 15.
-(C:\Users\bmeyn\Documents\Latex\tex\latex\lm\t1lmr.fd
+ (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Info: Redefining \degres on input line 15.
@@ -690,7 +698,7 @@ Package french.ldf Info: Setting StandardEnumerateEnv=true for
 (french.ldf)             compatibility with enumitem package,
 (french.ldf)             reported on input line 15.
 LaTeX Info: Redefining \up on input line 15.
-\AtBeginShipoutBox=\box29
+\AtBeginShipoutBox=\box30
 Package hyperref Info: Link coloring OFF on input line 15.
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\hyperref\nameref.sty
@@ -699,354 +707,147 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (C:\Users\bmeyn\Documents\Latex\tex\generic\oberdiek\gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count126
+\c@section@level=\count127
 )
 LaTeX Info: Redefining \ref on input line 15.
 LaTeX Info: Redefining \pageref on input line 15.
 LaTeX Info: Redefining \nameref on input line 15.
+
+(rapport.out) (rapport.out)
 \@outlinefile=\write3
 \openout3 = `rapport.out'.
 
 
-(C:\Users\bmeyn\Documents\Latex\tex\context\base\supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count127
-\scratchdimen=\dimen122
-\scratchbox=\box30
-\nofMPsegments=\count128
-\nofMParguments=\count129
-\everyMPshowfont=\toks25
-\MPscratchCnt=\count130
-\MPscratchDim=\dimen123
-\MPnumerator=\count131
-\makeMPintoPDFobject=\count132
-\everyMPtoPDFconversion=\toks26
-) (C:\Users\bmeyn\Documents\Latex\tex\latex\oberdiek\epstopdf-base.sty
-Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
-(C:\Users\bmeyn\Documents\Latex\tex\latex\oberdiek\grfext.sty
-Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
-)
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-38.
-Package grfext Info: Graphics extension search list:
-(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 456.
-)
-
-LaTeX Warning: File `Pattern_winding.png' not found on input line 32.
+LaTeX Warning: File `Pattern_winding.png' not found on input line 30.
 
 
-! Package pdftex.def Error: File `Pattern_winding.png' not found: using draft s
-etting.
+! LaTeX Error: File `Pattern_winding.png' not found.
 
-See the pdftex.def package documentation for explanation.
+See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.32 		\includegraphics[]{Pattern_winding.png}
+l.30 		\includegraphics[]{Pattern_winding.png}
+                                              
+? r
+OK, entering \nonstopmode...
+
+! LaTeX Error: Cannot determine size of graphic in Pattern_winding.png (no Boun
+dingBox).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.30 		\includegraphics[]{Pattern_winding.png}
                                               
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 32.
-(C:\Users\bmeyn\Documents\Latex\tex\latex\lm\t1lmtt.fd
-File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
+File: Pattern_winding.png Graphic file (type eps)
+<Pattern_winding.png>
 
-LaTeX Warning: File `Pattern_nowinding.png' not found on input line 33.
+LaTeX Warning: File `Pattern_nowinding.png' not found on input line 31.
 
 
-! Package pdftex.def Error: File `Pattern_nowinding.png' not found: using draft
- setting.
+! LaTeX Error: File `Pattern_nowinding.png' not found.
 
-See the pdftex.def package documentation for explanation.
+See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.33 		\includegraphics[]{Pattern_nowinding.png}
+l.31 		\includegraphics[]{Pattern_nowinding.png}
                                                 
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: Reference `six_vertex' on page 1 undefined on input line 46.
+! LaTeX Error: Cannot determine size of graphic in Pattern_nowinding.png (no Bo
+undingBox).
 
-
-LaTeX Warning: File `six_vertex.png' not found on input line 49.
-
-
-! Package pdftex.def Error: File `six_vertex.png' not found: using draft settin
-g.
-
-See the pdftex.def package documentation for explanation.
+See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.49 		\includegraphics[]{six_vertex.png}
-                                         
+l.31 		\includegraphics[]{Pattern_nowinding.png}
+                                                
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[1
+File: Pattern_nowinding.png Graphic file (type eps)
+<Pattern_nowinding.png> [1
 
-{C:/Users/bmeyn/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+]
+! Missing $ inserted.
+<inserted text> 
+                $
+l.51 ...'ll focuse on the case Jx = Jy = Jz =1, n_
+                                                  spins = 4, beta = 1.
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-LaTeX Warning: Reference `creating_loop' on page 2 undefined on input line 54.
-
-
-LaTeX Warning: File `creating_loop.png' not found on input line 57.
-
-
-! Package pdftex.def Error: File `creating_loop.png' not found: using draft set
-ting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.57 		\includegraphics[]{creating_loop.png}
-                                            
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: Reference `creating_loop' on page 2 undefined on input line 62.
-
-
-LaTeX Warning: Reference `loop_update' on page 2 undefined on input line 62.
-
-
-LaTeX Warning: File `loop_update.png' not found on input line 65.
-
-
-! Package pdftex.def Error: File `loop_update.png' not found: using draft setti
-ng.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.65 		\includegraphics[]{loop_update.png}
-                                          
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[2]
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 71.
- (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\ot1lmr.fd
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 51.
+(C:\Users\bmeyn\Documents\Latex\tex\latex\lm\ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 71.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 51.
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 71.
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 51.
 
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 71.
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 51.
 
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 71.
+(Font)              <12> on input line 51.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 71.
+(Font)              <8> on input line 51.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 71.
-
-
-LaTeX Warning: Reference `detailed_balance' on page 3 undefined on input line 7
-1.
-
-
-LaTeX Warning: Reference `graph_example' on page 3 undefined on input line 78.
-
-
-LaTeX Warning: File `random_graph.png' not found on input line 81.
-
-
-! Package pdftex.def Error: File `random_graph.png' not found: using draft sett
-ing.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.81 ...udegraphics[width = 5cm]{random_graph.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-LaTeX Warning: Reference `possible_graphs' on page 3 undefined on input line 86
-.
-
-
-LaTeX Warning: File `possible_graphs.png' not found on input line 89.
-
-
-! Package pdftex.def Error: File `possible_graphs.png' not found: using draft s
-etting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.89 		\includegraphics[]{possible_graphs.png}
-                                              
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-LaTeX Warning: Reference `sg=s' on page 3 undefined on input line 94.
-
-[3]
-
-LaTeX Warning: Reference `psg' on page 4 undefined on input line 114.
-
-[4]
-
-LaTeX Warning: Reference `onehalf' on page 5 undefined on input line 133.
-
-
-LaTeX Warning: Reference `sg=s' on page 5 undefined on input line 134.
-
-
-LaTeX Warning: Reference `indepG' on page 5 undefined on input line 134.
-
-
-LaTeX Warning: Reference `possible_graphs' on page 5 undefined on input line 13
-4.
-
-
-Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 143.
-
-
-LaTeX Warning: Reference `systemsg' on page 5 undefined on input line 147.
-
-
-Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 156.
-
-
-Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 169.
-
-[5]
-
-LaTeX Warning: Reference `systemsg' on page 6 undefined on input line 196.
-
-[6]
-Overfull \hbox (11.75633pt too wide) in paragraph at lines 211--212
-[]\T1/lmr/m/n/12 The list of tile weights de-pen-ding on the concer-ned tile $\
-OML/lmm/m/it/12 weightmatrix$ 
- []
-
-
-Overfull \hbox (35.47237pt too wide) in paragraph at lines 214--215
-[]\T1/lmr/m/n/12 The graph weights de-pen-ding on the graphs $\OML/lmm/m/it/12 
-w\OT1/lmr/m/n/12 11\OML/lmm/m/it/12 ; w\OT1/lmr/m/n/12 12\OML/lmm/m/it/12 ; w\O
-T1/lmr/m/n/12 22\OML/lmm/m/it/12 ; w\OT1/lmr/m/n/12 24\OML/lmm/m/it/12 ; w\OT1/
-lmr/m/n/12 31\OML/lmm/m/it/12 ; w\OT1/lmr/m/n/12 34$ 
- []
-
-[7]
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 234.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 234.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 234.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 234.
-
-
-! LaTeX Error: \begin{enumerate} on input line 19 ended by \end{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.235 \end{document}
-                    
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 235.
-[8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 235.
- (rapport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 235.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 235.
-
-
-Package rerunfilecheck Warning: File `rapport.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `rapport.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  EBA3C10C91344779389C04B955B67CC0;952.
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- )
-(\end occurred inside a group at level 1)
-
-### semi simple group (level 1) entered at line 19 (\begingroup)
-### bottom level 
+(Font)              <6> on input line 51.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.52 	\subsubsection
+                    {
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+)
+Runaway argument?
+{ \par \subsection {limits} \par \par \section {Loop Algorithm} In th\ETC.
+! File ended while scanning use of \@xdblarg.
+<inserted text> 
+                \par 
+<*> ./rapport.tex
+                 
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+
+! Emergency stop.
+<*> ./rapport.tex
+                 
+*** (job aborted, no legal \end found)
+
+ 
 Here is how much of TeX's memory you used:
- 8617 strings out of 493305
- 123700 string characters out of 3137606
- 234194 words of memory out of 3000000
- 11999 multiletter control sequences out of 15000+200000
- 47089 words of font info for 37 fonts, out of 3000000 for 9000
+ 8130 strings out of 493306
+ 117024 string characters out of 3137633
+ 230154 words of memory out of 3000000
+ 11582 multiletter control sequences out of 15000+200000
+ 36529 words of font info for 33 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 28i,16n,31p,851b,701s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/bmeyn/Documents/Latex/fonts/enc/dvips/lm/lm-rm.enc}{C
-:/Users/bmeyn/Documents/Latex/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Users/bmeyn/
-Documents/Latex/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Users/bmeyn/Documents/Late
-x/fonts/enc/dvips/lm/lm-mathex.enc}{C:/Users/bmeyn/Documents/Latex/fonts/enc/dv
-ips/lm/lm-ec.enc}<C:/Users/bmeyn/Documents/Latex/fonts/type1/public/lm/lmbx12.p
-fb><C:/Users/bmeyn/Documents/Latex/fonts/type1/public/lm/lmcsc10.pfb><C:/Users/
-bmeyn/Documents/Latex/fonts/type1/public/lm/lmex10.pfb><C:/Users/bmeyn/Document
-s/Latex/fonts/type1/public/lm/lmmi12.pfb><C:/Users/bmeyn/Documents/Latex/fonts/
-type1/public/lm/lmmi8.pfb><C:/Users/bmeyn/Documents/Latex/fonts/type1/public/lm
-/lmr12.pfb><C:/Users/bmeyn/Documents/Latex/fonts/type1/public/lm/lmr8.pfb><C:/U
-sers/bmeyn/Documents/Latex/fonts/type1/public/lm/lmri12.pfb><C:/Users/bmeyn/Doc
-uments/Latex/fonts/type1/public/lm/lmsy10.pfb><C:/Users/bmeyn/Documents/Latex/f
-onts/type1/public/lm/lmsy6.pfb><C:/Users/bmeyn/Documents/Latex/fonts/type1/publ
-ic/lm/lmsy8.pfb><C:/Users/bmeyn/Documents/Latex/fonts/type1/public/lm/lmtt12.pf
-b>
-Output written on rapport.pdf (8 pages, 197887 bytes).
-PDF statistics:
- 149 PDF objects out of 1000 (max. 8388607)
- 51 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 29i,5n,30p,851b,504s stack positions out of 5000i,500n,10000p,200000b,50000s
+Output written on rapport.dvi (1 page, 6736 bytes).
