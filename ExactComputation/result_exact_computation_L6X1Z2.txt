@@ -1,1 +1,0 @@
-The fundamental's energy for a periodic chain of length 6 with Jx,Jz = (1, 2) is (-32.000000000000014+0j)

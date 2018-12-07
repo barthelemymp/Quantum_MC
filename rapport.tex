@@ -1,0 +1,229 @@
+\documentclass[a4paper,12pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage{url,csquotes}
+\usepackage[hidelinks,hyperfootnotes=false]{hyperref}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\title{Mini-Projet}
+\author{Corentin \bsc{Bisot}}
+
+\begin{document}
+	\section{Loop Algorithm}
+	In this section, we will discuss the loop algorithm, introduced in the Assaad and Evertz article page 12. 
+	
+	\subsection{Failure of the local algorithm}
+	The previous algorithm is not reliable for the three following reasons.
+	
+	\subsubsection{Winding number}
+	It can not deal with periodic boundary conditions. Indeed, because the updates are either local or along a temporary line, the winding number is fixed. The winding number is an integer counting the number of period that the world-line takes to return to the same position. 
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[]{Pattern_winding.png}
+		\includegraphics[]{Pattern_nowinding.png}
+		\caption{Configurations with W = 2 (left) and W = 1 (right)}
+		\label{winding}			
+	\end{figure}
+
+	\subsubsection{Acceptance rate} The rate of acceptance of the move is highly dependant on the parameters. For instance, should ...
+	
+	\subsubsection{Decorrelation} The decorrelation between the configuration is rather slow ...
+
+	\subsection{The loop update}
+	
+	\subsubsection{Example}
+	\paragraph{}The idea of Assaad and Evertz is to map the periodic boundary conditions model onto another one called "six-vertices model". Thanks to the result obtained on this model, we are now able to implement an update which allows fast decorrelation, high acceptance rate and changing winding number.
+	Let us imagine each tile is replaced by its representation in the six-vertices model which is described in figure \ref{six_vertex}.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[]{six_vertex.png}
+		\caption{Rule to change a tile in a vertex plaquette}
+		\label{six_vertex}
+	\end{figure}
+	\paragraph{} The rule is the following : each spin up is transformed into an arrow going up; each spin down is transformed into an arrow going down. 
+	Given this transformation one is now able to imagine loops on the pattern. One starts from a given spin and a given vertex plaquette, and go along the arrow in the same direction. If one does not choose two times the same arrow, he will come back to the first spin and thus create a loop. This mechanism is illustrated by the figure \ref{creating_loop}. The described loop "goes through" the right side to come back to the left side thanks to the periodic boundary conditions.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[]{creating_loop.png}
+		\caption{Illustration of the creation of a loop}
+		\label{creating_loop}
+	\end{figure}
+	\paragraph{}
+	With the chosen loop, one can now flip the spins along the loop, which corresponds to changing the direction of all the arrows. This generates a new configuration. In the described one in figure \ref{creating_loop} and figure \ref{loop_update}, the winding number is changed from 1 to 3. One can observe that even this quite simple update (only one loop has been studied), the new configuration seems less dependant that any other that would have been generated thanks to the local algorithm. 
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[]{loop_update.png}
+		\caption{Update by flipping the spins along the loop}
+		\label{loop_update}
+	\end{figure}
+
+	\subsubsection{Formalism}
+	\emph{For the quantum Monte-Carlo algorithm, the detailed balance must be fulfilled. For a given tile in the configuration $S$, and for any other tile $S'$, the detailed balance is given by equation (\ref{detailed_balance})}
+	\begin{equation}
+		\centering
+		W(S)P(S\rightarrow S') = W(S')P(S'\rightarrow S)
+		\label{detailed_balance}
+	\end{equation}
+	\paragraph{}
+	In order to make a move on the configuration, one has to change all the tiles in vertex plaquettes, then to choose loops and to choose whether to flip the spins along it or not. The process is clearer if one creates a virtual configuration called graph. For each tile, the associated vertex plaquette will be replaced by a graph-tile representing the choice of the arrows. The choices are either the loop goes vertically, either diagonally, either horizontally along the tile. Actually, there is another graph possible which switch all the spins on the tile, but it will not be considered here. Summing all the graph will create loops on the configuration. Figure \ref{graph_example} is an example of total graph
+	\begin{figure}[!h]
+		 \centering
+		 \includegraphics[width = 5cm]{random_graph.png}
+		 \caption{Example of graph; one can verify that all loops are closed}
+		 \label{graph_example}
+	\end{figure}
+	\paragraph{}
+	First of all, one needs to know which graphs can be reached by a given tile. Let us give an example for the tile with all the spins down, the white tile. The associated vertex plaquette is the one with all the arrow heading down. If the loop arrives from the upper left side of the tile, it can either go to the bottom left or to the bottom right. Thus, only 2 graphs are allowed: either a vertical graph or a cross graph. The illustration is given in figure \ref{possible_graphs} for all tiles, one can verify the association following the previous logic applied to the white tile.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[]{possible_graphs.png}
+		\caption{Possible graphs for tiles}
+		\label{possible_graphs}
+	\end{figure}
+	\paragraph{}
+	However, depending on the interactions and the temperature, the graphs will not be equally possible. One has to choose weights for each of them. Let us call $W(S)$ the weight of the tile $S$ and $W(S,G)$ the weight of the graph $G$ for a tile $S$. The equation (\ref{sg=s}) is required to have a total probability equal to one, and then be sure that every tile is replaced by a graph.
+	\begin{equation}
+		\centering
+		\label{sg=s}
+		\sum_{G}^{} W(S,G) = W(S)
+	\end{equation}
+	So we choose a graph from a given plaquette with probability
+	\begin{equation}
+		\centering
+		P(S\rightarrow(S, G)) = \frac{W(S,G)}{W(S)}
+		\label{psg}
+	\end{equation}
+	The detailed balance written with the graph transition
+	\begin{equation}
+		\begin{split}
+			W(S)\sum_{G}P(S\rightarrow (S,G))P((S,G)\rightarrow(S',G))
+			= \\ W(S') \sum_{G'} P(S'\rightarrow (S',G'))P((S',G')\rightarrow(S,G'))
+		\end{split}
+		\centering
+	\end{equation}
+	By using equation (\ref{psg}) is can be rewritten
+	\begin{equation}
+		\begin{split}
+		\sum_{G}W(S,G)P((S,G)\rightarrow(S',G)) = \\ \sum_{G'}W(S',G')P((S',G')\rightarrow(S,G'))
+		\end{split}
+		\centering
+	\end{equation}
+	Then one can choose the different parameters to make the computation easier. For instance, the weights of the graph is set constant, not dependant on the spin configuration. This is easier to encode and clearer for the detailed balance:
+	\begin{equation}
+		\centering
+		\forall G, \forall(S,S'), W(S,G) = W(S',G) = V(G) \label{indepG}
+	\end{equation}
+	 Moreover, with the use of the heat-bath algorithm for flipping, the probability to change the spin from $S$ to $S'$ given a choice of graph $G$ can be set to $P((S,G)\rightarrow(S',G)) = \frac{W(S',G)}{W(S',G) + W(S,G)}$. Thus the detailed balance is verified and the code is easy to encode. Indeed
+	\begin{equation}
+		\begin{split}
+			P((S,G)\rightarrow(S',G)) & = \frac{W(S',G)}{W(S',G) + W(S,G)} \\ & = \frac{V(G)}{V(G) + V(G)} \\ & = \frac{1}{2}
+		\end{split}
+		\label{onehalf}
+	\end{equation}
+	The equation (\ref{onehalf}) means that each loop is flipped with probability $1/2$.\newline
+	To set the weights of the graphs $V(G)$, equations (\ref{sg=s}) and (\ref{indepG}), with the use of the notations of figure \ref{possible_graphs} give
+	\begin{equation}
+		\left \{ \,
+			\begin{split}
+			W( S = 1 ) = V( G = 1 ) + V( G = 2 )
+			\\
+			W( S = 2 ) = V( G = 2 ) + V( G = 4 )
+			\\
+			W( S = 3 ) = V( G = 1 ) + V( G = 4 )
+			\end{split}
+		\right.
+		\label{systemsg}
+	\end{equation}
+	This set of equation (\ref{systemsg}) has the solution:
+	\begin{equation}
+		\left \{ \,
+		\begin{split}
+			V( G = 1 ) = \frac{1}{2}[W( S = 1 ) + W( S = 3 ) - W ( S = 2 )]
+			\\
+			V( G = 2 ) = \frac{1}{2}[W( S = 1 ) + W( S = 2 ) - W ( S = 3 )]
+			\\
+			V( G = 4 ) = \frac{1}{2}[W( S = 2 ) + W( S = 3 ) - W ( S = 1 )]
+		\end{split}
+		\right.
+	\label{solutionsg}
+	\end{equation}
+	Then, the weights $W(S)$ are 
+	\begin{equation}
+		\left \{ \,
+			\begin{split}
+			&W( S = 1 ) = \exp(\Delta \tau J_{z}/4)\cosh(\Delta\tau J_{x}/2)
+			\\
+			&W( S = 2 ) = \exp(\Delta \tau J_{z}/4)\sinh(\Delta\tau J_{x}/2)
+			\\
+			&W( S = 3 ) = \exp(- \Delta \tau J_{z}/4)
+			\end{split}
+		\right.
+		\label{reminderws}
+	\end{equation}
+	The weights of each graph is now set. All the problem is characterized and the implementation is possible. However, the $Metropolis$ algorithm is valid only for positive weights for $W(S)$ and $V(G)$. This fixes conditions on $J_{z}$ and $J_{x}$.
+	With the condition $V(G=2) > 0$:
+	\begin{equation}
+		\begin{split}
+		&\exp(\Delta \tau J_{z}/2)\sinh(\Delta\tau J_{x}/2) + \exp(\Delta \tau J_{z}/2)\cosh(\Delta\tau J_{x}/2) - 1  > 0 \\
+		&\exp(\Delta \tau J_{z}/2)\exp(\Delta\tau J_{x}/2)  > 1\\
+		&J_{x} > - J_{z}
+		\end{split}
+	\end{equation}
+	With the condition $V(G=4) > 0$:
+	\begin{equation}
+		\begin{split}
+		&\exp(\Delta \tau J_{z}/2)\sinh(\Delta\tau J_{x}/2) + 1 - \exp(\Delta \tau J_{z}/2)\cosh(\Delta\tau J_{x}/2) > 0 \\
+		&\exp(- \Delta \tau J_{z}/2)  > \exp(- \Delta\tau J_{x}/2)\\
+		&- J_{z} > - J_{x}\\
+		& J_{x} > J_{z}
+		\end{split}
+	\end{equation}
+	The final condition is then
+	\begin{equation}
+		\centering
+		J_{x} > |J_{z}|
+	\end{equation}
+	If ever $|J_{z}|$ is higher than $J_{x}$, the algorithm can be implemented with another type of graph, called $G = 3$, that propagates the loop along all the arrows, which means all the spins on the tile are flipped. This is a graph accessible by all the vertex plaquettes, which allows a new system (\ref{systemsg}) and a supplementary degree of freedom to set the weights $V(G)$. This option will not be considered in our algorithm.
+	
+	\subsection{Encoding the loop algorithm}
+	The whole methods will be encoded in an algorithm
+	\subsubsection{Parameters}
+	\paragraph{}
+	First, we create a class containing the necessary parameters. 
+	\begin{itemize}[label=$\star$]
+		\item The interactions $J_{x}$ and $J_{z}$
+		\item The number of spins $n\_spins$
+		\item The division of the imaginary time $m\_trotter$ and $\Delta\tau$
+		\item The representation of the spins $spins$
+		\item The pattern configuration $pattern$
+		\item The graph configuration $total\_graph$
+		\item The list of energies depending on the concerned tile $energymatrix$
+		\item The list of tile weights depending on the concerned tile $weightmatrix$
+		\item The list of arrays imaging the tiles $cases$
+		\item The list of arrays imaging the graphs $graphs$
+		\item The graph weights depending on the graphs $w11, w12, w22, w24, w31, w34$ 
+	\end{itemize}
+	
+	\subsubsection{Methods}
+	Here are the methods used in the Quantum Monte Carlo algorithm. 
+	\begin{itemize}[label=$\star$]
+		\item $total\_energy()$ : Thanks to array combination and the use of masks, this methods extract the energy of each tile on the pattern then sum those energies.
+		\item $weight()$ : Thanks to array combination and the use of masks, this methods extract the weight of each tile on the pattern then make the product of those weights to return the full weight of the combination.
+		\item $spins\_to\_pattern()$ : With the use of array combination, this method computes the pattern from the spin configuration. At each coordinate $(i,j)$ is a number corresponding to the tile.
+		\item $createimage()$ : Returns an array imaging the total world-line pattern.
+		\item $tile\_in\_graph(pos)$ : Chooses a graph for the tile in position $(pos[0], pos[1])$ with probability $\frac{V(G)}{W(S)}$.
+		\item $set\_total\_graph()$ : Goes over the whole parameter $total\_graph$ and choose for each position a graph thanks to the previous method $tile\_in\_graph(pos)$. ...
+		\item $find\_next(pos, graph)$ : This method is used to get the loops from the graph. The $pos$ and $graph$ parameters corresponds respectively to the position of a spin and the one of a graph. The method returns a new spin position and a new graph position after propagating the loop through the given $graph$ from the $spin$ position. For instance, if the graph is $G = 1$, $i.e.$ vertical, and the spin is on the upper left side on the graph, the method will return the spin just below the first spin and the graph down left the first graph. 
+		\begin{figure}[!h]
+			
+		\end{figure}
+		\item $find\_loops()$ : This method will find all the loops and flip them with probability $\frac{1}{2}$
+	\end{itemize}
+	
+	\subsection{Results}
+	\subsubsection{Case $J_{x} = J_{z}$}
+\end{document}
