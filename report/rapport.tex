@@ -41,14 +41,24 @@
 	\newpage
 	
 	\section{Introduction}
-	The aim of this project is to encode an algorithm able to compute the mean energy at fixd temperature of a spin chain modelled by the XXZ model. This model is described by the following hamiltonian:
+	\paragraph{}The aim of this project is to encode an algorithm able to compute the mean energy at fixd temperature of a spin chain modelled by the XXZ model. This model is described by the following hamiltonian:
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[]{hamiltonian.png}
 		\caption{Hamiltonian of the XXZ model}
 		\label{hamiltonian}
 	\end{figure}
-	\subsection{title}
+	\paragraph{}The basic idea of this original World Line approach is to split the XXZ Hamiltonian into a set of independent two site problems. The way to achieve	this decoupling is with the use of a path integral and the Trotter decomposition.
+	First we write:
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[]{hamiltoniandecomp.png}
+		\caption{Separation of the Hamiltonian}
+		\label{hamiltoniandecomp}
+	\end{figure}
+	\paragraph{} One may verify that $H_1$ and $H_2$ are sums of commuting ($i.e.$ independent) two site problems. Hence, on their own $H_1$ and $H_2$ are trivially solvable problems. However, $H$ is not. To use this fact, we split the imaginary propagation $\exp(-\beta H)$ into successive infinitesimal propagations of $H_1$ and $H_2$. Here $\beta$ corresponds
+	to the inverse temperature, with $\beta = m\_trotter * \Delta \tau$.\\
+	The path integral is then a $2D$ representation, with horizontally the space, $i.e.$ the spin chain, and vertically the imaginary time, $i.e.$ the Trotter decomposition, with $2 m\_trotter$ steps. Actually, as both $H_1$ and $H_2$ acts on half of the spin pairs, the path integral can be represented by a checker board. The white tiles are actions of the Hamiltonian. 
 	
 	\newpage
 	\section{Local Algorithm}

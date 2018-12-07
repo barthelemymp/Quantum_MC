@@ -1,26 +1,25 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [2][-]{subsection.1.1}{title}{section.1}% 2
-\BOOKMARK [1][-]{section.2}{Local Algorithm}{}% 3
-\BOOKMARK [2][-]{subsection.2.1}{description}{section.2}% 4
-\BOOKMARK [2][-]{subsection.2.2}{domain of validity}{section.2}% 5
-\BOOKMARK [3][-]{subsubsection.2.2.1}{Winding number}{subsection.2.2}% 6
-\BOOKMARK [3][-]{subsubsection.2.2.2}{straight line only can be flipped}{subsection.2.2}% 7
-\BOOKMARK [2][-]{subsection.2.3}{first results}{section.2}% 8
-\BOOKMARK [2][-]{subsection.2.4}{autocorrelation function}{section.2}% 9
-\BOOKMARK [2][-]{subsection.2.5}{limits}{section.2}% 10
-\BOOKMARK [1][-]{section.3}{Loop Algorithm}{}% 11
-\BOOKMARK [2][-]{subsection.3.1}{Failure of the local algorithm}{section.3}% 12
-\BOOKMARK [3][-]{subsubsection.3.1.1}{Winding number}{subsection.3.1}% 13
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Acceptance rate}{subsection.3.1}% 14
-\BOOKMARK [3][-]{subsubsection.3.1.3}{Decorrelation}{subsection.3.1}% 15
-\BOOKMARK [2][-]{subsection.3.2}{The loop update}{section.3}% 16
-\BOOKMARK [3][-]{subsubsection.3.2.1}{Example}{subsection.3.2}% 17
-\BOOKMARK [3][-]{subsubsection.3.2.2}{Formalism}{subsection.3.2}% 18
-\BOOKMARK [2][-]{subsection.3.3}{Encoding the loop algorithm}{section.3}% 19
-\BOOKMARK [3][-]{subsubsection.3.3.1}{Parameters}{subsection.3.3}% 20
-\BOOKMARK [3][-]{subsubsection.3.3.2}{Methods}{subsection.3.3}% 21
-\BOOKMARK [2][-]{subsection.3.4}{Results}{section.3}% 22
-\BOOKMARK [3][-]{subsubsection.3.4.1}{Case Jx = Jz}{subsection.3.4}% 23
-\BOOKMARK [3][-]{subsubsection.3.4.2}{Case Jx > |Jz|}{subsection.3.4}% 24
-\BOOKMARK [1][-]{section.4}{Conclusion}{}% 25
-\BOOKMARK [1][-]{section.5}{Bibliography}{}% 26
+\BOOKMARK [1][-]{section.2}{Local Algorithm}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{description}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{domain of validity}{section.2}% 4
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Winding number}{subsection.2.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.2}{straight line only can be flipped}{subsection.2.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{first results}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.4}{autocorrelation function}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.5}{limits}{section.2}% 9
+\BOOKMARK [1][-]{section.3}{Loop Algorithm}{}% 10
+\BOOKMARK [2][-]{subsection.3.1}{Failure of the local algorithm}{section.3}% 11
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Winding number}{subsection.3.1}% 12
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Acceptance rate}{subsection.3.1}% 13
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Decorrelation}{subsection.3.1}% 14
+\BOOKMARK [2][-]{subsection.3.2}{The loop update}{section.3}% 15
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Example}{subsection.3.2}% 16
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Formalism}{subsection.3.2}% 17
+\BOOKMARK [2][-]{subsection.3.3}{Encoding the loop algorithm}{section.3}% 18
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Parameters}{subsection.3.3}% 19
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Methods}{subsection.3.3}% 20
+\BOOKMARK [2][-]{subsection.3.4}{Results}{section.3}% 21
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Case Jx = Jz}{subsection.3.4}% 22
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Case Jx > |Jz|}{subsection.3.4}% 23
+\BOOKMARK [1][-]{section.4}{Conclusion}{}% 24
+\BOOKMARK [1][-]{section.5}{Bibliography}{}% 25
