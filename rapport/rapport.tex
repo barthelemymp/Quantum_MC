@@ -73,7 +73,7 @@
 		 
 		 
 		 This algorithms 
-		 \subsection{results}
+		 \subsection{first results}
 		 For the proper parameter the algorithm enable to compute the mean energy. In the following we'll focuse on the case $Jx = Jy = Jz =1, nspins = 4, beta = 1$.
 		 Firstly we made a few run of the montecarlo algorithm, with a small length\_cycle (10) and a small number of measures(100 000), to have a first look.
 		 
@@ -108,6 +108,10 @@
 		 \end{figure}
 		 This graph enables us to see two things more clearly.  Firstly the number of moves necessary for the mean to converge rises with m. Secondly the choice of m seem to involve a bias in the mean.
 		 While mtrotter rises, the number of configurations follows and the weight changed by the local\_update move decrease
+		 
+		 
+		 \subsection{autocorrelation function}
+		 To have a better idea of the length between two measures, we computed the autocorelation function. This function is defined for an observable O by the following formula
 		 
 
 
