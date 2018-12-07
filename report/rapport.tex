@@ -80,7 +80,7 @@
 	 \begin{itemize}[label=$\star$]
 	 	\item{The splitline move :} This move is supposed to inverse a complete line. To be implemented we firstly chose a spin, then check if the all the spins upward have the same value, and in that case invert all opf them.
 	 	
-	 	\item{The kink move :} This move move represents the effect of the quantic spins. The part Jx and Jy create variation from the usual spin model. It is taken in account with this move, which flip the 4 spins around a black case, if the two left spins are the same and are the oposite of the two right spins.
+	 	\item{The kink move :} This move move represents the effect of the quantic spins. The part $J_x$ and $J_z$ create variation from the usual spin model. It is taken in account with this move, which flip the 4 spins around a black case, if the two left spins are the same and are the opposite of the two right spins.
 	 \end{itemize}
 		 	
 		 	
@@ -98,8 +98,7 @@
 	
 		 
 	 \subsubsection{Straight line only can be flipped}
-	 After a few attempts to split any world-line we only add wrong result. Indeed we realized it caused an error in the detailed balance.
-	 Indeed if we start from the following situation 1 and split the world line 3 we get to the situation 2.
+	 After a few attempts to split any world-line we only had wrong results. Indeed we realized it caused an error in the detailed balance. If we start from the following situation 1 and split the world line 3 we get to the situation 2.
 	 
 	 \begin{figure}[!h]
 	 	\centering
@@ -116,18 +115,15 @@
 	 	\label{flawed detailed balance}			
 	 \end{figure}
 	 
-	 From the situation 2 it is not possible to come back at the situation 1 with a simple splitline. Indeed such move only creates situation 3. To do so a splitline and a kink move is mandatory. The detailed balance is in this case unbalanced.
-	 The solution is to accept to flip straight world-line only.
+	 From the situation 2 it is not possible to come back at the situation 1 with a simple splitline. Indeed such move only creates situation 3. To do so, a splitline and a kink move is mandatory. The detailed balance is in this case unbalanced. The solution is to accept a flip on a straight world-line only.
 	 
-	 To code a Monte Carlo algorithm, we then had to condensed the two moves in one. We called it $stoch\_move(threshold)$, this algorithm has a probability threshold to make a splitline move, and 1-threshold to make a kink move.
-	 
-	 This algorithms 
+	 To code a Monte Carlo algorithm, we then had to condensed the two moves in one. We called it $stoch\_move(threshold)$, this algorithm has a probability $P = threshold$ to make a splitline move, and $P = 1-threshold$ to make a kink move.
 	 
 	 \subsection{First results}
-	 For the proper parameter the algorithm enable to compute the mean energy. In the following we'll focus on the case $Jx = Jy = Jz =1, nspins = 4, beta = 1$.
-	 Firstly we made a few run of the montecarlo algorithm, with a small length\_cycle (10) and a small number of measures(100 000), to have a first look.
+	 For the proper parameter the algorithm enable to compute the mean energy. In the following we will focus on the case $J_x = J_z =1, n\_spins = 4, \beta = 1$.
+	 Firstly we made a few run of the montecarlo algorithm, with a small $length\_cycle (10)$ and a small number of measures(100 000), to have a first look.
 	 
-	 The found the following results:
+	 The code produces the following results:
 	 \begin{itemize}[label=$\star$]
 	 	\item theorical energy : -0.6330214400416617
 	 	\item Energy for m=2: -0.6368988448758103 +/- 0.002502566964381992
@@ -144,7 +140,7 @@
 	 	\label{energy mean evolution}			
 	 \end{figure}
 	 
-	 We clearly feel that the 5 results converge to the same limit around -0.63. We also observe that the case m = 6 takes more moves to converge.
+	 We clearly feel that the 5 results converge to the same limit around $-0.63$. We also observe that the case $m = 6$ takes more moves to converge.
 	 The beginning of the curves doesn't have much meaning. It has an high dependence regarding the initial configuration.
 	 We can have a better look on the end of the graph:
 	 
@@ -153,12 +149,12 @@
 	 	\includegraphics[scale=0.4]{mean_energy_evolution_centerd_x=z=1_m2-6.png}
 	 	\label{energy mean evolution}			
 	 \end{figure}
-	 This graph enables us to see two things more clearly.  Firstly the number of moves necessary for the mean to converge rises with m. Secondly the choice of m seem to involve a bias in the mean.
-	 While $m\_trotter$ rises, the number of configurations follows and the weight changed by the $local\_update$ move decrease
+	 This graph enables us to see two things more clearly.  First, the number of moves necessary for the mean to converge rises with m. Second, the choice of $m\_trotter$ seems to involve a bias in the mean.
+	 While $m\_trotter$ rises, the number of configurations follows and the weight changed by the $local\_update$ move decreases.
 	 
 	 
 	 \subsection{Autocorrelation function}
-	 To have a better idea of the length between two measures, we computed the autocorrelation function. This function is defined for an observable O by the following formula:
+	 To have a better idea of the length between two measures, we computed the autocorrelation function. This function is defined for an observable $Q$ by the following formula:
 	\begin{figure}[!h]
 	 	\centering
 	 	\includegraphics[scale=0.25]{autocorformula.png}
@@ -177,20 +173,20 @@
 	If we look at these functions more precisely, we can find the proper cycle length, which guarantees that two measures are not correlated.
 	We find :
 	\begin{itemize}[label=$\star$]
-		\item[] $m=2$ : length of de-correlation 50
-		\item[] $m=3$ : length of de-correlation 200
-		\item[] $m=4$ : length of de-correlation 500
-		\item[] $m=5$ : length of de-correlation 800
-		\item[] $m=6$ : length of de-correlation 1000
+		\item $m=2$ : length of de-correlation 50
+		\item $m=3$ : length of de-correlation 200
+		\item $m=4$ : length of de-correlation 500
+		\item $m=5$ : length of de-correlation 800
+		\item $m=6$ : length of de-correlation 1000
 	\end{itemize}
 
 
 	
 	The following results are found:
 	\begin{itemize}[label=$\star$]
-	\item[]Energy for m=2: -0.6393578437601745 +/- 0.002507393542860798
-	\item[]Energy for m=3: -0.6387051296013677 +/- 0.002749339051345642
-	\item[]Energy for m=4: -0.6380826437580377 +/- 0.0028694731132348273
+	\item Energy for m=2: -0.6393578437601745 +/- 0.002507393542860798
+	\item Energy for m=3: -0.6387051296013677 +/- 0.002749339051345642
+	\item Energy for m=4: -0.6380826437580377 +/- 0.0028694731132348273
 	\end{itemize}
 	 We  can compare the evolution of the mean energy for the two different length cycle
 		 	\begin{figure}[!h]
@@ -206,8 +202,7 @@
 	
 	\subsection{Limits}
 	Several problems remains with this algorithm. Firstly as we have seen, it can only works on open border condition.
-	Moreover It get very expensive to compute this Monte Carlo algorithm when we are not in the proper condition. Indeed the the weight to do a kink is proportional to $\sinh^2(\Delta\tau \frac{Jx}{2})$. Consequently when $\beta$ gets smaller or m bigger, the moves proposed are mostly rejected, and the Monte Carlo becomes highly inefficient 
-	Unfortunately to get precise results we need to make m big and so $\Delta\tau$ small. 
+	Moreover It get very expensive to compute this Monte Carlo algorithm when we are not in the proper condition. Indeed the the weight to do a kink is proportional to $\sinh^2(\Delta\tau \frac{Jx}{2})$. Consequently when $\beta$ gets smaller or $m\_trotter$ bigger, the moves proposed are mostly rejected, and the Monte Carlo becomes highly inefficient. Unfortunately to get precise results we need to make m big and so $\Delta\tau$ small. 
 	To conclude this idea only works for low precision estimation and high $\beta$.
 	
 
