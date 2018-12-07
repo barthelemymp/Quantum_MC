@@ -67,73 +67,112 @@
 		 	
 		 
 		 
-		 \subsubsection{straight line only can be flipped}
-		 After a few attempts to split any world-line we only add wrong result. Indded we realized it caused an error in the detailed balance.
-		 Indeed if we start from the following situation 1 and split the worldline 3 we get to the situation 2.
-		 
-		 \begin{figure}[!h]
-		 	\centering
-		 	\begin{subfigure}[b]{0.3\textwidth}
-		 		\includegraphics[scale=0.2]{situation1.png}
-		 	\end{subfigure}
-		 	\begin{subfigure}[b]{0.3\textwidth}
-		 		\includegraphics[scale=0.2]{situation2.png}
-		 	\end{subfigure}
-		 	\begin{subfigure}[b]{0.3\textwidth}
-		 		\includegraphics[scale=0.2]{situation3.png}
-		 	\end{subfigure}
-		 	\caption{situation 1 (left), situation 2 (middle), situation 3 (right)}
-		 	\label{flawed detailed balance}			
-		 \end{figure}
-		 
-		 From the situation 2 it is not possible to come back at the situation 1 with a simple splitline. Indeed such move only creates situation 3. To do so a splitline and a kink move is mandatory. The detailed balance is in this case unbalanced.
-		 The solution is to accept to flip straight world-line only.
-		 
-		 To code a Monte Carlo algoriothm, we then had to condensed the two moves in one. We called it stoch\_move(threshold), this algo has a probability threshold to make a splitline move, and 1-threshold to make a kink move.
-		 
-		 
-		 
-		 
-		 This algorithms 
-		 \subsection{first results}
-		 For the proper parameter the algorithm enable to compute the mean energy. In the following we'll focuse on the case $Jx = Jy = Jz =1, nspins = 4, beta = 1$.
-		 Firstly we made a few run of the montecarlo algorithm, with a small length\_cycle (10) and a small number of measures(100 000), to have a first look.
-		 
-		 The found the following results:
-		 \begin{itemize}
-		 	\item theorical energy : -0.6330214400416617
-		 	\item Energy for m=2: -0.6368988448758103 +/- 0.002502566964381992
-		 	\item Energy for m=3: -0.6338973315707276 +/- 0.0027341143579975723
-		 	\item Energy for m=4: -0.6229915669089899 +/- 0.002819998026568314
-		 	\item Energy for m=5: -0.6445715838659634 +/- 0.0029559595617620286
-		 	\item Energy for m=6: -0.6358614671234866 +/- 0.0029930079421800816
-		 \end{itemize}
-		 
-		 At the first glance it seems that the algorithm give a good approxiamtion of the result. We firstly wanted to have an idea of the evolution of the mean energy with the number of measures.
-		 \begin{figure}[!h]
-		 	\centering
+	 \subsubsection{straight line only can be flipped}
+	 After a few attempts to split any world-line we only add wrong result. Indded we realized it caused an error in the detailed balance.
+	 Indeed if we start from the following situation 1 and split the worldline 3 we get to the situation 2.
+	 
+	 \begin{figure}[!h]
+			 	\centering
+			 	\begin{subfigure}[b]{0.3\textwidth}
+			 		\includegraphics[scale=0.2]{situation1.png}
+			 	\end{subfigure}
+			 	\begin{subfigure}[b]{0.3\textwidth}
+			 		\includegraphics[scale=0.2]{situation2.png}
+			 	\end{subfigure}
+			 	\begin{subfigure}[b]{0.3\textwidth}
+			 		\includegraphics[scale=0.2]{situation3.png}
+			 	\end{subfigure}
+			 	\caption{situation 1 (left), situation 2 (middle), situation 3 (right)}
+			 	\label{flawed detailed balance}			
+	 \end{figure}
+	 
+	 From the situation 2 it is not possible to come back at the situation 1 with a simple splitline. Indeed such move only creates situation 3. To do so a splitline and a kink move is mandatory. The detailed balance is in this case unbalanced.
+	 The solution is to accept to flip straight world-line only.
+	 
+	 To code a Monte Carlo algoriothm, we then had to condensed the two moves in one. We called it stoch\_move(threshold), this algo has a probability threshold to make a splitline move, and 1-threshold to make a kink move.
+	 
+	 
+	 
+	 
+	 This algorithms 
+	 \subsection{first results}
+	 For the proper parameter the algorithm enable to compute the mean energy. In the following we'll focus on the case $Jx = Jy = Jz =1, nspins = 4, beta = 1$.
+	 Firstly we made a few run of the montecarlo algorithm, with a small length\_cycle (10) and a small number of measures(100 000), to have a first look.
+	 
+	 The found the following results:
+	 \begin{itemize}
+			 	\item theorical energy : -0.6330214400416617
+			 	\item Energy for m=2: -0.6368988448758103 +/- 0.002502566964381992
+			 	\item Energy for m=3: -0.6338973315707276 +/- 0.0027341143579975723
+			 	\item Energy for m=4: -0.6229915669089899 +/- 0.002819998026568314
+			 	\item Energy for m=5: -0.6445715838659634 +/- 0.0029559595617620286
+			 	\item Energy for m=6: -0.6358614671234866 +/- 0.0029930079421800816
+	 \end{itemize}
+	 
+	 At the first glance it seems that the algorithm give a good approximation of the result. We firstly wanted to have an idea of the evolution of the mean energy with the number of measures.
+	 \begin{figure}[!h]
+			 	\centering
+			 	
+			 	\includegraphics[scale=0.4]{meanenrgyevolution_x=z=1_m2-6.png}
+			 	
+			 	
+			 	\label{energy mean evolution}			
+	 \end{figure}
+	 
+	 We clearly feel that the 5 results converge to the same limit around -0.63. We also observe that the case m = 6 takes more moves to converge.
+	 The beginning of the curves doesn't have much meaning. It has an high dependence regarding the initial configuration.
+	 We can have a better look on the end of the graph:
+	 
+	 \begin{figure}[H]
+			 	\centering
+			 	\includegraphics[scale=0.4]{mean_energy_evolution_centerd_x=z=1_m2-6.png}
+			 	\label{energy mean evolution}			
+	 \end{figure}
+	 This graph enables us to see two things more clearly.  Firstly the number of moves necessary for the mean to converge rises with m. Secondly the choice of m seem to involve a bias in the mean.
+	 While mtrotter rises, the number of configurations follows and the weight changed by the local\_update move decrease
+	 
+	 
+	 \subsection{autocorrelation function}
+	 To have a better idea of the length between two measures, we computed the autocorrelation function. This function is defined for an observable O by the following formula:
+	\begin{figure}[!h]
+			 	\centering
+			 	
+			 	\includegraphics[scale=0.25]{autocorformula.png}
+		
+	\end{figure}
+		
+	Mean being on the k.
+	
+	We computed the autocorrelation function for 5000 moves and the result is clear.
+	\begin{figure}[!h]
+		\centering
+		
+		\includegraphics[scale=0.4]{autocorrelation_functionx=z=1_m2-6.png}
+		
+		
+	\end{figure}
+
+	We can observe that the correlation between two states requires more and more moves to disappear when m rises. This is due to two factors: firstly when m rises the system get bigger and therefore you need more accepted moves to de-correlate, secondly the weights of the kinks  decrease which means that less and less moves are accepted.
+	This has the effect of underestimating the standard deviation.
+	If we look at these functions more precisely, we can find the proper cycle length, which guarantees that two measures are not correlated.
+	We find :
+	\begin{itemize}
+		\item[] $m=2$ : length of de-correlation 50
+		\item[] $m=3$ : length of de-correlation 200
+		\item[] $m=4$ : length of de-correlation 500
+		\item[] $m=5$ : length of de-correlation 800
+		\item[] $m=6$ : length of de-correlation 1000
+	\end{itemize}
+
+
+	
+	The following results are found:
+	
+	Energy for m=2: -0.6393578437601745 +/- 0.002507393542860798
+	Energy for m=3: -0.6387051296013677 +/- 0.002749339051345642
+	Energy for m=4: -0.6380826437580377 +/- 0.0028694731132348273
+	
 		 	
-		 	\includegraphics[scale=0.4]{meanenrgyevolution_x=z=1_m2-6.png}
-		 	
-		 	
-		 	\label{energy mean evolution}			
-		 \end{figure}
-		 
-		 We clearly feel that the 5 results converge to the same limit around -0.63. We also observe that the case m = 6 takes more moves to converge.
-		 The beginning of the curves doesn't have much meaning. It has an high dependance regarding the initial configuration.
-		 We can have a better look on the end of the graph:
-		 
-		 \begin{figure}[H]
-		 	\centering
-		 	\includegraphics[scale=0.4]{mean_energy_evolution_centerd_x=z=1_m2-6.png}
-		 	\label{energy mean evolution}			
-		 \end{figure}
-		 This graph enables us to see two things more clearly.  Firstly the number of moves necessary for the mean to converge rises with m. Secondly the choice of m seem to involve a bias in the mean.
-		 While mtrotter rises, the number of configurations follows and the weight changed by the local\_update move decrease
-		 
-		 
-		 \subsection{autocorrelation function}
-		 To have a better idea of the length between two measures, we computed the autocorelation function. This function is defined for an observable O by the following formula
 		 
 
 
