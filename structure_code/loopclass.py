@@ -416,16 +416,27 @@ class Loop:
         
            
     def Quantum_Monte_Carlo(self, n_warmup=100, n_cycles = 10000, length_cycle = 1):
+        """
+        This is the method that actually does the metropolis algorithm
+        """
         
+        #settting the energy
         energ = np.zeros(n_cycles)
+        
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
+            
+            #to know the evolution
             print(n)
+            
             # Monte Carlo moves
             for l in range(length_cycle):
                 self.QMC_step()
-            # measures
+                
+            # measures only if the code has reached the warmup time
             if n >= n_warmup:
+                
                 e = self.total_energy()
                 energ[n-n_warmup] = e
+        
         return energ
