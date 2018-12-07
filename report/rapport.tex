@@ -36,7 +36,21 @@
 		{\large December 2018, $7^{th}$}
 		\end{center}
 	\end{titlepage}
+
+	\tableofcontents
+	\newpage
 	
+	\section{Introduction}
+	The aim of this project is to encode an algorithm able to compute the mean energy at fixd temperature of a spin chain modelled by the XXZ model. This model is described by the following hamiltonian:
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[]{hamiltonian.png}
+		\caption{Hamiltonian of the XXZ model}
+		\label{hamiltonian}
+	\end{figure}
+	\subsection{title}
+	
+	\newpage
 	\section{Local Algorithm}
 	\subsection{description}
 
@@ -142,14 +156,15 @@
 	\subsection{limits}
 
 
-
+	\newpage
 	\section{Loop Algorithm}
 	In this section, we will discuss the loop algorithm, introduced in the Assaad and Evertz article page 12. 
 	
 	\subsection{Failure of the local algorithm}
 	The previous algorithm is not reliable for the three following reasons.
 	
-
+	\subsubsection{Winding number}
+	It can not deal with periodic boundary conditions. Indeed, because the updates are either local or along a temporary line, the winding number is fixed. The winding number is an integer counting the number of period that the world-line takes to return to the same position.
 
 	\subsubsection{Acceptance rate} The rate of acceptance of the move is highly dependant on the parameters. For instance, should ...
 	
@@ -459,7 +474,13 @@
 	
 	\newpage
 	\section{Conclusion}
-	Thanks to the power of the loop algorithm, one can compute the mean energy with a very low $length\_cycle$ and a high acceptance rate. Quite rapidly, as shown in figure \ref{meanenergylooplarger}, the mean energy converges towards the limit. 
+	Thanks to the power of the loop algorithm, one can compute the mean energy with a very low $length\_cycle$. Quite rapidly, as shown in figure \ref{meanenergylooplarger}, the mean energy converges towards the limit.
+	
+	\section{Bibliography}
+	\begin{itemize}[label=$\star$]
+		\item Assaad, Evertz, \emph{World line and determinantal Quantum Monte Carlo methods for spins, phonons, and electrons}
+		\item Sandvik, \emph{Monte Carlo simulations in classical statistical physics}
+	\end{itemize} 
 	
 	
 
