@@ -13,6 +13,7 @@
 \author{Corentin \bsc{Bisot}}
 
 \begin{document}
+	
 	\section{Local Algorithm}
 	This section focuses on a way to move through the configurations.
 	The local Algorithm need to implement two distinct moves:
@@ -20,6 +21,7 @@
 		\item{the splitline move}jhasdhhjsd
 		\item{the kink move} hdhdhhd
 	\end{enumerate}
+
 	\section{Loop Algorithm}
 	In this section, we will discuss the loop algorithm, introduced in the Assaad and Evertz article page 12. 
 	
@@ -43,6 +45,7 @@
 	\subsection{The loop update}
 	
 	\subsubsection{Example}
+	
 	\paragraph{}The idea of Assaad and Evertz is to map the periodic boundary conditions model onto another one called "six-vertices model". Thanks to the result obtained on this model, we are now able to implement an update which allows fast decorrelation, high acceptance rate and changing winding number.
 	Let us imagine each tile is replaced by its representation in the six-vertices model which is described in figure \ref{six_vertex}.
 	\begin{figure}[!h]
@@ -51,6 +54,7 @@
 		\caption{Rule to change a tile in a vertex plaquette}
 		\label{six_vertex}
 	\end{figure}
+
 	\paragraph{} The rule is the following : each spin up is transformed into an arrow going up; each spin down is transformed into an arrow going down. 
 	Given this transformation one is now able to imagine loops on the pattern. One starts from a given spin and a given vertex plaquette, and go along the arrow in the same direction. If one does not choose two times the same arrow, he will come back to the first spin and thus create a loop. This mechanism is illustrated by the figure \ref{creating_loop}. The described loop "goes through" the right side to come back to the left side thanks to the periodic boundary conditions.
 	\begin{figure}[!h]
@@ -59,6 +63,7 @@
 		\caption{Illustration of the creation of a loop}
 		\label{creating_loop}
 	\end{figure}
+
 	\paragraph{}
 	With the chosen loop, one can now flip the spins along the loop, which corresponds to changing the direction of all the arrows. This generates a new configuration. In the described one in figure \ref{creating_loop} and figure \ref{loop_update}, the winding number is changed from 1 to 3. One can observe that even this quite simple update (only one loop has been studied), the new configuration seems less dependant that any other that would have been generated thanks to the local algorithm. 
 	\begin{figure}[!h]
@@ -75,6 +80,7 @@
 		W(S)P(S\rightarrow S') = W(S')P(S'\rightarrow S)
 		\label{detailed_balance}
 	\end{equation}
+	
 	\paragraph{}
 	In order to make a move on the configuration, one has to change all the tiles in vertex plaquettes, then to choose loops and to choose whether to flip the spins along it or not. The process is clearer if one creates a virtual configuration called graph. For each tile, the associated vertex plaquette will be replaced by a graph-tile representing the choice of the arrows. The choices are either the loop goes vertically, either diagonally, either horizontally along the tile. Actually, there is another graph possible which switch all the spins on the tile, but it will not be considered here. Summing all the graph will create loops on the configuration. Figure \ref{graph_example} is an example of total graph
 	\begin{figure}[!h]
@@ -83,6 +89,7 @@
 		 \caption{Example of graph; one can verify that all loops are closed}
 		 \label{graph_example}
 	\end{figure}
+
 	\paragraph{}
 	First of all, one needs to know which graphs can be reached by a given tile. Let us give an example for the tile with all the spins down, the white tile. The associated vertex plaquette is the one with all the arrow heading down. If the loop arrives from the upper left side of the tile, it can either go to the bottom left or to the bottom right. Thus, only 2 graphs are allowed: either a vertical graph or a cross graph. The illustration is given in figure \ref{possible_graphs} for all tiles, one can verify the association following the previous logic applied to the white tile.
 	\begin{figure}[!h]
@@ -91,6 +98,7 @@
 		\caption{Possible graphs for tiles}
 		\label{possible_graphs}
 	\end{figure}
+
 	\paragraph{}
 	However, depending on the interactions and the temperature, the graphs will not be equally possible. One has to choose weights for each of them. Let us call $W(S)$ the weight of the tile $S$ and $W(S,G)$ the weight of the graph $G$ for a tile $S$. The equation (\ref{sg=s}) is required to have a total probability equal to one, and then be sure that every tile is replaced by a graph.
 	\begin{equation}
@@ -198,7 +206,9 @@
 	
 	\subsection{Encoding the loop algorithm}
 	The whole methods will be encoded in an algorithm
+	
 	\subsubsection{Parameters}
+	
 	\paragraph{}
 	First, we create a class containing the necessary parameters. 
 	\begin{itemize}[label=$\star$]
@@ -228,9 +238,66 @@
 		\begin{figure}[!h]
 			
 		\end{figure}
-		\item $find\_loops()$ : This method will find all the loops and flip them with probability $\frac{1}{2}$
+		\item $find\_loops()$ : This method will find all the loops and flip them with probability $\frac{1}{2}$. It goes over all the spin, and when any spin is not already in a loop, is uses the method $find\_next()$ to know the following spin in the associated loop, thus until is goes back to the same spin. At each step, is stores the spin to know which spins have already been treated. \\
+		When it finds a not treated spin, it chooses with probability $\frac{1}{2}$ whether to flip all the spin along it or not. 
+		\item $creategraph()$ : Returns an array imaging the total graph configuration.
+		\item $pattern\_to\_string()$ : Transforms the $spins$ into a string to allow the script $check\_loop\_ergodicity.py$ to check if the algorithm is ergodic, i.e. that all configurations are reachable.
+		\item $QMC_step()$ : This method applies a step on the configuration. First, is computes the pattern from the spins. Then, it uses the computed pattern to set the $total\_graph$. Then, thanks to the $find\_loop()$ method it changes the spins to a new configuration.
+		\item $Quantum\_Monte\_Carlo(n\_warmup, n\_cycles, length\_cycle)$ : This method uses the metropolis algorithm to compute the mean energy. First, the initial state with all spins down is "warmed up" by $n\_warmup$ cycles. Then, there are $n\_cycles$ cycles of $length\_cycle$ steps. For each cycle, the energy is measured once. The parameter $length\_cycle$ is used to get rid of the correlation between two successive configuration. This parameter can be optimize. 
 	\end{itemize}
 	
 	\subsection{Results}
+	
 	\subsubsection{Case $J_{x} = J_{z}$}
+	
+	\paragraph{Parameters} For this case only, the graph $G = 4$ is not considered, because it's weight is null. 
+	
+	\paragraph{Validity of the algorithm} This case allowed us to check that our algorithm worked well with simple parameters.
+	We used our code $ExactComputation$ to know the theoretical values for the following parameters: $J_x = J_z = - 1$,  $m\_trotter = 10$,  $N\_spins = 8$. The results for the Quantum Monte Carlo are computed thanks to the script $testloop.py$. \\
+		\begin{tabular}[c]{| c || c | c |}
+			\hline
+			$\beta$ & Theoretical mean energies & Monte Carlo computed mean energies \\ \hline
+			$0.1$ & $-0.146105$ & $-0.175369 \pm 0.045031$ \\ \hline
+			$0.2$ & $-0.283938$ & $-0.318095 \pm 0.052067$ \\ \hline
+			$0.3$ & $-0.412980$ & $-0.428188 \pm 0.047555$ \\ \hline
+			$0.4$ & $-0.532973$ & $-0.550819 \pm 0.046009$ \\ \hline
+			$0.5$ & $-0.643891$ & $-0.614586 \pm 0.039800$ \\ \hline
+			$0.6$ & $-0.745901$ & $-0.775494 \pm 0.040258$ \\ \hline
+			$0.7$ & $-0.839321$ & $-0.858818 \pm 0.039029$ \\ \hline
+			$0.8$ & $-0.924584$ & $-0.912076 \pm 0.034779$ \\ \hline
+			$0.9$ & $-1.002198$ & $-0.960219 \pm 0.035408$ \\ \hline
+			$1.0$ & $-1.072715$ & $-1.081081 \pm 0.035624$ \\ \hline
+		\end{tabular} 
+	\newline
+	This computation confirms that our code runs and produces the good results for parameters with $J_x = J_z$. This was tested for fairly few $n\_cycles$ in the Metropolis algorithm ($10000$), however it is sufficient.
+	
+	\paragraph{Ergodicity} In order to test our algorithm, we counted the number of different patterns that could be reached. If the algorithm is ergodic, is reaches all those patterns, that we are able to count. The script $check_loop_ergodicity.py$ allowed us to verify this property. 
+	
+	\paragraph{Autocorrelation}
+	
+	\paragraph{Result dependence on m}
+	
+	\subsubsection{Case $J_{x} > |J_{z}$|}
+	
+	\paragraph{Parameters} For this case, all graphs are considered.
+	\emph{During the encoding, because we faced difficulties, we tried to implement the code with another rule of repartition of the graphs' weights $V(G)$ such as the graph $G = 4$ was accessible only from the diagonal tiles $S = 2$ ($i.e.$ $W(S=3, G=4)=0$). This algorithm did not work, and the article written by Wessel that proposed such a repartition was wrong. Indeed, in this particular case, the detailed balance is not verified, as through the graph $G=4$, the tiles $S=2$ are transformed to $S=3$, and tiles $S=3$ can not reach tiles $S=2$.}
+	
+	\paragraph{Validity of the algorithm} We used our code $ExactComputation$ to know the theoretical values for the following parameters: $J_x = 1.0$, $J_z = 0.5$,  $m\_trotter = 10$,  $N\_spins = 8$. The results for the Quantum Monte Carlo are computed thanks to the script $testloop.py$. \\
+	\begin{tabular}[c]{| c || c | c |}
+		\hline
+		$\beta$ & Theoretical mean energies & Monte Carlo computed mean energies \\ \hline
+		$0.1$ & $-0.146105$ & $-0.175369 \pm 0.045031$ \\ \hline
+		$0.2$ & $-0.283938$ & $-0.318095 \pm 0.052067$ \\ \hline
+		$0.3$ & $-0.412980$ & $-0.428188 \pm 0.047555$ \\ \hline
+		$0.4$ & $-0.532973$ & $-0.550819 \pm 0.046009$ \\ \hline
+		$0.5$ & $-0.643891$ & $-0.614586 \pm 0.039800$ \\ \hline
+		$0.6$ & $-0.745901$ & $-0.775494 \pm 0.040258$ \\ \hline
+		$0.7$ & $-0.839321$ & $-0.858818 \pm 0.039029$ \\ \hline
+		$0.8$ & $-0.924584$ & $-0.912076 \pm 0.034779$ \\ \hline
+		$0.9$ & $-1.002198$ & $-0.960219 \pm 0.035408$ \\ \hline
+		$1.0$ & $-1.072715$ & $-1.081081 \pm 0.035624$ \\ \hline
+	\end{tabular} 
+	\newline
+
+
 \end{document}
