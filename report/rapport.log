@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700 64-bit) (preloaded format=pdflatex 2018.5.30)  7 DEC 2018 21:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700 64-bit) (preloaded format=pdflatex 2018.5.30)  7 DEC 2018 21:28
 entering extended mode
 **./rapport.tex
 (rapport.tex
@@ -612,43 +612,60 @@ Overfull \hbox (16.67526pt too wide) in paragraph at lines 284--302
  []
 
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 310.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 310.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 310.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 310.
+Overfull \hbox (6.40076pt too wide) in paragraph at lines 303--304
+\T1/lmr/m/n/12 those pat-terns, that we are able to count. The script $\OML/lmm
+/m/it/12 check[]loop[]ergodicity:py$
+ []
 
 [11]
-Underfull \hbox (badness 10000) in paragraph at lines 315--331
+<ThvsComp_x=z=1_m2-8.png, id=201, 1084.05pt x 722.7pt>
+File: ThvsComp_x=z=1_m2-8.png Graphic file (type png)
+<use ThvsComp_x=z=1_m2-8.png>
+Package pdftex.def Info: ThvsComp_x=z=1_m2-8.png  used on input line 320.
+(pdftex.def)             Requested size: 426.79134pt x 284.53154pt.
+
+Overfull \hbox (36.79134pt too wide) in paragraph at lines 320--322
+ [][] 
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 325.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 325.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 325.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 325.
+
+[12 <./ThvsComp_x=z=1_m2-8.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 330--346
 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 334.
-[12]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 334.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 349.
+[13]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 349.
  (rapport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 334.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 334.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 349.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 349.
 Package rerunfilecheck Info: File `rapport.out' has not changed.
 (rerunfilecheck)             Checksum: 8723895334AE70A2BB76626A70DB3759;1089.
  ) 
 Here is how much of TeX's memory you used:
- 8372 strings out of 492974
- 124760 string characters out of 3126707
+ 8380 strings out of 492974
+ 124924 string characters out of 3126707
  238424 words of memory out of 3000000
- 12059 multiletter control sequences out of 15000+200000
+ 12064 multiletter control sequences out of 15000+200000
  69188 words of font info for 49 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 28i,16n,31p,851b,550s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 28i,17n,31p,851b,550s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/etien/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.en
 c}{C:/Users/etien/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-maths
 y.enc}{C:/Users/etien/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-m
@@ -667,9 +684,9 @@ ms/MiKTeX 2.9/fonts/type1/public/lm/lmri12.pfb><C:/Users/etien/AppData/Local/Pr
 ograms/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Users/etien/AppData/Loca
 l/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsy6.pfb><C:/Users/etien/AppData/L
 ocal/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb>
-Output written on rapport.pdf (12 pages, 289610 bytes).
+Output written on rapport.pdf (13 pages, 331853 bytes).
 PDF statistics:
- 266 PDF objects out of 1000 (max. 8388607)
- 66 named destinations out of 1000 (max. 500000)
- 184 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 276 PDF objects out of 1000 (max. 8388607)
+ 68 named destinations out of 1000 (max. 500000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 

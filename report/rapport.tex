@@ -300,11 +300,26 @@
 	\newline
 	This computation confirms that our code runs and produces the good results for parameters with $J_x = J_z$. This was tested for fairly few $n\_cycles$ in the Metropolis algorithm ($10000$), however it is sufficient.
 	
-	\paragraph{Ergodicity} In order to test our algorithm, we counted the number of different patterns that could be reached. If the algorithm is ergodic, is reaches all those patterns, that we are able to count. The script $check_loop_ergodicity.py$ allowed us to verify this property. 
+	\paragraph{Ergodicity} In order to test our algorithm, we counted the number of different patterns that could be reached. If the algorithm is ergodic, is reaches all those patterns, that we are able to count. The script $check\_loop\_ergodicity.py$ allowed us to verify this property. 
 	
 	\paragraph{Autocorrelation}
 	
 	\paragraph{Result dependence on m}
+	For a given number of spins and a given division of the imaginary time, there is a given number of configuration of the spins. Each has a weight. The Quantum Monte Carlo computation of the energy returns an energy than can be predicted for low values of $n\_spins$ and $m\_trotter$. Those predictable energies were given to us by M. Ferrero. \\ The parameters are :
+	\begin{equation}
+		\centering
+		\begin{split}
+			J_x = J_z = 1, & \beta = 1, n\_spins = 4 \\
+			m & \in [2, 3, 4, 5, 6, 7] \\
+			\Delta\tau & \in [\frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \frac{1}{4}, \frac{1}{5}, \frac{1}{6}, \frac{1}{7}, ]
+		\end{split}
+	\end{equation}
+	The following figure \ref{varymx=y}, given by the script $show_ThvsComp.py$, shows the theoretical values for the energy on the orange dashed line. The energies are then computed by the loop algorithm with $1e7$ measures. The error-bars are shown.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=15cm]{ThvsComp_x=z=1_m2-8.png}
+		\label{varymx=y}
+	\end{figure}
 	
 	
 	\subsubsection{Case $J_{x} > |J_{z}$|}
