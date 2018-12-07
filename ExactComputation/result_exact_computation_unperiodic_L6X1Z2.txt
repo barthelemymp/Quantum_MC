@@ -1,1 +1,0 @@
-The fundamental's energy for a chain of length 6 with Jx,Jz = (1, 2) is (-29.25706377073064+0j)

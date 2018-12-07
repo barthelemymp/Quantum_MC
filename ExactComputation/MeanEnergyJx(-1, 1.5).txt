@@ -1,5 +1,0 @@
-The mean energy for a periodic chain of length 8 with Jx,Jz, beta = (0, -1, 1.5) is -0.7180374126718051
-The mean energy for a periodic chain of length 8 with Jx,Jz, beta = (-1, -1, 1.5) is -1.3385472362921993
-The mean energy for a periodic chain of length 8 with Jx,Jz, beta = (-2, -1, 1.5) is -3.3460493305776233
-The mean energy for a periodic chain of length 8 with Jx,Jz, beta = (-3, -1, 1.5) is -6.198145622258736
-The mean energy for a periodic chain of length 8 with Jx,Jz, beta = (-4, -1, 1.5) is -9.08308269640378

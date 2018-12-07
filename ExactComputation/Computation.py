@@ -52,15 +52,14 @@ class Chain:
         
         self.softmax = np.array([])
     
-      
-    #For a chain, the hamiltonian can be separated in halmitonians
-    #only acting on pairs.
-    
+         
     def compute_hamiltonian_on_pair(self, k, state_i, state_j):
         """
+        For a chain, the hamiltonian can be separated on hamiltonians acting on pair.
+        With H = Sum (hamiltonian_two_sites)
         This method compute hamiltonian_two_sites | state >
         """
-        
+        #getting the concerned pair
         pair = np.array([state_i[k], state_i[ (k+1) % self.L ]])
                 
         #instanciate
@@ -71,19 +70,20 @@ class Chain:
         
         state_flip = np.array([])
         
+        #case not periodic
         if (k == self.L - 1) and not(self.periodic):
             return 0
         
         #if up - up, the element matrix is non zero only for pair_state_j = up - up
         if np.array_equal(pair, upup):
             return self.Jz/4 * np.array_equal(state_i, state_j)
+        
         #if down - down
         elif np.array_equal(pair, downdown):
-#            print("dd")
             return self.Jz/4 * np.array_equal(state_i, state_j)
+        
         #if up - down, either pair_state_j is down - up or up -down
         elif np.array_equal(pair, updown):
-#            print("updown")
             
             if k < self.L - 1:
                 state_flip = np.concatenate((state_i[:k], downup, state_i[k+2:]))
@@ -91,17 +91,16 @@ class Chain:
                 state_flip = np.concatenate((np.array([downup[1]]), state_i[1:k], np.array([downup[0]])))
             return ( -self.Jz/4 * np.array_equal(state_i, state_j) +
                      self.Jx/2 * np.array_equal(state_flip, state_j) )
+        
         #if down - up
-#        print("downup")
-        if k < self.L - 1:
-            state_flip = np.concatenate((state_i[:k], updown, state_i[k+2:]))
-        elif (k == self.L - 1) and self.periodic:
-            state_flip = np.concatenate((np.array([updown[1]]), state_i[1:k], np.array([updown[0]])))
-#        print(state_flip, state_j)
-#        print(np.array_equal(state_flip, state_j))
-        return  ( -self.Jz/4 * np.array_equal(state_i, state_j) +
-                  self.Jx/2 * np.array_equal(state_flip, state_j) )
-    
+        else:
+            if k < self.L - 1:
+                state_flip = np.concatenate((state_i[:k], updown, state_i[k+2:]))
+            elif (k == self.L - 1) and self.periodic:
+                state_flip = np.concatenate((np.array([updown[1]]), state_i[1:k], np.array([updown[0]])))
+            return  ( -self.Jz/4 * np.array_equal(state_i, state_j) +
+                      self.Jx/2 * np.array_equal(state_flip, state_j) )
+        
 
     def compute_element_matrix(self, i, j):
         """
@@ -111,7 +110,6 @@ class Chain:
         #let get i and j
         state_i = self.states[i]
         state_j = self.states[j]
-#        print(state_i, state_j)
         
         #result
         sum = 0.
@@ -119,7 +117,6 @@ class Chain:
         #let compute the pair to pair hamiltonian
         for k in range(0, self.L):
             sum += self.compute_hamiltonian_on_pair(k, state_i, state_j)
-#            print(k, sum)
 
         return sum
         
@@ -131,8 +128,10 @@ class Chain:
         for i in range(2**self.L):
             for j in range(i, 2**self.L):
                 temp = self.compute_element_matrix(i,j)
+                #the hamiltonian is hermitian
                 self.hamiltonian[i,j] = temp
                 self.hamiltonian[j,i] = temp
+    
     
     def set_eigenvalues(self):
         
@@ -146,39 +145,43 @@ class Chain:
         return self.energies
     
     def get_fundamental(self):
+        """"
+        Returning the fundamental
+        """
         self.set_eigenvalues()
         return np.min(self.energies)
     
     def set_softmax(self):
+        """
+        Returning the weights of the configuration
+        """
         ex = np.exp( - self.beta * self.energies )
         sum_ex = np.sum( ex )
         self.softmax = ex / sum_ex
     
     def get_mean_energy(self):
+        """
+        Returning the mean energy
+        """
         self.set_eigenvalues()
         self.set_softmax()
         return np.dot(self.energies, self.softmax)
     
-
-#c = Chain(8, -2, -2, 1, periodic = True)
-#c.set_eigenvalues()
-#print(c.get_mean_energy())
-chain = Chain(4, 0., 1., 1., periodic = False)
-exact = chain.get_fundamental()
-print(chain.beta, chain.Jx, chain.Jz, exact)
-
+#Compute the fundamental on a given chain
 def compute_fundamental_chain(L, Jx, Jz, s = 'result_exact_computation.txt', periodic = True):
     with open(s, 'w') as fichier:
         fichier.write("The fundamental's energy for a " + periodic*"periodic "+ "chain of length " 
                       + str(L) + " with Jx,Jz = " + str((Jx,Jz)) + " is " + 
                       str(Chain(L, Jx, Jz, periodic).get_fundamental()))
 
+#compute the energies on a given chain
 def compute_energies(L, Jx, Jz, periodic = True):
     with open('energies' + str((L, Jx, Jz)) + '.txt', 'w') as fichier:
         fichier.write("The energies for a " + periodic*"periodic "+ "chain of length " 
                       + str(L) + " with Jx,Jz = " + str((Jx,Jz)) + " is " + 
                       str(Chain(L, Jx, Jz, 0, periodic).set_eigenvalues()))
 
+#compute the mean energy on a chain with Jx varying
 def compute_mean_chain_Jx(L, Jz, beta, periodic = True ):
     with open('MeanEnergyJx' + str((Jz, beta)) + '.txt', 'w') as fichier:
         for Jx in range(0, 5):
@@ -186,6 +189,7 @@ def compute_mean_chain_Jx(L, Jz, beta, periodic = True ):
                           + str(L) + " with Jx,Jz, beta = " + str((-Jx,Jz, beta)) + " is " + 
                           str(Chain(L, -Jx, Jz, beta, periodic).get_mean_energy()) + '\n')
 
+#compute the mean energy on a given chain
 def compute_mean_energy(L, Jx, Jz, s = 'MeanEnergyJxJzBeta0.1_1.txt', periodic = True):
     with open(s, 'w') as fichier:
         for k in range(10):
@@ -193,9 +197,8 @@ def compute_mean_energy(L, Jx, Jz, s = 'MeanEnergyJxJzBeta0.1_1.txt', periodic =
             fichier.write("The mean energy for a " + periodic*"periodic "+ "chain of length " 
                           + str(L) + " with Jx,Jz, beta = " + str((Jx,Jz, beta)) + " is " + 
                           str(Chain(L, Jx, Jz, beta, periodic).get_mean_energy()) + '\n')
-    
-#compute_mean_energy(8, -1, -1)
-    
+
+#Computes mean energy for chain of length two and four
 def moyenneenergy2(beta):
     Z = 2*np.exp(beta*0.5) + 2*np.exp(-beta*0.5)
     Emo = -np.exp(beta*0.5) + np.exp(-beta*0.5)
