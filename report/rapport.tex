@@ -9,10 +9,27 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 
-\title{Mini-Projet}
-\author{Corentin \bsc{Bisot}}
+\title{Quantum Monte Carlo algorithm for spins systems}
+\author{Etienne \bsc{Camphuis}}
 
 \begin{document}
+	\begin{titlepage}
+		\begin{center}
+			\textsc{\Large Digital Physics}\\[1.5cm]
+			
+			{ \huge \bfseries Quantum Monte Carlo algorithm for spins systems\\[0.4cm] }
+		\vfill
+		\begin{minipage}{0.4\textwidth}
+			\large
+			\centering
+			Etienne \textsc{Camphuis}\\
+			Barthélémy \textsc{Meynard Piganeau} \\
+			X 2016\\
+		\end{minipage}
+		
+		{\large December 2018, $7^{th}$}
+		\end{center}
+	\end{titlepage}
 	
 	\section{Local Algorithm}
 	\subsection{description}
@@ -233,8 +250,14 @@
 		\item $weight()$ : Thanks to array combination and the use of masks, this methods extract the weight of each tile on the pattern then make the product of those weights to return the full weight of the combination.
 		\item $spins\_to\_pattern()$ : With the use of array combination, this method computes the pattern from the spin configuration. At each coordinate $(i,j)$ is a number corresponding to the tile.
 		\item $createimage()$ : Returns an array imaging the total world-line pattern.
-		\item $tile\_in\_graph(pos)$ : Chooses a graph for the tile in position $(pos[0], pos[1])$ with probability $\frac{V(G)}{W(S)}$.
-		\item $set\_total\_graph()$ : Goes over the whole parameter $total\_graph$ and choose for each position a graph thanks to the previous method $tile\_in\_graph(pos)$. ...
+		\item $tile\_in\_graph(pos)$ : Chooses a graph for the tile in position \\ $(pos[0], pos[1])$ with probability $\frac{V(G)}{W(S)}$.
+		\item $set\_total\_graph()$ : Goes over the whole parameter $total\_graph$ and choose for each position a graph thanks to the previous method \\ $tile\_in\_graph(pos)$. An example of transformation is given is the figure \ref{tileandgraph}.
+		\begin{figure}[!h]
+			\centering
+			\includegraphics[]{tileandgraph.png}
+			\caption{Example of transition from a given pattern to a graph}
+			\label{tileandgraph}
+		\end{figure}
 		\item $find\_next(pos, graph)$ : This method is used to get the loops from the graph. The $pos$ and $graph$ parameters corresponds respectively to the position of a spin and the one of a graph. The method returns a new spin position and a new graph position after propagating the loop through the given $graph$ from the $spin$ position. For instance, if the graph is $G = 1$, $i.e.$ vertical, and the spin is on the upper left side on the graph, the method will return the spin just below the first spin and the graph down left the first graph. 
 		\begin{figure}[!h]
 			
