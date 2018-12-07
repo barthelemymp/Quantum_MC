@@ -15,7 +15,8 @@
 \begin{document}
 	
 	\section{Local Algorithm}
-	This section focuses on a way to move through the configurations.
+	\subsection{description}
+  a way to move through the configurations.
 	The local Algorithm need to implement two distinct moves:
 	\begin{enumerate}
 		\item{the splitline move}jhasdhhjsd
@@ -242,7 +243,7 @@
 		When it finds a not treated spin, it chooses with probability $\frac{1}{2}$ whether to flip all the spin along it or not. 
 		\item $creategraph()$ : Returns an array imaging the total graph configuration.
 		\item $pattern\_to\_string()$ : Transforms the $spins$ into a string to allow the script $check\_loop\_ergodicity.py$ to check if the algorithm is ergodic, i.e. that all configurations are reachable.
-		\item $QMC_step()$ : This method applies a step on the configuration. First, is computes the pattern from the spins. Then, it uses the computed pattern to set the $total\_graph$. Then, thanks to the $find\_loop()$ method it changes the spins to a new configuration.
+		\item $QMC\_step()$ : This method applies a step on the configuration. First, is computes the pattern from the spins. Then, it uses the computed pattern to set the $total\_graph$. Then, thanks to the $find\_loop()$ method it changes the spins to a new configuration.
 		\item $Quantum\_Monte\_Carlo(n\_warmup, n\_cycles, length\_cycle)$ : This method uses the metropolis algorithm to compute the mean energy. First, the initial state with all spins down is "warmed up" by $n\_warmup$ cycles. Then, there are $n\_cycles$ cycles of $length\_cycle$ steps. For each cycle, the energy is measured once. The parameter $length\_cycle$ is used to get rid of the correlation between two successive configuration. This parameter can be optimize. 
 	\end{itemize}
 	
@@ -284,18 +285,18 @@
 	
 	\paragraph{Validity of the algorithm} We used our code $ExactComputation$ to know the theoretical values for the following parameters: $J_x = 1.0$, $J_z = 0.5$,  $m\_trotter = 10$,  $N\_spins = 8$. The results for the Quantum Monte Carlo are computed thanks to the script $testloop.py$. \\
 	\begin{tabular}[c]{| c || c | c |}
-		\hline
+		\hline            
 		$\beta$ & Theoretical mean energies & Monte Carlo computed mean energies \\ \hline
-		$0.1$ & $-0.146105$ & $-0.175369 \pm 0.045031$ \\ \hline
-		$0.2$ & $-0.283938$ & $-0.318095 \pm 0.052067$ \\ \hline
-		$0.3$ & $-0.412980$ & $-0.428188 \pm 0.047555$ \\ \hline
-		$0.4$ & $-0.532973$ & $-0.550819 \pm 0.046009$ \\ \hline
-		$0.5$ & $-0.643891$ & $-0.614586 \pm 0.039800$ \\ \hline
-		$0.6$ & $-0.745901$ & $-0.775494 \pm 0.040258$ \\ \hline
-		$0.7$ & $-0.839321$ & $-0.858818 \pm 0.039029$ \\ \hline
-		$0.8$ & $-0.924584$ & $-0.912076 \pm 0.034779$ \\ \hline
-		$0.9$ & $-1.002198$ & $-0.960219 \pm 0.035408$ \\ \hline
-		$1.0$ & $-1.072715$ & $-1.081081 \pm 0.035624$ \\ \hline
+		$0.1$ & $-0.114286$ & $0.175369 \pm 0.045031$ \\ \hline
+		$0.2$ & $-0.231759$ & $0.318095 \pm 0.052067$ \\ \hline
+		$0.3$ & $-0.351769$ & $0.428188 \pm 0.047555$ \\ \hline
+		$0.4$ & $-0.473585$ & $-0.550819 \pm 0.046009$ \\ \hline
+		$0.5$ & $-0.596416$ & $-0.614586 \pm 0.039800$ \\ \hline
+		$0.6$ & $-0.719437$ & $-0.775494 \pm 0.040258$ \\ \hline
+		$0.7$ & $-0.841814$ & $-0.858818 \pm 0.039029$ \\ \hline
+		$0.8$ & $-0.962735$ & $0.912076 \pm 0.034779$ \\ \hline
+		$0.9$ & $-1.081434$ & $-0.960219 \pm 0.035408$ \\ \hline
+		$1.0$ & $-1.197217$ & $-1.081081 \pm 0.035624$ \\ \hline
 	\end{tabular} 
 	\newline
 
