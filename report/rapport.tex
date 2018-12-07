@@ -172,14 +172,24 @@
 	\item[]Energy for m=3: -0.6387051296013677 +/- 0.002749339051345642
 	\item[]Energy for m=4: -0.6380826437580377 +/- 0.0028694731132348273
 	\end{itemize}
-		 
+		 We  can compare the evolution of the mean energy for the two different length cycle
+		 	\begin{figure}[!h]
+		 	\centering
+		 	
+		 	\includegraphics[scale=0.4]{lcyclecomp.png}
+		 	
+		 	
+		 \end{figure}
 
 
 
 	
 	\subsection{limits}
 	Several problems remains with this algorithm. Firstly as we have seen, it can only works on open border condition.
-	Moreover i
+	Moreover It get very expensive to compute this Monte Carlo algorithm when we are not in the proper condition. Indeed the the weight to do a kink is proportional to $\sinh^2(\Delta\tau \frac{Jx}{2})$. Consequently when $\beta$ gets smaller or m bigger, the moves proposed are mostly rejected, and the Monte Carlo becomes highly inefficient 
+	Unfortunately to get precise results we need to make m big and so $\Delta\tau$ small. 
+	To conclude this idea only works for low precision estimation and high $\beta$.
+	
 
 
 
