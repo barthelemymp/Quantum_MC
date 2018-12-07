@@ -48,8 +48,8 @@ class States:
                 if (i + j + 1)%2:
                     self.p_mask[i, j] = 1
                     self.black_mask[i,j] = 0
-        self.p_mask = self.p_mask.astype(bool)
-        self.black_mask = self.black_mask.astype(bool)
+        self.p_mask = self.p_mask.astype(bool) 
+        self.black_mask = self.black_mask.astype(bool) #select the balck case
 
         #computing the energy depending on the configuration of the tiles.
         #Each tile has a particular energy, and one has to sum over the white tiles 
@@ -97,7 +97,7 @@ class States:
         
         
         
-    def copy(self,):
+    def copy(self,): #make a copy of the state
         copy = States(self.m_trotter, self.dtau, self.n_spins, self.Jx, self.Jz)
         copy.pattern = self.pattern.copy()
         copy.spins = self.spins.copy()
@@ -118,7 +118,7 @@ class States:
         self.pattern = np.dot(self.p_left, np.dot(self.spins, self.p_right))
         self.pattern = self.pattern[:,:self.n_spins-1]
 
-        self.pattern[self.black_mask]=1
+        self.pattern[self.black_mask]=1 #give value one to the black case 1 is associated to an energy of 0 and a weight of 1
 
     def createimage(self):
         """
@@ -152,7 +152,7 @@ class States:
         """
         #open_pattern = self.pattern[:,:self.n_spins-2]
         pattern_energy = self.energymatrix[self.pattern]
-        pattern_energy = pattern_energy[self.p_mask]
+        pattern_energy = pattern_energy[self.p_mask] #take only the energy of white case
         energy = np.sum(pattern_energy)
         
 #        pattern_energy = self.energymatrix[open_pattern]
@@ -185,78 +185,66 @@ class States:
         return [pos[0]+1,pos[1]],True
         
     
-    def splitline(self):
+    def splitline(self): #change a line 
         dE = 0
         dw = 1
-        n  = rnd.randint(0,self.n_spins)
+        n  = rnd.randint(0,self.n_spins) #choose line
         
-        #print(n)
-        #gd = int(rnd.rand()>0.5) # 0 means left spin from the case at stake, 1 right spin from the case at stake
-        #print("randspin", n)
+
         p = [0,n] #[line, column, left or right]
         self.spins_to_pattern()
-        pattbefore = self.pattern
+        pattbefore = self.pattern #save pattern
         
-#        ebefore=self.total_energy()
-#        wbefore = self.weight()
-#        print(ebefore,wbefore)
+
 
         for i in range(2*self.m_trotter):
 
-            p,  has_changed = self.splitspin(p)
+            p,  has_changed = self.splitspin(p) #change spins one by one
 
             if has_changed == False :
                 return dE, dw, False
         self.spins_to_pattern()
 
-        pattafter = self.pattern
+        pattafter = self.pattern #look at the pattern after
         
-#        eafter=self.total_energy()
-#        wafter = self.weight()
-#        print(eafter,wafter)
         
-#        de2 = eafter - ebefore
-#        dw2 = wafter / wbefore
-#        
+        
 
-        if n==0 :
+#        lets compute dE and dw now
+
+        if n==0 : #left border
             for i in range(2*self.m_trotter):
                 dE += self.energymatrix[pattafter[i,n]] - self.energymatrix[pattbefore[i,n]]
                 dw *= self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n]])
-                #print(self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n]]))
+
             
             
-        elif n == self.n_spins-1:
+        elif n == self.n_spins-1: #right border
             for i in range(2*self.m_trotter):
 
                 dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattbefore[i,n-1]]
                 dw *= self.weightmatrix[pattafter[i,n-1]] / (self.weightmatrix[pattbefore[i,n-1]])
         
-        else:
+        else: #middle of the board
             for i in range(2*self.m_trotter):
                 
                 dE += self.energymatrix[pattafter[i,n-1]] - self.energymatrix[pattbefore[i,n-1]] + self.energymatrix[pattafter[i,n]] - self.energymatrix[pattbefore[i,n]]
                 dw *= self.weightmatrix[pattafter[i,n-1]]*self.weightmatrix[pattafter[i,n]] / (self.weightmatrix[pattbefore[i,n-1]] * self.weightmatrix[pattbefore[i,n]])
-            #print("p", p)
-        #print("trysplit",n, dE, dw)
+
         return dE, dw, True
     
-    
-    def local_update_pos(self, pos):     
+      
         
-        """
-        This method allows local updates, described in Fig.2 of the article. We will look for various type of 
-        pattern, which are localised on four "white squares" in the pattern. We will call them the conf_down, 
-        conf_up, conf_left, conf_right. 
-        """
-        
-        
-        
-        
-    
     
     def local_update(self):
-
+        """
+        This method allows local updates, described in Fig.2 of the article. We will look for various type of 
+        pattern, which are localised on four "white squares" in the pattern around one black. 
+        """
+        
+        
+        
+        
         dE = 0
         dw = 1
         
@@ -265,10 +253,7 @@ class States:
         mpos = rnd.randint(0,2*self.m_trotter)
         
         pos = np.array([mpos,spinpos])
-        #pos = np.array([2,2])
-        #print(pos)
-        
-        #gd = (mpos + spinpos) % 2
+
         
         spin = self.spins[pos[0],pos[1]]
         spinup = self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]]
@@ -276,13 +261,13 @@ class States:
             #print("spindown")
             return 0,1,False
         if spinup == 0:
-            #print("spinup down")
+
             return 0,1,False
         
         
          # check if it is not going to change spin out of bound at left (spin < 0)       
         if spinpos == 0 and mpos%2 ==0:
-            #print("spin bord")
+
             return 0,1,False
         
         
@@ -290,17 +275,17 @@ class States:
         if spinpos == self.n_spins-1: 
             
             if self.n_spins%2 == mpos%2:
-                #print("spin bord")
+
                 return 0,1,False
             
                 
     
         
         #print("enter")
-        if (mpos + spinpos) % 2 ==0 :
-            #print("m+s", (mpos + spinpos), (mpos + spinpos) % 2)
+        if (mpos + spinpos) % 2 ==0 :  #am I at the right or the left of the black case
+
             if self.spins[pos[0],pos[1]-1] == 1 or self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]-1] == 1 :
-                #print("occupied1" )
+
                 return 0,1,False
             
             patt_mpos= mpos
@@ -328,20 +313,14 @@ class States:
                     self.weightmatrix[self.pattern[(patt_mpos+1)%(2*self.m_trotter),(patt_spinpos+1)%(self.n_spins-1)]]
             
             
-            
-            #print("modif")
+        
             
             self.spins[pos[0],pos[1]-1] =1 
             self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]-1] = 1
             self.spins[pos[0],pos[1]] =0
             self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]] = 0
             
-#                if mpos == 2*self.m_trotter-1 :
-#                    self.spins[0,pos[1]] = 0
-#                    self.spins[0,pos[1]-1] = 1
-#                if mpos == 0 :
-#                    self.spins[2*self.m_trotter-1,pos[1]] = 0
-#                    self.spins[2*self.m_trotter-1,pos[1]-1] = 1
+
             
             self.spins_to_pattern()
             Eafter = self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
@@ -367,10 +346,10 @@ class States:
         
         
         
-        if (mpos + spinpos) % 2 ==1 : 
+        if (mpos + spinpos) % 2 ==1 : #am I at the right or the left of the black case
             
             # position of the black case in the pattern description
-            #print("enter")
+
             patt_mpos= mpos
             patt_spinpos = spinpos
             self.spins_to_pattern()
@@ -398,28 +377,20 @@ class States:
             
             
             if self.spins[pos[0],pos[1]+1] == 1 or self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] == 1 :
-                #print("occupied",self.spins[pos[0],pos[1]+1] == 1,self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] == 1)
+
                 return 0,1,False
             
-            #print("modif2")
-            #print(self.spins[pos[0],pos[1]+1])
+
             self.spins[pos[0],pos[1]+1] =1
-            #print(self.spins[pos[0],pos[1]+1])
+
             self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]+1] = 1
             self.spins[pos[0],pos[1]] =0
             self.spins[(pos[0]+1)%(2*self.m_trotter),pos[1]] = 0
             
-#                if mpos == 2*self.m_trotter-1 :
-#                    self.spins[0,pos[1]] = 0
-#                    self.spins[0,pos[1]+1] = 1
-#                    
-#                if mpos == 0 :
-#                    self.spins[2*self.m_trotter-1,pos[1]] = 0
-#                    self.spins[2*self.m_trotter-1,pos[1]+1] = 1
-            #print('end modif')
+
             
             self.spins_to_pattern()
-            #print(self.spins[pos[0],pos[1]+1])
+
             
             Eafter = self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos-1)%(self.n_spins-1)]] + \
                     self.energymatrix[self.pattern[(patt_mpos-1)%(2*self.m_trotter),(patt_spinpos)%(self.n_spins-1)]] + \
@@ -454,43 +425,7 @@ class States:
         
 
     
-#    def basic_move_simple(self,n_splitline,n_localupdate): # always accept the change
-#        dw = 1
-#        dE = 0
-#        for i in range(n_splitline):
-#            dEtrans, dwtrans = self.splitline()
-#            #print("line split")
-#            dE += dEtrans
-#            dw *= dwtrans
-#        for j in range(n_localupdate):
-#            dEtrans, dwt = self.local_update()
-#            #print("locally updated")
-#            dE += dEtrans
-#            dw *= dwtrans
-#            
-#    def basic_move(self,n_splitline,n_localupdate):
-#        dw = 1
-#        dE = 0
-#        test = self.copy()
-#        for i in range(n_splitline):
-#            dEtrans, dwtrans,_ = test.splitline()
-#            #print("line split")
-#            dE += dEtrans
-#            dw *= dwtrans
-#            #print("split",dE, dw)
-#        for j in range(n_localupdate):
-#            dEtrans, dwtrans = test.local_update()
-#            #print("locally updated")
-#            dE += dEtrans
-#            dw *= dwtrans
-#            #print("loc",dE, dw)
-#        #print("fin",dE, dw)
-#        choice = rnd.random()
-#        if (dw>choice):
-#            self.pattern = test.pattern
-#            #print("change accepted",dE, dw)
-#            return dE, dw
-#        return 0 ,1
+
 #    
     def stoch_move(self,threshold):
         
@@ -566,91 +501,3 @@ class States:
 
 
 
-#    def local_update(self):
-#        #introducing randomness
-#        i = rnd.randint(0, self.m_trotter*self.n_spins)
-#        i *= 2
-#        #getting random position on the white squares
-#        x = i // self.n_spins 
-#        y = i % self.n_spins + x%2
-#
-#        dE, dw = self.local_update_pos(np.array([x,y], dtype = int))
-
-
-#        return dE, dw
-        
-    
-        
-        
-        
-    
-#    def Quantum_Monte_Carlo(self,n_warmup=100,n_cycles = 10000,length_cycle = 100):
-#        energ = np.zeros(n_cycles)
-#        # Monte Carlo simulation
-#        for n in range(n_warmup+n_cycles):
-#            # Monte Carlo moves
-#            for l in range(length_cycle):
-#                self.splitline
-#                #self.autremodif
-#            # measures
-#            if n >= n_warmup:
-#                energ[n-n_warmup] = self.total_energy()
-#        return energ
-
-
-#class config:
-#    """A Feynman path in position/imaginary time space"""
-#
-#    def __init__(self, m_trotter, dtau, n_spins, Jx, Jz, mode = 'local', ):
-#        self.m_trotter = m_trotter #division of the temporary time"
-#        self.dtau = dtau
-#        self.n_spins = n_spins
-#        self.Jx = Jx
-#        self.Jz = Jz
-#        self.mode = mode
-#
-#
-#    def compute_energy_autocorrelation(self,n_splitline,n_localupdate):
-#        if(self.mode is 'local'):
-#            s = States(self.m_trotter,self.dtau,self.n_spins,self.Jx,self.Jz)
-#            for i in range (100): # warm
-#                s.basic_move_simple(n_splitline,n_localupdate)
-#            E = s.total_energy()
-#            En_list = [E]
-#            for k in range (15): # compute energie evolution
-#                dE, _ = s.basic_move(n_splitline, n_localupdate)
-#                E +=dE
-#                En_list += [E]
-#            Energies = np.array(En_list[:10])
-#            sqmean = np.mean(Energies * Energies)
-#            meansq = np.mean(Energies)**2
-#            autocorr = np.zeros(5)
-#            for t in range (5):
-#                Energies_tmove = (En_list[t:t+10])
-#                corr = np.mean(Energies * Energies_tmove)
-#                autocorr[t] = (corr - meansq)/(sqmean - meansq)
-#            x=np.linspace(0,4,5)
-#            plt.plot(x,autocorr)
-#            print("enelist",En_list)
-#            print("Energies",Energies)
-#            print("sqmean",sqmean)
-#            print("meansq",meansq)
-#            return
-#            
-#            
-#        if(self.mode is 'loop'):
-#            return
-
-#    def basic_move(self,n_splitline,n_localupdate):
-#        dw = 0
-#        dE = 0
-#        for i in range(n_splitline):
-#            dEtrans, dwtrans = self.splitline()
-#            dE += dEtrans
-#            dw *= dwtrans
-#        for j in range(n_localupdate):
-#            dEtrans, dwt = self.local_update()
-#            dE += dEtrans
-#            dw *= dwtrans
-#        return dE, dw
-            
