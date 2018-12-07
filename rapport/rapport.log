@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  7 DEC 2018 19:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  7 DEC 2018 19:44
 entering extended mode
 **./rapport.tex
 (rapport.tex
@@ -773,221 +773,246 @@ G,.JBIG2,.JB2,.eps]
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
-<Pattern_winding.png, id=79, 141.52875pt x 208.78pt>
+<Pattern_winding.png, id=83, 141.52875pt x 208.78pt>
 File: Pattern_winding.png Graphic file (type png)
 <use Pattern_winding.png>
-Package pdftex.def Info: Pattern_winding.png  used on input line 36.
+Package pdftex.def Info: Pattern_winding.png  used on input line 39.
 (pdftex.def)             Requested size: 141.5284pt x 208.77946pt.
-<Pattern_nowinding.png, id=81, 143.53625pt x 209.78375pt>
+<Pattern_nowinding.png, id=85, 143.53625pt x 209.78375pt>
 File: Pattern_nowinding.png Graphic file (type png)
 <use Pattern_nowinding.png>
-Package pdftex.def Info: Pattern_nowinding.png  used on input line 37.
+Package pdftex.def Info: Pattern_nowinding.png  used on input line 40.
 (pdftex.def)             Requested size: 143.53589pt x 209.78322pt.
  [1
 
 {C:/Users/bmeyn/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./Pattern_w
 inding.png> <./Pattern_nowinding.png>]
-<situation1.png, id=93, 722.7pt x 722.7pt>
+<situation1.png, id=97, 722.7pt x 722.7pt>
 File: situation1.png Graphic file (type png)
 <use situation1.png>
-Package pdftex.def Info: situation1.png  used on input line 52.
-(pdftex.def)             Requested size: 144.53743pt x 144.53743pt.
-
-Overfull \hbox (27.53624pt too wide) in paragraph at lines 52--53
-[][] 
- []
-
-<situation2.png, id=94, 722.7pt x 722.7pt>
-File: situation2.png Graphic file (type png)
-<use situation2.png>
-Package pdftex.def Info: situation2.png  used on input line 55.
+Package pdftex.def Info: situation1.png  used on input line 55.
 (pdftex.def)             Requested size: 144.53743pt x 144.53743pt.
 
 Overfull \hbox (27.53624pt too wide) in paragraph at lines 55--56
 [][] 
  []
 
-<situation3.png, id=95, 722.7pt x 722.7pt>
-File: situation3.png Graphic file (type png)
-<use situation3.png>
-Package pdftex.def Info: situation3.png  used on input line 58.
+<situation2.png, id=98, 722.7pt x 722.7pt>
+File: situation2.png Graphic file (type png)
+<use situation2.png>
+Package pdftex.def Info: situation2.png  used on input line 58.
 (pdftex.def)             Requested size: 144.53743pt x 144.53743pt.
 
 Overfull \hbox (27.53624pt too wide) in paragraph at lines 58--59
 [][] 
  []
 
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 74.
+<situation3.png, id=99, 722.7pt x 722.7pt>
+File: situation3.png Graphic file (type png)
+<use situation3.png>
+Package pdftex.def Info: situation3.png  used on input line 61.
+(pdftex.def)             Requested size: 144.53743pt x 144.53743pt.
+
+Overfull \hbox (27.53624pt too wide) in paragraph at lines 61--62
+[][] 
+ []
+
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 77.
 (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 74.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 77.
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 74.
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 77.
 
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 74.
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 77.
 
 
 (C:\Users\bmeyn\Documents\Latex\tex\latex\lm\omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 74.
+(Font)              <12> on input line 77.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 74.
+(Font)              <8> on input line 77.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 74.
+(Font)              <6> on input line 77.
  [2 <./situation1.png> <./situation2.png> <./situation3.png>]
-<meanenrgyevolution_x=z=1_m2-6.png, id=106, 1084.05pt x 722.7pt>
+<meanenrgyevolution_x=z=1_m2-6.png, id=110, 1084.05pt x 722.7pt>
 File: meanenrgyevolution_x=z=1_m2-6.png Graphic file (type png)
 <use meanenrgyevolution_x=z=1_m2-6.png>
 Package pdftex.def Info: meanenrgyevolution_x=z=1_m2-6.png  used on input line 
-91.
+94.
 (pdftex.def)             Requested size: 433.61232pt x 289.07487pt.
 
-Overfull \hbox (43.61232pt too wide) in paragraph at lines 91--92
+Overfull \hbox (43.61232pt too wide) in paragraph at lines 94--95
  [][] 
  []
 
-<mean_energy_evolution_centerd_x=z=1_m2-6.png, id=107, 1084.05pt x 722.7pt>
+<mean_energy_evolution_centerd_x=z=1_m2-6.png, id=111, 1084.05pt x 722.7pt>
 File: mean_energy_evolution_centerd_x=z=1_m2-6.png Graphic file (type png)
 <use mean_energy_evolution_centerd_x=z=1_m2-6.png>
 Package pdftex.def Info: mean_energy_evolution_centerd_x=z=1_m2-6.png  used on 
-input line 103.
+input line 106.
 (pdftex.def)             Requested size: 433.61232pt x 289.07487pt.
 
-Overfull \hbox (43.61232pt too wide) in paragraph at lines 103--105
+Overfull \hbox (43.61232pt too wide) in paragraph at lines 106--108
  [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [3 <./meanenrgyevolution_x=z=1_m2-6.png>]
-<six_vertex.png, id=115, 221.32687pt x 125.46875pt>
+ [3 <./meanenrgyevolution_x=z=1_m2-6.png>] [4 <./mean_energy_evolution_centerd_
+x=z=1_m2-6.png>]
+<six_vertex.png, id=125, 221.32687pt x 125.46875pt>
 File: six_vertex.png Graphic file (type png)
 <use six_vertex.png>
-Package pdftex.def Info: six_vertex.png  used on input line 129.
+Package pdftex.def Info: six_vertex.png  used on input line 139.
 (pdftex.def)             Requested size: 221.32631pt x 125.46843pt.
- [4 <./mean_energy_evolution_centerd_x=z=1_m2-6.png>]
-<creating_loop.png, id=123, 402.00188pt x 115.93312pt>
+<creating_loop.png, id=127, 402.00188pt x 115.93312pt>
 File: creating_loop.png Graphic file (type png)
 <use creating_loop.png>
-Package pdftex.def Info: creating_loop.png  used on input line 137.
+Package pdftex.def Info: creating_loop.png  used on input line 148.
 (pdftex.def)             Requested size: 402.00089pt x 115.93283pt.
 
-Overfull \hbox (12.00089pt too wide) in paragraph at lines 137--138
+Overfull \hbox (12.00089pt too wide) in paragraph at lines 148--149
  [][] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<loop_update.png, id=126, 268.50313pt x 118.94438pt>
+<loop_update.png, id=130, 268.50313pt x 118.94438pt>
 File: loop_update.png Graphic file (type png)
 <use loop_update.png>
-Package pdftex.def Info: loop_update.png  used on input line 145.
+Package pdftex.def Info: loop_update.png  used on input line 157.
 (pdftex.def)             Requested size: 268.50246pt x 118.94408pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
 [5 <./six_vertex.png>]
-<random_graph.png, id=140, 401.5pt x 608.2725pt>
+<random_graph.png, id=142, 401.5pt x 608.2725pt>
 File: random_graph.png Graphic file (type png)
 <use random_graph.png>
-Package pdftex.def Info: random_graph.png  used on input line 161.
+Package pdftex.def Info: random_graph.png  used on input line 174.
 (pdftex.def)             Requested size: 142.26378pt x 215.5345pt.
+ [6 <./creating_loop.png> <./loop_update.png>]
+<possible_graphs.png, id=157, 310.66063pt x 191.21437pt>
+File: possible_graphs.png Graphic file (type png)
+<use possible_graphs.png>
+Package pdftex.def Info: possible_graphs.png  used on input line 183.
+(pdftex.def)             Requested size: 310.65987pt x 191.2139pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<possible_graphs.png, id=142, 310.66063pt x 191.21437pt>
-File: possible_graphs.png Graphic file (type png)
-<use possible_graphs.png>
-Package pdftex.def Info: possible_graphs.png  used on input line 169.
-(pdftex.def)             Requested size: 310.65987pt x 191.2139pt.
-[6 <./creating_loop.png> <./loop_update.png>] [7 <./random_graph.png> <./possib
-le_graphs.png>]
+[7 <./random_graph.png>] [8 <./possible_graphs.png>]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 223.
-
-[8]
-
-Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 236.
+(amsmath)                trying to recover with `aligned' on input line 238.
 
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 249.
+(amsmath)                trying to recover with `aligned' on input line 251.
+
+
+Package amsmath Warning: Cannot use `split' here;
+(amsmath)                trying to recover with `aligned' on input line 264.
 
 [9]
-Overfull \hbox (9.62268pt too wide) in paragraph at lines 294--295
+Overfull \hbox (9.62268pt too wide) in paragraph at lines 311--312
 []\T1/lmr/m/n/12 The graph weights de-pen-ding on the graphs $\OML/lmm/m/it/12 
 w\OT1/lmr/m/n/12 11\OML/lmm/m/it/12 ; w\OT1/lmr/m/n/12 12\OML/lmm/m/it/12 ; w\O
 T1/lmr/m/n/12 22\OML/lmm/m/it/12 ; w\OT1/lmr/m/n/12 24\OML/lmm/m/it/12 ; w\OT1/
 lmr/m/n/12 31\OML/lmm/m/it/12 ; w\OT1/lmr/m/n/12 34$ 
  []
 
-
-Overfull \hbox (19.24821pt too wide) in paragraph at lines 304--305
+[10]
+Overfull \hbox (19.24821pt too wide) in paragraph at lines 321--322
 []$\OML/lmm/m/it/12 tile[]in[]graph\OT1/lmr/m/n/12 (\OML/lmm/m/it/12 pos\OT1/lm
 r/m/n/12 )$ \T1/lmr/m/n/12 : Chooses a graph for the tile in po-si-tion $\OT1/l
 mr/m/n/12 (\OML/lmm/m/it/12 pos\OT1/lmr/m/n/12 [0]\OML/lmm/m/it/12 ; pos\OT1/lm
 r/m/n/12 [1])$
  []
 
-[10]
-Overfull \hbox (62.9756pt too wide) in paragraph at lines 305--306
+
+Overfull \hbox (62.9756pt too wide) in paragraph at lines 322--323
 \T1/lmr/m/n/12 choose for each po-si-tion a graph thanks to the pre-vious me-th
 od $\OML/lmm/m/it/12 tile[]in[]graph\OT1/lmr/m/n/12 (\OML/lmm/m/it/12 pos\OT1/l
 mr/m/n/12 )$\T1/lmr/m/n/12 .
  []
 
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 314.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 314.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 314.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 314.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 315.
 [11]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 315.
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 337.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 337.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 337.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 337.
+
+
+Overfull \hbox (16.67526pt too wide) in paragraph at lines 341--359
+\T1/lmr/m/n/12 rithm wor-ked well with simple pa-ra-me-ters. We used our code $
+\OML/lmm/m/it/12 ExactComputation$
+ []
+
+[12]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 366.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 366.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 366.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 366.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 371--387
+
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 389.
+[13]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 389.
  (rapport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 315.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 315.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 389.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 389.
 Package rerunfilecheck Info: File `rapport.out' has not changed.
-(rerunfilecheck)             Checksum: 09D9FE59490960C234FBB9A98E53B58E;1292.
+(rerunfilecheck)             Checksum: 0B126B41BBBB92752E0528924E8DA0F1;1367.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 9827 strings out of 493305
- 146126 string characters out of 3137606
- 256298 words of memory out of 3000000
- 13180 multiletter control sequences out of 15000+200000
+ 9838 strings out of 493305
+ 146257 string characters out of 3137606
+ 257298 words of memory out of 3000000
+ 13181 multiletter control sequences out of 15000+200000
  46771 words of font info for 36 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,16n,39p,851b,547s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,16n,39p,851b,549s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/bmeyn/Documents/Latex/fonts/enc/dvips/lm/lm-rm.enc}{C:/Users/bmeyn/
 Documents/Latex/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Users/bmeyn/Documents/Late
 x/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Users/bmeyn/Documents/Latex/fonts/enc/dv
@@ -1002,9 +1027,9 @@ uments/Latex/fonts/type1/public/lm/lmri12.pfb><C:/Users/bmeyn/Documents/Latex/f
 onts/type1/public/lm/lmsy10.pfb><C:/Users/bmeyn/Documents/Latex/fonts/type1/pub
 lic/lm/lmsy6.pfb><C:/Users/bmeyn/Documents/Latex/fonts/type1/public/lm/lmsy8.pf
 b>
-Output written on rapport.pdf (11 pages, 393043 bytes).
+Output written on rapport.pdf (13 pages, 406906 bytes).
 PDF statistics:
- 264 PDF objects out of 1000 (max. 8388607)
- 61 named destinations out of 1000 (max. 500000)
- 213 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 285 PDF objects out of 1000 (max. 8388607)
+ 71 named destinations out of 1000 (max. 500000)
+ 221 words of extra memory for PDF output out of 10000 (max. 10000000)
 
