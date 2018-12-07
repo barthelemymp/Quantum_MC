@@ -25,5 +25,5 @@ def QMC_mean_energy(k):
         energ = loop.Quantum_Monte_Carlo(n_cycles = 10000000)
         pk.dump(energ, fichier)
 
-#for k in range(2, 8):
-QMC_mean_energy(2) 
+for k in range(3, 8):
+    QMC_mean_energy(2) 

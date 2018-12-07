@@ -15,7 +15,7 @@ x = np.arange(1, 20)
 y = []
 yerr = []
 
-for k in range(4, 5):
+for k in range(3, 8):
     with open('QMCENERG_x=1z=05_beta1_m' + str(k) + '.txt', 'rb') as fichier:
         energy = pk.load(fichier)
         print(len(energy))
