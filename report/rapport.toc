@@ -1,18 +1,18 @@
 \babel@toc {french}{}
-\contentsline {section}{\numberline {1}Introduction}{3}{section.1}
-\contentsline {paragraph}{}{3}{section*.2}
-\contentsline {paragraph}{}{3}{section*.4}
-\contentsline {paragraph}{}{3}{section*.6}
-\contentsline {paragraph}{Computation of the weights}{4}{section*.8}
-\contentsline {paragraph}{Computation of the energies}{4}{section*.10}
-\contentsline {section}{\numberline {2}Local Algorithm}{5}{section.2}
-\contentsline {subsection}{\numberline {2.1}Description}{5}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Domain of validity}{5}{subsection.2.2}
-\contentsline {subsubsection}{\numberline {2.2.1}Winding number}{5}{subsubsection.2.2.1}
-\contentsline {subsubsection}{\numberline {2.2.2}Straight line only can be flipped}{6}{subsubsection.2.2.2}
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
+\contentsline {paragraph}{}{2}{section*.2}
+\contentsline {paragraph}{}{2}{section*.4}
+\contentsline {paragraph}{}{2}{section*.6}
+\contentsline {paragraph}{Computation of the weights}{3}{section*.8}
+\contentsline {paragraph}{Computation of the energies}{3}{section*.10}
+\contentsline {section}{\numberline {2}Local Algorithm}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}Description}{4}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Domain of validity}{4}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Winding number}{4}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Straight line only can be flipped}{5}{subsubsection.2.2.2}
 \contentsline {subsection}{\numberline {2.3}First results}{6}{subsection.2.3}
 \contentsline {subsection}{\numberline {2.4}Autocorrelation function}{8}{subsection.2.4}
-\contentsline {subsection}{\numberline {2.5}Limits}{9}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.5}Limits}{10}{subsection.2.5}
 \contentsline {section}{\numberline {3}Loop Algorithm}{11}{section.3}
 \contentsline {subsection}{\numberline {3.1}Failure of the local algorithm}{11}{subsection.3.1}
 \contentsline {subsubsection}{\numberline {3.1.1}Winding number}{11}{subsubsection.3.1.1}
@@ -20,27 +20,27 @@
 \contentsline {subsubsection}{\numberline {3.1.3}Decorrelation}{11}{subsubsection.3.1.3}
 \contentsline {subsection}{\numberline {3.2}The loop update}{11}{subsection.3.2}
 \contentsline {subsubsection}{\numberline {3.2.1}Example}{11}{subsubsection.3.2.1}
-\contentsline {paragraph}{}{11}{section*.19}
 \contentsline {paragraph}{}{11}{section*.21}
 \contentsline {paragraph}{}{12}{section*.23}
-\contentsline {subsubsection}{\numberline {3.2.2}Formalism}{12}{subsubsection.3.2.2}
-\contentsline {paragraph}{}{13}{section*.25}
+\contentsline {paragraph}{}{12}{section*.25}
+\contentsline {subsubsection}{\numberline {3.2.2}Formalism}{13}{subsubsection.3.2.2}
 \contentsline {paragraph}{}{13}{section*.27}
 \contentsline {paragraph}{}{14}{section*.29}
+\contentsline {paragraph}{}{14}{section*.31}
 \contentsline {subsection}{\numberline {3.3}Encoding the loop algorithm}{16}{subsection.3.3}
 \contentsline {subsubsection}{\numberline {3.3.1}Parameters}{16}{subsubsection.3.3.1}
-\contentsline {paragraph}{}{16}{section*.30}
+\contentsline {paragraph}{}{16}{section*.32}
 \contentsline {subsubsection}{\numberline {3.3.2}Methods}{17}{subsubsection.3.3.2}
 \contentsline {subsection}{\numberline {3.4}Results}{19}{subsection.3.4}
 \contentsline {subsubsection}{\numberline {3.4.1}Case $J_{x} = J_{z}$}{19}{subsubsection.3.4.1}
-\contentsline {paragraph}{Parameters}{19}{section*.33}
-\contentsline {paragraph}{Validity of the algorithm}{19}{section*.34}
-\contentsline {paragraph}{Ergodicity}{19}{section*.35}
-\contentsline {paragraph}{Autocorrelation}{19}{section*.36}
-\contentsline {paragraph}{Result dependence on m}{20}{section*.39}
-\contentsline {subsubsection}{\numberline {3.4.2}Case $J_{x} > |J_{z}$|}{21}{subsubsection.3.4.2}
-\contentsline {paragraph}{Parameters}{21}{section*.41}
-\contentsline {paragraph}{Validity of the algorithm}{22}{section*.42}
-\contentsline {paragraph}{Other results}{22}{section*.43}
-\contentsline {section}{\numberline {4}Conclusion}{23}{section.4}
-\contentsline {section}{\numberline {5}Bibliography}{23}{section.5}
+\contentsline {paragraph}{Parameters}{19}{section*.35}
+\contentsline {paragraph}{Validity of the algorithm}{19}{section*.36}
+\contentsline {paragraph}{Ergodicity}{20}{section*.37}
+\contentsline {paragraph}{Autocorrelation}{20}{section*.38}
+\contentsline {paragraph}{Result dependence on m}{21}{section*.41}
+\contentsline {subsubsection}{\numberline {3.4.2}Case $J_{x} > |J_{z}$|}{22}{subsubsection.3.4.2}
+\contentsline {paragraph}{Parameters}{22}{section*.43}
+\contentsline {paragraph}{Validity of the algorithm}{22}{section*.44}
+\contentsline {paragraph}{Other results}{23}{section*.45}
+\contentsline {section}{\numberline {4}Conclusion}{24}{section.4}
+\contentsline {section}{\numberline {5}Bibliography}{24}{section.5}

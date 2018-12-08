@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt,twoside]{article}
+\documentclass[a4paper,12pt]{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
@@ -41,28 +41,27 @@
 	\newpage
 	
 	\section{Introduction}
-	\paragraph{}The aim of this project is to encode an algorithm able to compute the mean energy at fixd temperature of a spin chain modelled by the XXZ model. This model is described by the following hamiltonian:
-	\begin{figure}[!h]
+	\paragraph{}The aim of this project is to encode an algorithm able to compute the mean energy at fixed temperature of a spin chain modeled by the XXZ model. This model is described by the following Hamiltonian:
+	\begin{figure}[H]
 		\centering
 		\includegraphics[]{hamiltonian.png}
 		\caption{Hamiltonian of the XXZ model}
 		\label{hamiltonian}
 	\end{figure}
-	\paragraph{}The basic idea of this original World Line approach is to split the XXZ Hamiltonian into a set of independent two site problems. The way to achieve	this decoupling is with the use of a path integral and the Trotter decomposition.
+	\paragraph{}The basic idea of this original World Line approach is to split the XXZ Hamiltonian into a set of independent two sites problems. The way to achieve	this decoupling, is with the use of a path integral and the Trotter decomposition.
 	First we write:
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[]{hamiltoniandecomp.png}
 		\caption{Separation of the Hamiltonian}
 		\label{hamiltoniandecomp}
 	\end{figure}
-	\paragraph{} One may verify that $H_1$ and $H_2$ are sums of commuting ($i.e.$ independent) two site problems. Hence, on their own $H_1$ and $H_2$ are trivially solvable problems. However, $H$ is not. To use this fact, we split the imaginary propagation $\exp(-\beta H)$ into successive infinitesimal propagations of $H_1$ and $H_2$. Here $\beta$ corresponds
+	\paragraph{} One may verify that $H_1$ and $H_2$ are sums of commuting ($i.e.$ independent) two sites problems. Hence, on their own $H_1$ and $H_2$ are trivially solvable problems. However, $H$ is not. To use this fact, we split the imaginary propagation $\exp(-\beta H)$ into successive infinitesimal propagations of $H_1$ and $H_2$. Here $\beta$ corresponds
 	to the inverse temperature, with $\beta = m\_trotter * \Delta \tau$.\\
-	The path integral is then a $2D$ representation, with horizontally the space, $i.e.$ the spin chain, and vertically the imaginary time, $i.e.$ the Trotter decomposition, with $2 m\_trotter$ steps. Actually, as both $H_1$ and $H_2$ acts on half of the spin pairs, the path integral can be represented by a checker board. The bold lines follow the time evolution of the up	spins and empty sites, with respect to the world lines, correspond to the down spins. A full time step $\Delta \tau$ corresponds to the propagation with $H_1$ followed by	$H_2$. Periodic boundary conditions are chosen in the spatial direction. In the time direction, periodic boundary conditions follow from the fact that we are evaluating
-	a trace. The weights for a given world line configuration is the product of the
+	The path integral is then a $2D$ representation, with horizontally the space, $i.e.$ the spin chain, and vertically the imaginary time, $i.e.$ the Trotter decomposition, with $2 m\_trotter$ steps. Actually, as both $H_1$ and $H_2$ acts on half of the spin pairs, the path integral can be represented by a checker board. The bold lines follow the time evolution of the up	spins and empty sites, with respect to the world lines, correspond to the down spins. A full time step $\Delta \tau$ corresponds to the propagation with $H_1$ followed by	$H_2$. Periodic boundary or open border  conditions are chosen in the spatial direction. In the imaginary time direction, periodic boundary conditions are mandatory for the imaginary time decomposition to work. The weights for a given world line configuration is the product of the
 	weights of tiles listed in the figure \ref{pathintegral}. Note that, although the spin-flip processes come with a minus sign, the overall weight for the world line configuration is positive since each world line configuration contains an even number of spin flips. A further description is given in the article by Assaad and Evertz. 
 	
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=12cm]{pathintegral.png}
 		\caption{$2D$ Path integral with the associated weights of the tiles; Here $m\_trotter = 4$ and $L=8$}
@@ -70,18 +69,31 @@
 	\end{figure}
 
 	\paragraph{Computation of the weights} For a given configuration, the weight can be expressed with this formalism:
-	\begin{figure}[!h]
+
+	\begin{figure}[H]
+
 		\centering
+
 		\includegraphics[width=10cm]{weights.png}
+
 		\caption{Formula of the weight of a given configuration}
+
 	\end{figure} 
 
+
+
 	\paragraph{Computation of the energies} The following formula give the energy of a given configuration:
-	\begin{figure}[!h]
+
+	\begin{figure}[H]
+
 		\centering
+
 		\includegraphics[width=4cm]{energies.png}
+
 		\caption{Formula of the energies of a given configuration}
+
 	\end{figure} 
+
 	
 	\newpage
 	\section{Local Algorithm}
@@ -92,9 +104,22 @@
 	 The local Algorithm need to implement two distinct moves:
 	 
 	 \begin{itemize}[label=$\star$]
-	 	\item{The splitline move :} This move is supposed to inverse a complete line. To be implemented we firstly chose a spin, then check if the all the spins upward have the same value, and in that case invert all opf them.
+	 	\item{The splitline move :} This move is supposed to inverse a complete line. To be implemented we firstly chose a spin, then check if the all the spins upward have the same value, and in that case invert all of them.
+	 		\begin{figure}[!h]
+	 		\centering
+	 		\includegraphics[scale=0.4]{splitline.png}
+	 		\caption{Splitline move}
+
+	 	    \end{figure}
 	 	
-	 	\item{The kink move :} This move move represents the effect of the quantic spins. The part $J_x$ and $J_z$ create variation from the usual spin model. It is taken in account with this move, which flip the 4 spins around a black case, if the two left spins are the same and are the opposite of the two right spins.
+	 	\item{The kink move :} This move move represents the effect of the quantum spins. The part $J_x$ and $J_z$ create variation from the usual spin model. It is taken in account with this move, which flip the 4 spins around a black case, if the two left spins are the same and are the opposite of the two right spins.
+	 	\begin{figure}[H]
+	 		\centering
+	 		\includegraphics[scale=0.4]{kink.png}
+	 		\caption{kink move ie local update in our code}
+	 		
+	 	\end{figure}
+	 	
 	 \end{itemize}
 		 	
 		 	
@@ -102,7 +127,7 @@
  	\subsection{Domain of validity}
  	\subsubsection{Winding number}
  	It can not deal with periodic boundary conditions. Indeed, because the updates are either local or along a temporary line, the winding number is fixed. The winding number is an integer counting the number of period that the world-line takes to return to the same position. 
- 	\begin{figure}[!h]
+ 	\begin{figure}[H]
  		\centering
  		\includegraphics[]{Pattern_winding.png}
  		\includegraphics[]{Pattern_nowinding.png}
@@ -114,7 +139,7 @@
 	 \subsubsection{Straight line only can be flipped}
 	 After a few attempts to split any world-line we only had wrong results. Indeed we realized it caused an error in the detailed balance. If we start from the following situation 1 and split the world line 3 we get to the situation 2.
 	 
-	 \begin{figure}[!h]
+	 \begin{figure}[H]
 	 	\centering
 	 	\begin{subfigure}[b]{0.3\textwidth}
 	 		\includegraphics[scale=0.2]{situation1.png}
@@ -148,7 +173,7 @@
 	 \end{itemize}
 	 
 	 At the first glance it seems that the algorithm give a good approximation of the result. We firstly wanted to have an idea of the evolution of the mean energy with the number of measures.
-	 \begin{figure}[!h]
+	 \begin{figure}[H]
 	 	\centering
 	 	\includegraphics[scale=0.4]{meanenrgyevolution_x=z=1_m2-6.png}
 	 	\label{energy mean evolution}			
@@ -158,7 +183,7 @@
 	 The beginning of the curves doesn't have much meaning. It has an high dependence regarding the initial configuration.
 	 We can have a better look on the end of the graph:
 	 
-	 \begin{figure}[!h]
+	 \begin{figure}[H]
 	 	\centering
 	 	\includegraphics[scale=0.4]{mean_energy_evolution_centerd_x=z=1_m2-6.png}
 	 	\label{energy mean evolution}			
@@ -169,7 +194,7 @@
 	 
 	 \subsection{Autocorrelation function}
 	 To have a better idea of the length between two measures, we computed the autocorrelation function. This function is defined for an observable $Q$ by the following formula:
-	\begin{figure}[!h]
+	\begin{figure}[H]
 	 	\centering
 	 	\includegraphics[scale=0.25]{autocorformula.png}
 	\end{figure}
@@ -177,7 +202,7 @@
 	Mean being on the k.
 	
 	We computed the autocorrelation function for 5000 moves and the result is clear.
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.4]{autocorrelation_functionx=z=1_m2-6.png}
 	\end{figure}
@@ -203,7 +228,7 @@
 	\item Energy for m=4: -0.6380826437580377 +/- 0.0028694731132348273
 	\end{itemize}
 	 We  can compare the evolution of the mean energy for the two different length cycle
-		 	\begin{figure}[!h]
+		 	\begin{figure}[H]
 		 	\centering
 		 	
 		 	\includegraphics[scale=0.4]{lcyclecomp.png}
@@ -239,9 +264,9 @@
 	
 	\subsubsection{Example}
 	
-	\paragraph{}The idea of Assaad and Evertz is to map the periodic boundary conditions model onto another one called "six-vertices model". Thanks to the result obtained on this model, we are now able to implement an update which allows fast decorrelation, high acceptance rate and changing winding number.
+	\paragraph{}The idea of Assaad and Evertz is to map the periodic boundary conditions model onto another one called "six-vertices model". Thanks to the result obtained on this model, we are now able to implement an update which allows fast de-correlation, high acceptance rate and changing winding number.
 	Let us imagine each tile is replaced by its representation in the six-vertices model which is described in figure \ref{six_vertex}.
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[]{six_vertex.png}
 		\caption{Rule to change a tile in a vertex plaquette}
@@ -250,7 +275,7 @@
 
 	\paragraph{} The rule is the following : each spin up is transformed into an arrow going up; each spin down is transformed into an arrow going down. 
 	Given this transformation one is now able to imagine loops on the pattern. One starts from a given spin and a given vertex plaquette, and go along a chosen arrow in the same direction. If one does not choose two times the same arrow, he will come back to the first spin and thus create a loop. This mechanism is illustrated by the figure \ref{creating_loop}. The described loop "goes through" the right side to come back to the left side thanks to the spatial periodic boundary conditions.
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[]{creating_loop.png}
 		\caption{Illustration of the creation of a loop}
@@ -258,8 +283,8 @@
 	\end{figure}
 
 	\paragraph{}
-	With the chosen loop, one can now flip the spins along the loop, which corresponds to changing the direction of all the arrows. This generates a new configuration. In the described one in figure \ref{creating_loop} and figure \ref{loop_update}, the winding number is changed from 1 to 3. One can observe that even this quite simple update (only one loop has been studied), the new configuration seems less dependant that any other that would have been generated thanks to the local algorithm. 
-	\begin{figure}[!h]
+	With the chosen loop, one can now flip the spins along the loop, which corresponds to changing the direction of all the arrows. This generates a new configuration. In the described one in figure \ref{creating_loop} and figure \ref{loop_update}, the winding number is changed from 1 to 3. One can observe that even this quite simple update (only one loop has been studied), the new configuration seems less dependent that any other that would have been generated thanks to the local algorithm. 
+	\begin{figure}[H]
 		\centering
 		\includegraphics[]{loop_update.png}
 		\caption{Update by flipping the spins along the loop}
@@ -276,7 +301,7 @@
 	
 	\paragraph{}
 	In order to make a move on the configuration, one has to change all the tiles in vertex plaquettes, then to choose loops and to choose whether to flip the spins along it or not. The process is clearer if one creates a virtual configuration called graph. For each tile, the associated vertex plaquette will be replaced by a graph-tile representing the choice of the arrows. The choices are either the loop goes vertically, either diagonally, either horizontally along the tile. Actually, there is another graph possible which switch all the spins on the tile, but it will not be considered here. Summing all the graph will create loops on the configuration. Figure \ref{graph_example} is an example of total graph
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		 \centering
 		 \includegraphics[width = 3cm]{random_graph.png}
 		 \caption{Example of graph; one can verify that all loops are closed}
@@ -285,7 +310,7 @@
 
 	\paragraph{}
 	First of all, one needs to know which graphs can be reached by a given tile. Let us give an example for the tile with all the spins down, the white tile. The associated vertex plaquette is the one with all the arrow heading down. If the loop arrives from the upper left side of the tile, it can either go to the bottom left or to the bottom right. Thus, only 2 graphs are allowed: either a vertical graph or a cross graph. The illustration is given in figure \ref{possible_graphs} for all tiles, one can verify the association following the previous logic applied to the white tile.
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[]{possible_graphs.png}
 		\caption{Possible graphs for tiles}
@@ -320,7 +345,7 @@
 		\end{split}
 		\centering
 	\end{equation}
-	Then one can choose the different parameters to make the computation easier. For instance, the weights of the graph is set constant, not dependant on the spin configuration. This is easier to encode and clearer for the detailed balance:
+	Then one can choose the different parameters to make the computation easier. For instance, the weights of the graph is set constant, not dependent on the spin configuration. This is easier to encode and clearer for the detailed balance:
 	\begin{equation}
 		\centering
 		\forall G, \forall(S,S'), W(S,G) = W(S',G) = V(G) \label{indepG}
@@ -427,14 +452,14 @@
 		\item $createimage()$ : Returns an array imaging the total world-line pattern.
 		\item $tile\_in\_graph(pos)$ : Chooses a graph for the tile in position \\ $(pos[0], pos[1])$ with probability $\frac{V(G)}{W(S)}$.
 		\item $set\_total\_graph()$ : Goes over the whole parameter $total\_graph$ and choose for each position a graph thanks to the previous method \\ $tile\_in\_graph(pos)$. An example of transformation is given is the figure \ref{tileandgraph}.
-		\begin{figure}[!h]
+		\begin{figure}[H]
 			\centering
 			\includegraphics[]{tileandgraph.png}
 			\caption{Example of transition from a given pattern to a graph}
 			\label{tileandgraph}
 		\end{figure}
 		\item $find\_next(pos, graph)$ : This method is used to get the loops from the graph. The $pos$ and $graph$ parameters corresponds respectively to the position of a spin and the one of a graph. The method returns a new spin position and a new graph position after propagating the loop through the given $graph$ from the $spin$ position. For instance, if the graph is $G = 1$, $i.e.$ vertical, and the spin is on the upper left side on the graph, the method will return the spin just below the first spin and the graph down left the first graph. 
-		\begin{figure}[!h]
+		\begin{figure}[H]
 			\centering
 			\includegraphics[]{firstgraph.png}
 			\includegraphics[]{twograph.png}
@@ -479,14 +504,14 @@
 	
 	\paragraph{Autocorrelation}
 	Let us show on figure \ref{meanenergylooplarger} the mean energy depending on the number of moves. We use the measures produced by the script \\ $compute\_x$=$z$=$1\_beta1.py$. Those are lists of $1e7$ measures for $J_x=J_z=1$ and $\beta=1$, but only the first 1000 moves are shown, it is on this time scale that the mean energy varies a lot. It can be seen that depending on the value of $m\_trotter$, the mean energy converges towards a different limit. This will be studied in the following paragraph. 
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=12cm]{mean_energy_evolution_loop_x=z=1_m2-7.png}
 		\caption{ }
 		\label{meanenergylooplarger}
 	\end{figure}
 	The script $loop\_result.ipynb$ delivers the figure \ref{meanenergylooplarger} and \ref{autocorrloopxy}. The following figure directly computes the autocorrelation in the same way as in the local algorithm. One can observed that the autocorrelation is quite small, with an advised $length\_cycle$ at $10$.
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=12cm]{autocorr_loop_x=y.png}
 		\caption{ }
