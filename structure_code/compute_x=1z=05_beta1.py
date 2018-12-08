@@ -26,4 +26,4 @@ def QMC_mean_energy(k):
         pk.dump(energ, fichier)
 
 for k in range(2, 8):
-    QMC_mean_energy(2) 
+    QMC_mean_energy(k) 
