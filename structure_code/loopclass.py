@@ -149,6 +149,10 @@ class Loop:
         weight = np.prod(pattern_weight)
         return weight
     
+    def get_magnetization(self):
+        
+        return 2 * np.sum(self.spins[0,:] - 0.5)
+    
 
     
     def spins_to_pattern(self):
@@ -422,6 +426,7 @@ class Loop:
         
         #settting the energy
         energ = np.zeros(n_cycles)
+        magnet = np.zeros(n_cycles)
         
         # Monte Carlo simulation
         for n in range(n_warmup+n_cycles):
@@ -438,5 +443,6 @@ class Loop:
                 
                 e = self.total_energy()
                 energ[n-n_warmup] = e
+                magnet[n-n_warmup] = self.get_magnetization()
         
-        return energ
+        return energ, magnet
