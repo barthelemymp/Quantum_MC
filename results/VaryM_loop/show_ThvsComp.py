@@ -39,8 +39,8 @@ for k in range(2, 8):
         yerr += [np.std(energy)/norm]
 
 #polynomial fit
-coef = np.polyfit(x, y, 3)
-y_pol = np.polyval(coef, x_pol)
+coef = np.polyfit(x, y_th, 3)
+y_th_pol = np.polyval(coef, x_pol)
 
 #editing        
 plt.xlabel('delta_tau', fontsize = 'xx-large')
@@ -49,15 +49,17 @@ plt.xticks(fontsize = 'x-large')
 plt.yticks(fontsize = 'x-large')
 plt.title('Theoretical Energy and Computed energy, \n beta = 1, Jx = Jz = 1', fontsize = 'xx-large')
 
-plt.errorbar(x, y, yerr = yerr, label = 'Value obtained by the loop algorithm \n with their errobars',
-             lw = 4, alpha = 0.7)
-#plt.plot(x, y_th, '--', label = 'Theoretical values for delta_tau',
-#          lw = 5, alpha = 0.7)
-plt.plot(x_pol, y_pol, ':', label = 'Theoretical values for delta_tau',
+#plt.errorbar(x, y, yerr = yerr, label = 'Value obtained by the loop algorithm \n with their errobars',
+#             lw = 4, alpha = 0.7)
+plt.plot(x, y_th, '--', label = 'Theoretical values for delta_tau',
+          lw = 5, alpha = 0.7)
+plt.plot(x_pol, y_th_pol, ':', label = 'Theoretical values for delta_tau',
           lw = 5, alpha = 0.7)
 plt.plot([0, 1/2],[-0.8650823114175719, -0.8650823114175719], label = 'Exact value')
 
 plt.legend(loc = 0, fontsize = 'x-large')
+
+#print(y_pol[0])
 
 #saving
 #plt.savefig('ThvsComp_x=z=1_m2-8.png')

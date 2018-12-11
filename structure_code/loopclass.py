@@ -181,7 +181,7 @@ class Loop:
                 else:
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=130
         
-        image = np.array(image)
+        image = np.array(image, dtype = np.uint8)
         
         return image
 
