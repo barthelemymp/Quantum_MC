@@ -143,7 +143,31 @@ class States:
         
         image = np.array(image,dtype=np.uint8)
         ax.imshow(image, cmap = "Greys_r")
+        return 
+
+    def animimage(self):
+        """
+        Give the pattern representation of the configuration on the screen
+        """
+        
+
+
+        #this array corresponds to the image
+        image = np.zeros((20*self.m_trotter*2,20*(self.n_spins-1)))
+        
+        for i in range(self.m_trotter*2):
+            l = self.m_trotter*2 - i
             
+            for j in range(self.n_spins-1):
+                if((i+j+1)%2):
+                    tile = self.pattern[i, j]
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=self.cases[tile]
+                else:
+                    image[20*(l-1):20*(l),20*j:20*(j+1)]=130
+        
+        image = np.array(image,dtype=np.uint8)
+
+        return image
         
     def total_energy(self):
         """
