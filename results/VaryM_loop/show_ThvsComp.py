@@ -22,8 +22,7 @@ y_th = [-0.9014675456746862, -0.8812701667881313, -0.8741886937808667,
 y = []
 yerr = []
 
-coef = np.polyfit(x, y_th, 3)
-y_th_pol = np.polyval(coef, x_pol)
+
 
 
 #results computed with the following parameters from loopclass
@@ -39,6 +38,10 @@ for k in range(2, 8):
         y += [np.mean(energy)]
         yerr += [np.std(energy)/norm]
 
+#polynomial fit
+coef = np.polyfit(x, y, 3)
+y_pol = np.polyval(coef, x_pol)
+
 #editing        
 plt.xlabel('delta_tau', fontsize = 'xx-large')
 plt.ylabel('energy', fontsize = 'xx-large')
@@ -48,10 +51,10 @@ plt.title('Theoretical Energy and Computed energy, \n beta = 1, Jx = Jz = 1', fo
 
 plt.errorbar(x, y, yerr = yerr, label = 'Value obtained by the loop algorithm \n with their errobars',
              lw = 4, alpha = 0.7)
-plt.plot(x, y_th, '--', label = 'Theoretical values for delta_tau',
-          lw = 5, alpha = 0.7)
-#plt.plot(x_pol, y_th_pol, ':', label = 'Theoretical values for delta_tau',
+#plt.plot(x, y_th, '--', label = 'Theoretical values for delta_tau',
 #          lw = 5, alpha = 0.7)
+plt.plot(x_pol, y_pol, ':', label = 'Theoretical values for delta_tau',
+          lw = 5, alpha = 0.7)
 plt.plot([0, 1/2],[-0.8650823114175719, -0.8650823114175719], label = 'Exact value')
 
 plt.legend(loc = 0, fontsize = 'x-large')
