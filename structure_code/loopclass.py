@@ -78,12 +78,12 @@ class Loop:
         
         #initializing the image
         self.greycase = np.ones((20,20),dtype=np.uint8) * 130
-        self.case1 = np.ones((20,20))*255
-        self.case2 = np.ones((20,20))*255
+        self.case1 = np.ones((20,20),dtype=np.uint8)*255
+        self.case2 = np.ones((20,20),dtype=np.uint8)*255
         self.case3 = np.ones((20,20),dtype=np.uint8)*255
-        self.case4 = np.ones((20,20))*255
-        self.case5 = np.ones((20,20))*255
-        self.case6 = np.ones((20,20))*255
+        self.case4 = np.ones((20,20),dtype=np.uint8)*255
+        self.case5 = np.ones((20,20),dtype=np.uint8)*255
+        self.case6 = np.ones((20,20),dtype=np.uint8)*255
         self.case2[:,:2]=0
         self.case2[:,18:]=0
         for i in range(19):
@@ -181,7 +181,7 @@ class Loop:
                 else:
                     image[20*(l-1):20*(l),20*j:20*(j+1)]=130
         
-        image = np.array(image, dtype = np.uint8)
+        image = np.array(image)
         
         return image
 
