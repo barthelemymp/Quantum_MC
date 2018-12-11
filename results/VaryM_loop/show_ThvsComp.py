@@ -14,12 +14,17 @@ fig = plt.figure(figsize = (15,10))
 
 #delta_tau values
 x = 1 / np.arange(2, 8)
+x_pol = np.linspace(0, 0.5, 50)
 
 #Theoretical values given by M.Ferrero
 y_th = [-0.9014675456746862, -0.8812701667881313, -0.8741886937808667,
         -0.8709103141965382, -0.8691294502607925, -0.8680556681106003]
 y = []
 yerr = []
+
+coef = np.polyfit(x, y_th, 3)
+y_th_pol = np.polyval(coef, x_pol)
+
 
 #results computed with the following parameters from loopclass
 # Jx = Jz = 1
@@ -43,10 +48,13 @@ plt.title('Theoretical Energy and Computed energy, \n beta = 1, Jx = Jz = 1', fo
 
 plt.errorbar(x, y, yerr = yerr, label = 'Value obtained by the loop algorithm \n with their errobars',
              lw = 4, alpha = 0.7)
-plt.plot(x, y_th, '--', label = 'Theoretical values',
+plt.plot(x, y_th, '--', label = 'Theoretical values for delta_tau',
           lw = 5, alpha = 0.7)
+#plt.plot(x_pol, y_th_pol, ':', label = 'Theoretical values for delta_tau',
+#          lw = 5, alpha = 0.7)
+plt.plot([0, 1/2],[-0.8650823114175719, -0.8650823114175719], label = 'Exact value')
 
 plt.legend(loc = 0, fontsize = 'x-large')
 
 #saving
-plt.savefig('ThvsComp_x=z=1_m2-8.png')
+#plt.savefig('ThvsComp_x=z=1_m2-8.png')
