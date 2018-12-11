@@ -184,6 +184,9 @@ class Loop:
         image = np.array(image)
         
         return image
+    
+    #commentaire pour bart
+    
 
                 
     def tile_in_graph(self, pos):
